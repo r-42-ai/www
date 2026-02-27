@@ -5,254 +5,312 @@
   <title>1 x 1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    :root {
-      --bg: #000;
-      --card-bg: #111;
-      --accent: #00ff88;
-      --text: #fff;
-      --correct: #00aa44;
-      --wrong: #aa0000;
-      --glass: rgba(255,255,255,0.1);
+    :root{
+      --bg1:#f8fafc;
+      --bg2:#e2e8f0;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --shadow: 0 18px 50px rgba(15,23,42,.10);
+
+      --accent:#2563eb;
+
+      --ok-bg:#ecfdf5;
+      --ok-text:#047857;
+      --ok-border:#34d399;
+
+      --bad-bg:#fef2f2;
+      --bad-text:#b91c1c;
+      --bad-border:#fca5a5;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
     }
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
+
+    .shell{
+      width:min(640px, 100%);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      padding:22px;
     }
-    .quiz-container {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--glass);
-      border-radius: 24px;
-      padding: 40px;
-      max-width: 480px;
-      width: 90%;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    .list{
+      display:grid;
+      gap:10px;
+      padding:4px;
     }
-    .question {
-      font-size: 3rem;
-      font-weight: 300;
-      text-align: center;
-      margin-bottom: 32px;
-      opacity: 0.9;
-      letter-spacing: 2px;
+
+    .row{
+      height:64px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background:#fff;
+      transition: background-color .18s ease, border-color .18s ease, color .18s ease;
     }
-    .inputs {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      margin-bottom: 40px;
+
+    .expr{
+      flex: 1;
+      font-size:28px;
+      font-weight:650;
+      letter-spacing:.2px;
+      text-align:left;
+      padding-left:4px;
     }
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+
+    .eq{
+      font-size:22px;
+      color:var(--muted);
+      font-weight:600;
+      user-select:none;
     }
-    .input-group label {
-      font-size: 0.9rem;
-      opacity: 0.7;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+
+    .ans{
+      width:112px;
+      height:44px;
+      border-radius:14px;
+      border:1.5px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      font-size:22px;
+      font-weight:700;
+      text-align:center;
+      outline:none;
+      transition: box-shadow .18s ease, border-color .18s ease, background-color .18s ease, color .18s ease;
     }
-    input {
-      background: var(--glass);
-      border: 1px solid var(--glass);
-      border-radius: 12px;
-      padding: 16px 20px;
-      font-size: 1.5rem;
-      color: var(--text);
-      transition: all 0.3s ease;
+    .ans:focus{
+      border-color: rgba(37,99,235,.65);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.14);
     }
-    input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 20px rgba(0,255,136,0.3);
+
+    .row.ok{
+      background:var(--ok-bg);
+      border-color: rgba(52,211,153,.55);
+      color:var(--ok-text);
     }
-    .action-btn {
-      background: var(--accent);
-      border: none;
-      border-radius: 50%;
-      width: 72px;
-      height: 72px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      box-shadow: 0 10px 30px rgba(0,255,136,0.4);
+    .row.ok .eq{ color: rgba(4,120,87,.75); }
+    .row.ok .ans{
+      background: rgba(255,255,255,.8);
+      border-color: var(--ok-border);
+      color: var(--ok-text);
+      box-shadow: 0 0 0 4px rgba(16,185,129,.12);
     }
-    .action-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 15px 40px rgba(0,255,136,0.6);
+
+    .row.bad{
+      background:var(--bad-bg);
+      border-color: rgba(252,165,165,.65);
+      color:var(--bad-text);
     }
-    .action-btn:active {
-      transform: scale(0.95);
+    .row.bad .eq{ color: rgba(185,28,28,.75); }
+    .row.bad .ans{
+      background: rgba(255,255,255,.85);
+      border-color: var(--bad-border);
+      color: var(--bad-text);
+      box-shadow: 0 0 0 4px rgba(239,68,68,.12);
     }
-    .next-btn {
-      background: var(--glass);
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      box-shadow: none;
+
+    .ans[readonly]{ cursor:default; }
+
+    .footer{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding-top:16px;
     }
-    .feedback {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
+
+    .fab{
+      width:64px;
+      height:64px;
+      border-radius:18px;
+      border:0;
+      cursor:pointer;
+      background:var(--accent);
+      color:#fff;
+      box-shadow: 0 14px 34px rgba(37,99,235,.30);
+      transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
     }
-    .feedback-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeInUp 0.4s ease forwards;
+    .fab:hover{ transform: translateY(-1px); box-shadow: 0 18px 42px rgba(37,99,235,.36); }
+    .fab:active{ transform: translateY(1px); }
+    .fab.secondary{
+      background:#f1f5f9;
+      color:#1d4ed8;
+      box-shadow: 0 10px 26px rgba(15,23,42,.08);
     }
-    .feedback-item.correct {
-      color: var(--correct);
+
+    .icon{ width:26px; height:26px; display:block; }
+
+    #game-frame{
+      position:fixed;
+      inset:0;
+      width:100vw;
+      height:100vh;
+      border:none;
+      display:none;
+      background:#000;
+      z-index:9999;
     }
-    .feedback-item.wrong {
-      color: var(--wrong);
-    }
-    .checkmark { color: var(--correct); font-size: 1.4rem; }
-    .cross { color: var(--wrong); font-size: 1.4rem; }
-    .hidden { display: none !important; }
-    #game-frame {
-      width: 100vw;
-      height: 100vh;
-      border: none;
-      background: #000;
-    }
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    @media (max-width: 480px) {
-      .quiz-container {
-        padding: 32px 24px;
-        margin: 20px;
-      }
-      .question {
-        font-size: 2.2rem;
-      }
+
+    @media (max-width:520px){
+      .row{ height:60px; }
+      .expr{ font-size:24px; }
+      .ans{ width:96px; font-size:20px; }
     }
   </style>
 </head>
 <body>
-  <div id="quiz" class="quiz-container">
-    <div id="question" class="question"></div>
-    <div class="inputs">
-      <div class="input-group">
-        <label>1.</label>
-        <input type="number" id="ans1" min="0" max="144">
+  <main id="app" class="shell" aria-label="Math practice">
+    <section class="list" id="list">
+      <div class="row" data-i="0">
+        <div class="expr" id="expr0">—</div>
+        <div class="eq">=</div>
+        <input class="ans" id="ans0" inputmode="numeric" autocomplete="off" />
       </div>
-      <div class="input-group">
-        <label>2.</label>
-        <input type="number" id="ans2" min="0" max="144">
+      <div class="row" data-i="1">
+        <div class="expr" id="expr1">—</div>
+        <div class="eq">=</div>
+        <input class="ans" id="ans1" inputmode="numeric" autocomplete="off" />
       </div>
-      <div class="input-group">
-        <label>3.</label>
-        <input type="number" id="ans3" min="0" max="144">
+      <div class="row" data-i="2">
+        <div class="expr" id="expr2">—</div>
+        <div class="eq">=</div>
+        <input class="ans" id="ans2" inputmode="numeric" autocomplete="off" />
       </div>
-      <div class="input-group">
-        <label>4.</label>
-        <input type="number" id="ans4" min="0" max="144">
+      <div class="row" data-i="3">
+        <div class="expr" id="expr3">—</div>
+        <div class="eq">=</div>
+        <input class="ans" id="ans3" inputmode="numeric" autocomplete="off" />
       </div>
+    </section>
+
+    <div class="footer">
+      <button id="btn" class="fab" title="Check" aria-label="Check">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
-    <button id="check-btn" class="action-btn" title="Check">✓</button>
-    <div id="feedback" class="feedback"></div>
-  </div>
-  <iframe id="game-frame" class="hidden" src="about:blank" loading="eager" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-fullscreen allow-presentation allow-pointer-lock allow-downloads" referrerpolicy="no-referrer"></iframe>
+  </main>
+
+  <iframe
+    id="game-frame"
+    src="about:blank"
+    loading="eager"
+    allow="fullscreen"
+    sandbox="allow-scripts allow-same-origin allow-fullscreen allow-presentation allow-pointer-lock allow-downloads"
+    referrerpolicy="no-referrer"
+  ></iframe>
 
   <script>
-    const quizEl = document.getElementById('quiz');
-    const questionEl = document.getElementById('question');
-    const inputs = ['ans1', 'ans2', 'ans3', 'ans4'].map(id => document.getElementById(id));
-    const checkBtn = document.getElementById('check-btn');
-    const feedbackEl = document.getElementById('feedback');
-    const gameFrame = document.getElementById('game-frame');
+    const GAME_URL = "https://brainplay.com/p/dinosaur-game";
 
-    let currentQuestions = [];
-    let answers = [];
+    const exprEls = [0,1,2,3].map(i => document.getElementById(`expr${i}`));
+    const ansEls  = [0,1,2,3].map(i => document.getElementById(`ans${i}`));
+    const rowEls  = [0,1,2,3].map(i => document.querySelector(`.row[data-i="${i}"]`));
+    const btn = document.getElementById('btn');
+    const app = document.getElementById('app');
+    const frame = document.getElementById('game-frame');
 
-    function generateQuestion() {
-      const isMult = Math.random() < 0.5;
-      if (isMult) {
-        const a = Math.floor(Math.random() * 12) + 1;
-        const b = Math.floor(Math.random() * 12) + 1;
-        return { expr: `${a} × ${b}`, correct: a * b };
-      } else {
-        const prod = Math.floor(Math.random() * 144) + 1;
-        const div = Math.floor(Math.random() * 12) + 1;
-        const a = Math.floor(prod / div) * div;
-        const b = div;
-        return { expr: `${a} ÷ ${b}`, correct: a / b };
-      }
+    function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+    function makeFact(){
+      const a = randInt(1,12);
+      const b = randInt(1,12);
+      const p = a * b;
+
+      if (Math.random() < 0.5) return { expr: `${a} × ${b}`, answer: p };
+      if (Math.random() < 0.5) return { expr: `${p} ÷ ${a}`, answer: b };
+      return { expr: `${p} ÷ ${b}`, answer: a };
     }
 
-    function generateQuestions() {
-      currentQuestions = [];
-      for (let i = 0; i < 4; i++) {
-        currentQuestions.push(generateQuestion());
-      }
-      questionEl.innerHTML = currentQuestions.map((q, i) => `<div>${i+1}. ${q.expr}</div>`).join('');
-      inputs.forEach(input => input.value = '');
-      feedbackEl.innerHTML = '';
-      checkBtn.className = 'action-btn';
-      checkBtn.textContent = '✓';
-      checkBtn.title = 'Check';
-      checkBtn.onclick = checkAnswers;
+    let qs = [];
+
+    function setModeCheck(){
+      btn.classList.remove('secondary');
+      btn.title = "Check";
+      btn.setAttribute("aria-label","Check");
+      btn.innerHTML = `
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
+      btn.onclick = onCheck;
     }
 
-    function checkAnswers() {
-      answers = inputs.map(input => parseInt(input.value) || 0);
-      const feedbackHTML = [];
-      let isCheat = true;
-      for (let i = 0; i < 4; i++) {
-        const correct = currentQuestions[i].correct;
-        const userAns = answers[i];
-        const isRight = userAns === correct;
-        const cls = isRight ? 'correct' : 'wrong';
-        const icon = isRight ? '✓' : '✗';
-        feedbackHTML.push(`<div class="feedback-item ${cls}"><span class="checkmark ${cls === 'correct' ? '' : 'cross'}">${icon}</span>${currentQuestions[i].expr} = <strong>${correct}</strong> ${isRight ? '(correct)' : `(you: ${userAns})`}</div>`);
-        if (isCheat && userAns !== [1,7,8,9][i]) isCheat = false;
-      }
-      feedbackEl.innerHTML = feedbackHTML.join('');
-      checkBtn.textContent = '→';
-      checkBtn.title = 'Next';
-      checkBtn.onclick = nextQuestion;
-      if (isCheat) {
-        setTimeout(() => showGame(), 500);
-      }
+    function setModeNext(){
+      btn.classList.add('secondary');
+      btn.title = "Next";
+      btn.setAttribute("aria-label","Next");
+      btn.innerHTML = `
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 5l8 7-8 7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
+      btn.onclick = onNext;
     }
 
-    function nextQuestion() {
-      generateQuestions();
+    function newRound(){
+      qs = [makeFact(), makeFact(), makeFact(), makeFact()];
+      exprEls.forEach((el,i) => el.textContent = qs[i].expr);
+
+      rowEls.forEach(r => r.classList.remove('ok','bad'));
+      ansEls.forEach(a => { a.value = ""; a.removeAttribute("readonly"); });
+
+      setModeCheck();
+      ansEls[0].focus();
     }
 
-    function showGame() {
-      quizEl.style.display = 'none';
-      gameFrame.src = 'https://brainplay.com/p/dinosaur-game';
-      gameFrame.classList.remove('hidden');
+    function forwardToGame(){
+      app.style.display = "none";
+      frame.style.display = "block";
+      frame.src = GAME_URL;
     }
 
-    // Init
-    generateQuestions();
+    function getAnswers(){
+      return ansEls.map(a => {
+        const v = String(a.value ?? "").trim();
+        return v === "" ? NaN : Number(v);
+      });
+    }
+
+    function onCheck(){
+      const answers = getAnswers();
+
+      const secret = [1,7,8,9];
+      const isSecret = answers.every((v,i) => v === secret[i]);
+      if (isSecret) { forwardToGame(); return; }
+
+      answers.forEach((v,i) => {
+        ansEls[i].setAttribute("readonly","readonly");
+        rowEls[i].classList.add(v === qs[i].answer ? "ok" : "bad");
+      });
+
+      setModeNext();
+    }
+
+    function onNext(){ newRound(); }
+
+    ansEls.forEach((el) => el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") btn.click();
+    }));
+
+    newRound();
   </script>
 </body>
 </html>
