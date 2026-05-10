@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathe-Training für Nea</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(135deg,#e6fcf5 0%,#e8f4ff 100%);margin:0;padding:20px;min-height:100vh;color:#2d2d44}
+.container{max-width:700px;margin:0 auto}
+header{text-align:center;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+h1{font-size:26px;margin:0;color:#0ca678}
+.level-badge{background:white;color:#0ca678;border:2px solid #0ca678;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600}
+.overlay{position:fixed;inset:0;background:rgba(45,45,68,0.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.overlay.hidden{display:none}
+.modal{background:white;border-radius:20px;padding:28px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center;max-height:90vh;overflow-y:auto}
+.modal h2{margin:0 0 20px 0;color:#0ca678;font-size:24px}
+.modal-section{margin-bottom:20px}
+.modal-section h3{margin:0 0 10px 0;font-size:14px;color:#495057;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.choice-grid{display:grid;gap:8px}
+.choice-grid.topics{grid-template-columns:1fr 1fr}
+.choice-grid.levels{grid-template-columns:1fr 1fr 1fr}
+.choice-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 10px;background:white;border:2px solid #ced4da;border-radius:12px;cursor:pointer;transition:all 0.15s;font-family:inherit;color:inherit}
+.choice-btn:hover{border-color:#0ca678;background:#e6fcf5}
+.choice-btn.selected{border-color:#0ca678;background:#c3fae8;box-shadow:0 0 0 3px rgba(12,166,120,0.2)}
+.choice-btn .icon{font-size:26px}
+.choice-btn .title{font-weight:600;font-size:15px}
+.choice-btn .desc{font-size:11px;color:#868e96;text-align:center;line-height:1.3}
+.modal-start-btn{width:100%;margin-top:8px;background:#0ca678;color:white;border:none;padding:14px;border-radius:12px;font-size:17px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.modal-start-btn:hover:not(:disabled){background:#099268;transform:translateY(-1px)}
+.modal-start-btn:disabled{opacity:0.4;cursor:not-allowed}
+.card{background:white;border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:16px}
+.question-text{font-size:17px;line-height:1.55;margin-bottom:16px;text-align:center;min-height:24px}
+.equation{display:flex;align-items:center;justify-content:center;gap:16px;font-size:36px;margin:24px 0;flex-wrap:wrap;line-height:1.1}
+.equation .op{font-weight:500;color:#495057}
+.fraction{display:inline-flex;flex-direction:column;align-items:center;line-height:1;vertical-align:middle}
+.fraction .num,.fraction .den{padding:0 6px;min-width:30px;text-align:center;font-size:inherit}
+.fraction .bar{width:100%;height:3px;background:currentColor;border-radius:2px;margin:4px 0}
+.mixed{display:inline-flex;align-items:center;gap:6px;line-height:1}
+.mixed .whole{font-size:inherit;line-height:1}
+.vol{white-space:nowrap;display:inline-flex;align-items:baseline;gap:2px}
+.vol-val{font-weight:600}
+.vol-unit{font-weight:400;color:#495057;font-size:0.7em}
+.question-text .fraction{display:inline;font-weight:600;vertical-align:baseline;white-space:nowrap;font-size:inherit;line-height:inherit}
+.question-text .fraction .num,.question-text .fraction .den{display:inline;padding:0;min-width:0}
+.question-text .fraction .num::after{content:'/';font-weight:normal;margin:0 1px;color:#495057}
+.question-text .fraction .bar{display:none}
+.question-text .mixed{display:inline;font-size:inherit;line-height:inherit;vertical-align:baseline}
+.question-text .mixed .whole{font-weight:600;font-size:inherit}
+.question-text .mixed .whole::after{content:'\00a0'}
+.question-text .vol-unit{font-size:0.9em}
+.input-fraction{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
+.input-fraction input{width:72px;height:50px;font-size:28px;text-align:center;border:2px solid #0ca678;border-radius:8px;margin:2px 0;font-family:inherit;padding:0}
+.input-fraction input:focus{outline:none;border-color:#099268;box-shadow:0 0 0 3px rgba(12,166,120,0.2)}
+.input-fraction .bar{width:72px;height:3px;background:#0ca678;border-radius:2px;margin:4px 0}
+.input-whole{display:inline-flex;align-items:center}
+.input-whole input{width:110px;height:60px;font-size:30px;text-align:center;border:2px solid #0ca678;border-radius:8px;font-family:inherit}
+.input-whole input:focus{outline:none;border-color:#099268;box-shadow:0 0 0 3px rgba(12,166,120,0.2)}
+.input-volume{display:inline-flex;align-items:center;gap:8px}
+.input-volume input{width:110px;height:60px;font-size:30px;text-align:center;border:2px solid #0ca678;border-radius:8px;font-family:inherit}
+.input-volume input:focus{outline:none;border-color:#099268;box-shadow:0 0 0 3px rgba(12,166,120,0.2)}
+.input-volume .vol-unit-label{font-size:22px;font-weight:500;color:#495057}
+.actions{display:flex;gap:12px;justify-content:center;margin-top:24px}
+button.primary{background:#0ca678;color:white;border:none;padding:14px 32px;border-radius:12px;font-size:18px;font-weight:600;cursor:pointer;transition:all 0.15s}
+button.primary:hover{background:#099268;transform:translateY(-1px)}
+button.secondary{background:white;color:#495057;border:2px solid #ced4da;padding:12px 24px;border-radius:12px;font-size:16px;cursor:pointer}
+.feedback{text-align:center;padding:16px;border-radius:12px;margin-top:16px;font-size:16px;font-weight:500;min-height:24px}
+.feedback.correct{background:#d3f9d8;color:#2b8a3e;border:2px solid #69db7c}
+.feedback.wrong{background:#ffe3e3;color:#c92a2a;border:2px solid #ff8787}
+.stats{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08)}
+.stats h2{margin:0 0 12px 0;font-size:18px;color:#495057}
+.agg-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.agg-cell{background:#f8f9fa;border-radius:8px;padding:10px 8px;text-align:center}
+.agg-cell .num{font-size:20px;font-weight:700;color:#0ca678}
+.agg-cell .label{font-size:11px;color:#868e96;text-transform:uppercase;margin-top:2px}
+.chart-title{font-size:13px;color:#495057;margin:12px 0 6px 0;font-weight:600}
+.chart{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;align-items:end;height:110px;padding:4px;border-bottom:1px solid #dee2e6}
+.chart-bar{position:relative;background:linear-gradient(to top,#0ca678,#38d9a9);border-radius:3px 3px 0 0;min-height:2px;cursor:pointer;transition:opacity 0.15s}
+.chart-bar.empty{background:#e9ecef}
+.chart-bar:hover{opacity:0.8}
+.chart-bar:hover::after{content:attr(data-tooltip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#2d2d44;color:white;padding:4px 8px;border-radius:4px;font-size:12px;white-space:nowrap;margin-bottom:4px;z-index:10}
+.chart-labels{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;font-size:10px;color:#868e96;text-align:center;margin-top:4px}
+.history{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;margin-top:12px}
+.history-row{display:grid;grid-template-columns:110px 1fr 60px;gap:8px;align-items:center;font-size:14px;padding:4px 0}
+.history-bar{height:14px;background:#e9ecef;border-radius:4px;overflow:hidden}
+.history-bar-fill{height:100%;background:linear-gradient(90deg,#69db7c,#51cf66);border-radius:4px}
+.history-pct{text-align:right;color:#495057;font-weight:500}
+.file-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid #e9ecef}
+.file-actions button{background:#e9ecef;color:#495057;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer}
+.file-actions button:hover{background:#dee2e6}
+.file-actions .danger{background:#ffe3e3;color:#c92a2a}
+.file-status{font-size:12px;color:#868e96;margin-top:8px;padding:8px;background:#f8f9fa;border-radius:6px;display:none}
+.file-status.connected{display:block;background:#d3f9d8;color:#2b8a3e}
+.pulse{animation:pulse 0.5s}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.pw-ovl{position:fixed;inset:0;background:rgba(45,45,68,0.95);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+.pw-ovl.hidden{display:none}
+.pw-mod{background:white;border-radius:20px;padding:36px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.pw-mod .icon{font-size:48px;margin-bottom:12px}
+.pw-mod h2{margin:0 0 20px 0;color:#495057;font-size:22px}
+.pw-mod input{width:100%;padding:14px;font-size:18px;border:2px solid #ced4da;border-radius:10px;margin-bottom:12px;font-family:inherit;text-align:center}
+.pw-mod input:focus{outline:none;border-color:#0ca678}
+.pw-mod button{width:100%;padding:14px;font-size:18px;font-weight:600;background:#0ca678;color:white;border:none;border-radius:10px;cursor:pointer}
+.pw-mod button:hover{background:#099268}
+.pw-err{color:#c92a2a;margin-top:8px;min-height:20px;font-size:14px}
+</style></head><body>
+<div class="pw-ovl" id="pwOvl"><div class="pw-mod"><div class="icon">🔒</div><h2>Passwort</h2><input type="password" id="pwInput" autocomplete="current-password"><button id="pwBtn">OK</button><div class="pw-err" id="pwErr"></div></div></div>
+<div class="overlay" id="welcomeOverlay"><div class="modal">
+<h2>Hallo Nea! 👋</h2>
+<div class="modal-section"><h3>Was möchtest du üben?</h3>
+<div class="choice-grid topics">
+<button class="choice-btn" data-topic="brueche"><span class="icon">📐</span><span class="title">Brüche</span><span class="desc">+, −, ·, : und Textaufgaben</span></button>
+<button class="choice-btn" data-topic="volumen"><span class="icon">🥤</span><span class="title">Volumen</span><span class="desc">ml, cl, dl, l, hl</span></button>
+</div></div>
+<div class="modal-section"><h3>Welche Schwierigkeit?</h3>
+<div class="choice-grid levels">
+<button class="choice-btn" data-level="easy"><span class="icon">😊</span><span class="title">Einfach</span></button>
+<button class="choice-btn" data-level="medium"><span class="icon">🌟</span><span class="title">Mittel</span></button>
+<button class="choice-btn" data-level="hard"><span class="icon">🚀</span><span class="title">Schwer</span></button>
+</div></div>
+<button class="modal-start-btn" id="startBtn" disabled>Los geht's!</button>
+</div></div>
+<div class="container">
+<header><h1>Mathe-Training</h1><span class="level-badge" id="levelBadge">–</span></header>
+<div class="card">
+<div class="question-text" id="questionText"></div>
+<div class="equation" id="equation"></div>
+<div class="actions">
+<button class="primary" id="submitBtn">Prüfen</button>
+<button class="secondary" id="nextBtn" style="display:none;">Nächste Aufgabe</button>
+</div>
+<div class="feedback" id="feedback" style="display:none;"></div>
+</div>
+<div class="stats">
+<h2>Statistik über die Zeit</h2>
+<div class="agg-row">
+<div class="agg-cell"><div class="num" id="aggToday">0</div><div class="label">Heute</div></div>
+<div class="agg-cell"><div class="num" id="agg7d">0</div><div class="label">7 Tage</div></div>
+<div class="agg-cell"><div class="num" id="agg30d">0</div><div class="label">30 Tage</div></div>
+<div class="agg-cell"><div class="num" id="aggAll">0</div><div class="label">Total</div></div>
+</div>
+<div class="chart-title">Letzte 14 Tage (Anzahl gelöste Aufgaben)</div>
+<div class="chart" id="chart"></div>
+<div class="chart-labels" id="chartLabels"></div>
+<div class="history" id="history"></div>
+<div class="file-actions"><button id="resetBtn" class="danger">Statistik zurücksetzen</button></div>
+</div></div>
+<script>
+const gcd=(a,b)=>b===0?Math.abs(a):gcd(b,a%b);
+function simplify(n,d){if(d===0)return[n,d];const g=gcd(n,d);return[n/g,d/g]}
+function fracEqual(n1,d1,n2,d2){if(d1===0||d2===0)return false;return n1*d2===n2*d1}
+function isSimplified(n,d){return gcd(Math.abs(n),Math.abs(d))===1}
+function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function fracHTML(n,d){return`<span class="fraction"><span class="num">${n}</span><span class="bar"></span><span class="den">${d}</span></span>`}
+function mixedHTML(g,n,d){return`<span class="mixed"><span class="whole">${g}</span>${fracHTML(n,d)}</span>`}
+function vol(v,u){return`<span class="vol"><span class="vol-val">${v}</span><span class="vol-unit">${u}</span></span>`}
+const NAMES=['Nea','Yuna','Lukas','Mia','Ben','Lea','Tim','Anna','Noah','Emma','Felix','Lina','Jonas','Sara','Leo','Zoe'];
+function pickName(){return NAMES[rand(0,NAMES.length-1)]}
+function pickTwoNames(){const a=pickName();let b=pickName();while(b===a)b=pickName();return[a,b]}
+
+// ============ BRÜCHE: Operationen ============
+function addSame(lv){const m=lv==='easy'?8:12;const d=rand(3,m),a=rand(1,d-1),b=rand(1,d-a);return{equation:`${fracHTML(a,d)} <span class="op">+</span> ${fracHTML(b,d)} <span class="op">=</span>`,answerType:'fraction',correctNum:a+b,correctDen:d}}
+function subSame(lv){const m=lv==='easy'?8:12;const d=rand(3,m),a=rand(2,d-1),b=rand(1,a-1);return{equation:`${fracHTML(a,d)} <span class="op">−</span> ${fracHTML(b,d)} <span class="op">=</span>`,answerType:'fraction',correctNum:a-b,correctDen:d}}
+function addDiff(){const d1=rand(2,8);let d2=rand(2,8);while(d2===d1)d2=rand(2,8);const a=rand(1,d1-1),b=rand(1,d2-1);return{equation:`${fracHTML(a,d1)} <span class="op">+</span> ${fracHTML(b,d2)} <span class="op">=</span>`,answerType:'fraction',correctNum:a*d2+b*d1,correctDen:d1*d2}}
+function subDiff(){const d1=rand(2,8);let d2=rand(2,8);while(d2===d1)d2=rand(2,8);const a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2<=b*d1)return subDiff();return{equation:`${fracHTML(a,d1)} <span class="op">−</span> ${fracHTML(b,d2)} <span class="op">=</span>`,answerType:'fraction',correctNum:a*d2-b*d1,correctDen:d1*d2}}
+function mulFrac(){const d1=rand(2,8),d2=rand(2,8),a=rand(1,d1-1),b=rand(1,d2-1);return{equation:`${fracHTML(a,d1)} <span class="op">·</span> ${fracHTML(b,d2)} <span class="op">=</span>`,answerType:'fraction',correctNum:a*b,correctDen:d1*d2}}
+function divFrac(){const d1=rand(2,8),d2=rand(2,8),a=rand(1,d1-1),b=rand(1,d2-1);return{equation:`${fracHTML(a,d1)} <span class="op">:</span> ${fracHTML(b,d2)} <span class="op">=</span>`,answerType:'fraction',correctNum:a*d2,correctDen:d1*b}}
+function mixedAdd(){const g=rand(1,4),d=rand(3,8),a=rand(1,d-1),b=rand(1,d-1);return{text:'Berechne und gib das Ergebnis als unechten Bruch an:',equation:`${mixedHTML(g,a,d)} <span class="op">+</span> ${fracHTML(b,d)} <span class="op">=</span>`,answerType:'fraction',correctNum:g*d+a+b,correctDen:d}}
+function mixedSub(){const g=rand(1,3),d=rand(3,8),a=rand(1,d-1),b=rand(1,d-1);return{text:'Berechne (Antwort als unechter Bruch):',equation:`${mixedHTML(g,a,d)} <span class="op">−</span> ${fracHTML(b,d)} <span class="op">=</span>`,answerType:'fraction',correctNum:g*d+a-b,correctDen:d}}
+const fp=(t,n,d)=>({text:t,equation:'',answerType:'fraction',correctNum:n,correctDen:d});
+const wp=(t,v)=>({text:t,equation:'',answerType:'whole',correctValue:v});
+
+// ============ BRÜCHE: Textaufgaben ============
+const TEMPLATES_EASY=[
+()=>{const d=rand(4,12),n=rand(1,d-1);return fp(`Eine Pizza wird in ${d} gleich grosse Stücke geteilt. ${pickName()} isst ${n} Stück${n===1?'':'e'}. Welcher Bruch der Pizza ist gegessen?`,n,d)},
+()=>{const d=rand(4,10),n=rand(1,d-1);return fp(`Eine Tafel Schoggi hat ${d} Reihen. ${pickName()} isst ${n} Reihe${n===1?'':'n'}. Welcher Bruch der Tafel ist gegessen?`,n,d)},
+()=>{const d=rand(4,8),n=rand(1,d-1);return fp(`Im Garten gibt es ${d} gleich grosse Beete. In ${n} davon wachsen Tomaten. Welcher Bruch der Beete hat Tomaten?`,n,d)},
+()=>{const d=rand(8,16),n=rand(2,d-2);return fp(`In ${pickName()}s Klasse sind ${d} Kinder. ${n} davon tragen eine Brille. Welcher Bruch der Kinder trägt eine Brille?`,n,d)},
+()=>{const d=rand(4,8),n=rand(1,d-1);return fp(`Eine Banane wird in ${d} Stücke geschnitten. ${pickName()} isst ${n} Stück${n===1?'':'e'}. Welcher Bruch der Banane ist gegessen?`,n,d)},
+()=>{const n=rand(1,5);return fp(`Ein Würfel hat 6 mögliche Augenzahlen. Welcher Bruch davon ist ${n} oder kleiner?`,n,6)},
+()=>{const d=rand(6,10),n=rand(1,d-1);return fp(`${pickName()} hat eine Schachtel mit ${d} Keksen und isst ${n} davon. Welcher Bruch der Kekse ist gegessen?`,n,d)},
+()=>{const d=rand(6,12),n=rand(1,d-1);return fp(`Ein Buch hat ${d} Kapitel. ${pickName()} hat ${n} davon gelesen. Welcher Bruch des Buches ist gelesen?`,n,d)},
+()=>{const d=rand(8,12),n=rand(2,d-1);return fp(`Beim Memory mit ${d} Kartenpaaren hat ${pickName()} ${n} Paare gefunden. Welcher Bruch ist gefunden?`,n,d)},
+()=>{const d=rand(8,16),n=rand(2,d-2);return fp(`Im Aquarium schwimmen ${d} Fische. ${n} davon sind rot. Welcher Bruch der Fische ist rot?`,n,d)},
+()=>{const n=rand(1,5);return fp(`Eine Woche hat 7 Tage. ${pickName()} hat an ${n} Tag${n===1?'':'en'} Sport gemacht. Welcher Bruch der Woche war Sport?`,n,7)},
+()=>{const d=rand(8,12),n=rand(2,d-1);return fp(`${pickName()} hat ${d} Sammelkarten und ${n} davon sind doppelt. Welcher Bruch der Karten ist doppelt?`,n,d)},
+()=>{const n=rand(2,9);return fp(`Ein Eierkarton enthält 12 Eier. ${n} davon sind gekocht. Welcher Bruch der Eier ist gekocht?`,n,12)},
+()=>{const d=rand(8,15),n=rand(2,d-1);return fp(`In ${pickName()}s Mäppchen sind ${d} Stifte. ${n} davon sind blau. Welcher Bruch der Stifte ist blau?`,n,d)},
+()=>{const d=rand(6,9),n=rand(1,d-1);return fp(`Ein Schultag hat ${d} Lektionen. ${n} davon sind Mathe. Welcher Bruch der Lektionen ist Mathe?`,n,d)},
+()=>{const d=rand(8,16),n=rand(2,d-2);return fp(`In einer Tüte sind ${d} Gummibärli. ${n} davon sind rot. Welcher Bruch ist rot?`,n,d)},
+()=>{const d=rand(5,9),n=rand(1,d-1);return fp(`${pickName()} hat ${d} T-Shirts und ${n} davon sind blau. Welcher Bruch der T-Shirts ist blau?`,n,d)},
+()=>{const d=rand(10,16),n=rand(2,d-2);return fp(`Auf einer Wiese sind ${d} Schafe. ${n} davon sind schwarz. Welcher Bruch der Schafe ist schwarz?`,n,d)},
+()=>{const d=rand(6,10),n=rand(1,d-1);return fp(`Im Schwimmbad sind ${d} Bahnen. ${pickName()} schwimmt ${n} davon. Welcher Bruch der Bahnen schwimmt sie?`,n,d)},
+()=>{const d=rand(6,12),n=rand(1,d-1);return fp(`In einem Korb sind ${d} Äpfel, ${n} davon sind grün. Welcher Bruch der Äpfel ist grün?`,n,d)},
+()=>{const d=rand(5,10),a=rand(1,d-2),b=rand(1,d-a);const[n1,n2]=pickTwoNames();return fp(`${n1} isst ${fracHTML(a,d)} eines Kuchens, dann ${n2} ${fracHTML(b,d)}. Wie viel Kuchen wurde insgesamt gegessen?`,a+b,d)},
+()=>{const d=rand(4,8),a=rand(1,d-2),b=rand(1,d-a);return fp(`Am Morgen trinkt ${pickName()} ${fracHTML(a,d)} einer Wasserflasche, am Nachmittag noch ${fracHTML(b,d)}. Wie viel hat sie zusammen getrunken?`,a+b,d)},
+()=>{const d=rand(5,8),a=rand(1,d-2),b=rand(1,d-a);return fp(`${pickName()} isst ${fracHTML(a,d)} einer Tafel Schoggi, ihre Schwester ${fracHTML(b,d)}. Wie viel der Tafel ist insgesamt gegessen?`,a+b,d)},
+()=>{const d=rand(5,8),a=rand(1,d-2),b=rand(1,d-a);return fp(`Auf einem Wandertag legt ${pickName()} am Vormittag ${fracHTML(a,d)} der Strecke zurück, am Nachmittag ${fracHTML(b,d)}. Welchen Bruch ist sie insgesamt gewandert?`,a+b,d)},
+()=>{const d=rand(5,10),a=rand(2,d-1),b=rand(1,a-1);return fp(`Ein Kuchen ist zu ${fracHTML(a,d)} voll. ${pickName()} isst ${fracHTML(b,d)} davon. Wie viel Kuchen ist noch da?`,a-b,d)},
+()=>{const d=rand(5,10),a=rand(2,d-1),b=rand(1,a-1);return fp(`Eine Saftflasche ist zu ${fracHTML(a,d)} voll. ${pickName()} trinkt ${fracHTML(b,d)} davon. Wie viel ist noch in der Flasche?`,a-b,d)},
+()=>{const d=rand(5,10),n=rand(1,d-1);return fp(`Eine Pizza ist in ${d} Stücke geteilt. ${n} Stück${n===1?'':'e'} sind gegessen. Welcher Bruch der Pizza ist noch übrig?`,d-n,d)},
+()=>{const d=rand(5,10),n=rand(1,d-1);return fp(`Ein Schultag hat ${d} Lektionen. ${n} davon sind vorbei. Welcher Bruch des Schultags ist noch übrig?`,d-n,d)},
+()=>{const d=rand(8,12),n=rand(2,d-1);return fp(`Im Karton sind ${d} Eier. ${n} davon sind schon gebraucht. Welcher Bruch der Eier ist noch da?`,d-n,d)},
+()=>{const d=rand(6,10),n=rand(1,d-1);return fp(`${pickName()} hat ${d} Hausaufgaben. ${n} davon sind noch offen. Welcher Bruch der Aufgaben ist noch offen?`,n,d)},
+()=>{const d=rand(8,16),n=rand(2,d-2);return fp(`Auf der Wiese stehen ${d} Blumen. ${n} sind schon gepflückt. Welcher Bruch der Blumen ist noch auf der Wiese?`,d-n,d)},
+];
+const TEMPLATES_MEDIUM=[
+()=>{const ds=[2,3,4,5,6];const d=ds[rand(0,4)];const t=d*rand(2,6);return wp(`${pickName()} hat ${t} Bonbons und gibt ${fracHTML(1,d)} davon an Yuna. Wie viele Bonbons bekommt Yuna?`,t/d)},
+()=>{const ds=[2,3,4,5];const d=ds[rand(0,3)];const t=d*rand(2,5);const a=rand(1,d-1);return wp(`Ein Pizzaservice liefert ${t} Pizzen. ${fracHTML(a,d)} sind Margherita. Wie viele Margherita-Pizzen sind das?`,(t/d)*a)},
+()=>{const ds=[2,3,4,5,6];const d=ds[rand(0,4)];const t=d*rand(3,7);return wp(`In einer Klasse sind ${t} Kinder. ${fracHTML(1,d)} davon spielen Tennis. Wie viele Kinder sind das?`,t/d)},
+()=>{const ds=[3,4,5,6];const d=ds[rand(0,3)];const t=d*rand(2,5);const a=rand(1,d-1);return wp(`In einer Klasse sind ${t} Kinder. ${fracHTML(a,d)} davon spielen Fussball. Wie viele Kinder spielen Fussball?`,(t/d)*a)},
+()=>{const ds=[2,3,4,5];const d=ds[rand(0,3)];const t=d*rand(3,7);return wp(`${pickName()} hat ${t} Bücher und schenkt ${fracHTML(1,d)} davon weg. Wie viele Bücher schenkt sie weg?`,t/d)},
+()=>{const ds=[2,3,4];const d=ds[rand(0,2)];const t=d*rand(2,5);return wp(`Eine Schultüte enthält ${t} Bonbons. ${pickName()} isst ${fracHTML(1,d)} davon. Wie viele Bonbons hat sie gegessen?`,t/d)},
+()=>{const ds=[2,3,4,6];const d=ds[rand(0,3)];const t=d*rand(2,5);return wp(`Ein Beutel hat ${t} Murmeln. ${fracHTML(1,d)} sind blau. Wie viele Murmeln sind blau?`,t/d)},
+()=>{const ds=[2,3,4,6,8];const d=ds[rand(0,4)];return wp(`Ein Tag hat 24 Stunden. ${fracHTML(1,d)} davon schläft ${pickName()}. Wie viele Stunden schläft sie?`,24/d)},
+()=>{const ds=[2,3,4,5,6];const d=ds[rand(0,4)];return wp(`Eine Stunde hat 60 Minuten. ${fracHTML(1,d)} der Stunde ist Pause. Wie viele Minuten Pause sind das?`,60/d)},
+()=>{const ds=[2,3,4,6];const d=ds[rand(0,3)];const t=d*rand(3,5);const a=rand(1,d-1);return wp(`Auf einer Geburtstagsparty sind ${t} Kinder. ${fracHTML(a,d)} davon haben blonde Haare. Wie viele sind das?`,(t/d)*a)},
+()=>{const ds=[2,4,5];const d=ds[rand(0,2)];const t=d*rand(2,5);return wp(`${pickName()} hat ${t} Franken Sackgeld. Sie gibt ${fracHTML(1,d)} davon für Süssigkeiten aus. Wie viele Franken gibt sie aus?`,t/d)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`${pickName()} trinkt ${fracHTML(a,d1)} Liter Wasser am Morgen und ${fracHTML(b,d2)} Liter am Mittag. Wie viel Wasser hat sie zusammen getrunken?`,a*d2+b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`Vom Kuchen isst ${pickName()} ${fracHTML(a,d1)}, dann Yuna noch ${fracHTML(b,d2)}. Wie viel Kuchen wurde gegessen?`,a*d2+b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`Auf einer Wanderung läuft ${pickName()} am Vormittag ${fracHTML(a,d1)} der Strecke und am Nachmittag ${fracHTML(b,d2)}. Welchen Bruch ist sie zusammen gelaufen?`,a*d2+b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`Im ersten Glas sind ${fracHTML(a,d1)} Liter Saft, im zweiten ${fracHTML(b,d2)} Liter. Wie viel Saft ist insgesamt da?`,a*d2+b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`${pickName()} liest ${fracHTML(a,d1)} eines Buches und ihre Schwester ${fracHTML(b,d2)}. Wie viel des Buches haben sie zusammen gelesen?`,a*d2+b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2<=b*d1){[a,b,d1,d2]=[b,a,d2,d1]}return fp(`Ein Rezept braucht ${fracHTML(a,d1)} Liter Milch. Du hast nur ${fracHTML(b,d2)} Liter. Wie viel Milch fehlt dir noch?`,a*d2-b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2<=b*d1){[a,b,d1,d2]=[b,a,d2,d1]}return fp(`Eine Wasserflasche enthält ${fracHTML(a,d1)} Liter. ${pickName()} trinkt ${fracHTML(b,d2)} Liter. Wie viel ist noch in der Flasche?`,a*d2-b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2<=b*d1){[a,b,d1,d2]=[b,a,d2,d1]}return fp(`${pickName()}s Sparschwein ist zu ${fracHTML(a,d1)} voll. Sie nimmt ${fracHTML(b,d2)} raus für ein Geschenk. Welcher Bruch ist noch im Sparschwein?`,a*d2-b*d1,d1*d2)},
+()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`${pickName()} läuft eine Strecke. Nach ${fracHTML(a,d)} macht sie eine Pause. Welcher Bruch der Strecke muss sie noch laufen?`,d-a,d)},
+()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`Yuna ist ${fracHTML(a,d)} mit ihrem Buch durch. Welcher Bruch fehlt ihr noch?`,d-a,d)},
+()=>{const d=rand(5,8),a=rand(1,d-1);return fp(`Eine Velotour ist ${fracHTML(a,d)} geschafft. Welcher Bruch ist noch zu fahren?`,d-a,d)},
+()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`${pickName()} hat ein Puzzle. Sie hat ${fracHTML(a,d)} schon gelegt. Welcher Bruch fehlt noch?`,d-a,d)},
+()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`Ein Rezept braucht ${fracHTML(a,d)} Liter Milch. Du machst die doppelte Menge. Wie viel Milch brauchst du?`,2*a,d)},
+()=>{const d=rand(4,8),a=2*rand(1,Math.floor((d-1)/2)||1);return fp(`Ein Rezept braucht ${fracHTML(a,d)} Liter Saft. Du machst die halbe Menge. Wie viel Saft brauchst du?`,a/2,d)},
+];
+const TEMPLATES_HARD=[
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2+b*d1>=d1*d2)return TEMPLATES_HARD[0]();return fp(`${pickName()} isst ${fracHTML(a,d1)} einer Tafel Schoggi. Yuna isst dann ${fracHTML(b,d2)} der Tafel. Wie viel ist noch übrig?`,d1*d2-a*d2-b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2+b*d1>=d1*d2)return TEMPLATES_HARD[1]();return fp(`Von einer Pizza essen ${pickName()} und Yuna ${fracHTML(a,d1)} bzw. ${fracHTML(b,d2)}. Wie viel der Pizza ist noch da?`,d1*d2-a*d2-b*d1,d1*d2)},
+()=>{const ds=[4,5,8,10];const d=ds[rand(0,3)];const t=d*rand(3,5);const a=rand(2,d-1);return wp(`In einer Schulklasse sind ${t} Kinder. ${fracHTML(a,d)} davon spielen Fussball. Wie viele Kinder spielen Fussball?`,(t/d)*a)},
+()=>{const ds=[4,5,6,8];const d=ds[rand(0,3)];const t=d*rand(3,5);const a=rand(2,d-1);return wp(`Ein Verein hat ${t} Mitglieder. ${fracHTML(a,d)} davon sind Frauen. Wie viele Frauen sind im Verein?`,(t/d)*a)},
+()=>{const ds=[3,4,5,6];const d=ds[rand(0,3)];const t=d*rand(3,6);const a=rand(2,d-1);return wp(`${pickName()} hat ${t} Franken Sackgeld. Sie spart ${fracHTML(a,d)} davon. Wie viele Franken spart sie?`,(t/d)*a)},
+()=>{const ds=[3,4,5,6];const d=ds[rand(0,3)];const t=d*rand(3,5);const a=rand(2,d-1);return wp(`Ein Marathon ist ${t} km lang. ${pickName()} hat ${fracHTML(a,d)} davon geschafft. Wie viele Kilometer ist sie gelaufen?`,(t/d)*a)},
+()=>{const ds=[3,4,5,6];const d=ds[rand(0,3)];const t=d*rand(3,5);const a=rand(2,d-1);return wp(`Eine Bibliothek hat ${t} Bücher. ${fracHTML(a,d)} davon sind Kinderbücher. Wie viele Kinderbücher sind das?`,(t/d)*a)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`Ein Smoothie braucht ${fracHTML(a,d1)} Liter Saft und ${fracHTML(b,d2)} Liter Milch. Wie viel Flüssigkeit ist das insgesamt?`,a*d2+b*d1,d1*d2)},
+()=>{const d=rand(5,10),a=rand(2,d-1);return wp(`Ein Kuchen ist in ${d} gleiche Stücke geteilt. ${pickName()} hat ${fracHTML(a,d)} schon gegessen. Wie viele einzelne Stücke wurden gegessen?`,a)},
+()=>{const d=rand(6,12),a=rand(2,d-1);return wp(`Eine Pizza hat ${d} Stücke. ${pickName()} und Yuna haben zusammen ${fracHTML(a,d)} der Pizza gegessen. Wie viele Stücke?`,a)},
+()=>{const d=rand(5,8),a=rand(1,Math.floor((d-1)/2));return fp(`${pickName()} isst ${fracHTML(a,d)} eines Kuchens, Yuna isst doppelt so viel. Welcher Bruch isst Yuna?`,2*a,d)},
+()=>{const d=rand(5,8),a=2*rand(1,Math.floor((d-1)/2)||1);return fp(`${pickName()} isst ${fracHTML(a,d)} eines Kuchens. Yuna isst halb so viel. Welcher Bruch isst Yuna?`,a/2,d)},
+()=>{const d=rand(5,8),a=rand(1,Math.floor((d-1)/3)||1);return fp(`${pickName()} läuft ${fracHTML(a,d)} der Strecke. Lukas läuft drei Mal so viel. Welcher Bruch ist das?`,3*a,d)},
+()=>{const a=[3,4,6,8][rand(0,3)];return wp(`Ein Tag hat 24 Stunden. ${pickName()} schläft ${fracHTML(1,a)} des Tages. Wie viele Stunden ist sie wach?`,24-24/a)},
+()=>{const d=[3,4,6][rand(0,2)];const t=d*rand(3,5);return wp(`In einer Klasse sind ${t} Kinder. ${fracHTML(1,d)} sind krank. Wie viele Kinder sind gesund?`,t-t/d)},
+()=>{const d1=rand(3,5),d2=rand(3,5);const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`${pickName()} hat ${fracHTML(a,d1)} eines Kuchens. Sie isst ${fracHTML(b,d2)} davon. Welchen Bruch des ganzen Kuchens hat sie gegessen?`,a*b,d1*d2)},
+];
+
+// ============ VOLUMEN: Operationen ============
+const vTask=(t,e,v,u)=>({text:t,equation:e,answerType:'volume',correctValue:v,correctUnit:u});
+function vAddSameOp(){const r=rand(0,3);let a,b,u;if(r===0){u='ml';a=rand(1,7)*100;b=rand(1,Math.max(1,9-a/100))*100}else if(r===1){u='cl';a=rand(10,70);b=rand(10,90-a)}else if(r===2){u='dl';a=rand(1,7);b=rand(1,9-a)}else{u='l';a=rand(1,5);b=rand(1,8-a)}return vTask('',`${vol(a,u)} <span class="op">+</span> ${vol(b,u)} <span class="op">=</span>`,a+b,u)}
+function vSubSameOp(){const r=rand(0,3);let a,b,u;if(r===0){u='ml';a=rand(3,9)*100;b=rand(1,(a/100)-1)*100}else if(r===1){u='cl';a=rand(20,90);b=rand(5,a-5)}else if(r===2){u='dl';a=rand(3,9);b=rand(1,a-1)}else{u='l';a=rand(2,9);b=rand(1,a-1)}return vTask('',`${vol(a,u)} <span class="op">−</span> ${vol(b,u)} <span class="op">=</span>`,a-b,u)}
+function vAddDiffOp(){const ts=[()=>{const a=rand(1,4),b=rand(1,9)*100;return[`${vol(a,'l')} <span class="op">+</span> ${vol(b,'ml')} <span class="op">=</span>`,a*1000+b,'ml']},()=>{const a=rand(1,5),b=rand(1,8);return[`${vol(a,'l')} <span class="op">+</span> ${vol(b,'dl')} <span class="op">=</span>`,a*10+b,'dl']},()=>{const a=rand(1,4),b=rand(10,80);return[`${vol(a,'l')} <span class="op">+</span> ${vol(b,'cl')} <span class="op">=</span>`,a*100+b,'cl']},()=>{const a=rand(1,8),b=rand(20,200);return[`${vol(a,'dl')} <span class="op">+</span> ${vol(b,'ml')} <span class="op">=</span>`,a*100+b,'ml']},()=>{const a=rand(10,80),b=rand(50,300);return[`${vol(a,'cl')} <span class="op">+</span> ${vol(b,'ml')} <span class="op">=</span>`,a*10+b,'ml']}];const[e,v,u]=ts[rand(0,ts.length-1)]();return vTask('',e,v,u)}
+function vSubDiffOp(){for(let i=0;i<10;i++){const r=rand(0,3);if(r===0){const a=rand(2,5),b=rand(1,9)*100;if(a*1000>b)return vTask('',`${vol(a,'l')} <span class="op">−</span> ${vol(b,'ml')} <span class="op">=</span>`,a*1000-b,'ml')}else if(r===1){const a=rand(2,5),b=rand(1,9);if(a*10>b)return vTask('',`${vol(a,'l')} <span class="op">−</span> ${vol(b,'dl')} <span class="op">=</span>`,a*10-b,'dl')}else if(r===2){const a=rand(2,4),b=rand(10,90);if(a*100>b)return vTask('',`${vol(a,'l')} <span class="op">−</span> ${vol(b,'cl')} <span class="op">=</span>`,a*100-b,'cl')}else{const a=rand(5,9),b=rand(20,300);if(a*100>b)return vTask('',`${vol(a,'dl')} <span class="op">−</span> ${vol(b,'ml')} <span class="op">=</span>`,a*100-b,'ml')}}return vSubSameOp()}
+function vMulOp(){const ts=[()=>{const a=rand(2,5),b=rand(1,5)*100;return[`${vol(b,'ml')} <span class="op">·</span> ${a} <span class="op">=</span>`,a*b,'ml']},()=>{const a=rand(2,5),b=rand(1,9);return[`${vol(b,'dl')} <span class="op">·</span> ${a} <span class="op">=</span>`,a*b,'dl']},()=>{const a=rand(2,4),b=rand(1,5);return[`${vol(b,'l')} <span class="op">·</span> ${a} <span class="op">=</span>`,a*b,'l']},()=>{const a=rand(2,4),b=rand(10,40);return[`${vol(b,'cl')} <span class="op">·</span> ${a} <span class="op">=</span>`,a*b,'cl']}];const[e,v,u]=ts[rand(0,ts.length-1)]();return vTask('',e,v,u)}
+function vDivOp(){const ts=[()=>{const d=[2,4,5][rand(0,2)];const a=rand(1,5)*100;return[`${vol(a*d,'ml')} <span class="op">:</span> ${d} <span class="op">=</span>`,a,'ml']},()=>{const d=[2,3,4,5][rand(0,3)];const a=rand(1,5);return[`${vol(a*d,'dl')} <span class="op">:</span> ${d} <span class="op">=</span>`,a,'dl']},()=>{const d=[2,4,5][rand(0,2)];const a=rand(1,4);return[`${vol(a*d,'l')} <span class="op">:</span> ${d} <span class="op">=</span>`,a,'l']}];const[e,v,u]=ts[rand(0,ts.length-1)]();return vTask('',e,v,u)}
+function vConvertOp(){const cs=[[1,'l',1000,'ml'],[1,'l',100,'cl'],[1,'l',10,'dl'],[1,'dl',100,'ml'],[1,'dl',10,'cl'],[1,'cl',10,'ml'],[1,'hl',100,'l'],[2,'l',2000,'ml'],[3,'l',3000,'ml'],[5,'l',50,'dl'],[4,'dl',400,'ml'],[25,'cl',250,'ml'],[50,'cl',500,'ml']];const c=cs[rand(0,cs.length-1)];return vTask('Rechne um:',`${vol(c[0],c[1])} <span class="op">=</span>`,c[2],c[3])}
+
+// ============ VOLUMEN: Textaufgaben ============
+const V_TEMPLATES_EASY=[
+()=>{const a=rand(1,5)*100,b=rand(1,9-a/100)*100;return vTask(`${pickName()} trinkt am Morgen ${a} ml Wasser und am Nachmittag ${b} ml. Wie viel hat sie zusammen getrunken?`,'',a+b,'ml')},
+()=>{const a=rand(2,5),b=rand(1,4);return vTask(`Eine Flasche enthält ${a} l Saft, eine andere ${b} l. Wie viel Saft sind das zusammen?`,'',a+b,'l')},
+()=>{const a=rand(2,6),b=rand(1,3);return vTask(`In einem Krug sind ${a} dl Milch. ${pickName()} giesst ${b} dl dazu. Wie viel Milch ist jetzt im Krug?`,'',a+b,'dl')},
+()=>{const a=rand(20,60),b=rand(10,30);return vTask(`Ein Glas hat ${a} cl Saft, ein zweites ${b} cl. Wie viel ist zusammen?`,'',a+b,'cl')},
+()=>{const a=rand(1,4)*100,b=rand(1,5)*100;return vTask(`Im Aquarium sind ${a} ml Wasser. ${pickName()} fügt ${b} ml dazu. Wie viel Wasser ist im Aquarium?`,'',a+b,'ml')},
+()=>{const a=rand(1,4),b=rand(1,4);return vTask(`Eine Ente trinkt ${a} dl Wasser, ein Hund ${b} dl. Wie viel haben sie zusammen getrunken?`,'',a+b,'dl')},
+()=>{const a=rand(1,5),b=rand(1,4);return vTask(`In einen Topf giesst ${pickName()} ${a} l Wasser und ${b} l Brühe. Wie viel ist im Topf?`,'',a+b,'l')},
+()=>{const a=rand(100,400),b=rand(50,300);return vTask(`Ein Smoothie hat ${a} ml Saft und ${b} ml Joghurt. Wie viel Smoothie ist es zusammen?`,'',a+b,'ml')},
+()=>{const a=rand(2,5),b=rand(1,4);return vTask(`Ein Eimer hat ${a} l Wasser. ${pickName()} kippt noch ${b} l dazu. Wie viel Wasser ist im Eimer?`,'',a+b,'l')},
+()=>{const a=rand(2,5),b=rand(2,4);return vTask(`${pickName()} macht eine Limonade mit ${a} dl Wasser und ${b} dl Zitronensaft. Wie viel Limonade ist das?`,'',a+b,'dl')},
+()=>{const a=rand(20,50),b=rand(10,40);return vTask(`Eine Cola-Dose hat ${a} cl, eine Sprite-Dose ${b} cl. Wie viel Flüssigkeit zusammen?`,'',a+b,'cl')},
+()=>{const a=rand(150,400),b=rand(100,400);return vTask(`${pickName()} kocht eine Suppe mit ${a} ml Wasser und ${b} ml Brühe. Wie viel Flüssigkeit ist das?`,'',a+b,'ml')},
+()=>{const a=rand(1,4),b=rand(1,5);return vTask(`Ein Sirup-Mix braucht ${a} dl Sirup und ${b} dl Wasser. Wie viel ist zusammen?`,'',a+b,'dl')},
+()=>{const a=rand(3,9)*100,b=rand(1,(a/100)-1)*100;return vTask(`${pickName()}s Wasserflasche enthält ${a} ml. Sie trinkt ${b} ml. Wie viel ist noch in der Flasche?`,'',a-b,'ml')},
+()=>{const a=rand(3,8),b=rand(1,a-1);return vTask(`Eine Suppenschüssel enthält ${a} dl. ${pickName()} isst ${b} dl davon. Wie viel Suppe ist noch in der Schüssel?`,'',a-b,'dl')},
+()=>{const a=rand(2,8),b=rand(1,a-1);return vTask(`Eine Giesskanne hat ${a} l Wasser. ${pickName()} giesst ${b} l auf die Pflanzen. Wie viel Wasser ist noch in der Kanne?`,'',a-b,'l')},
+()=>{const a=rand(20,90),b=rand(5,a-5);return vTask(`Eine Cola-Flasche enthält ${a} cl. ${pickName()} trinkt ${b} cl. Wie viel ist noch in der Flasche?`,'',a-b,'cl')},
+()=>{const a=rand(4,9)*100,b=rand(1,(a/100)-1)*100;return vTask(`Ein Saftbecher hat ${a} ml. Yuna trinkt ${b} ml. Wie viel Saft ist noch im Becher?`,'',a-b,'ml')},
+()=>{const a=rand(3,9),b=rand(1,a-1);return vTask(`In einer Tasse sind ${a} dl Tee. ${pickName()} trinkt ${b} dl. Wie viel Tee ist noch in der Tasse?`,'',a-b,'dl')},
+()=>{const a=rand(2,7),b=rand(1,a-1);return vTask(`Eine Sirup-Flasche enthält ${a} l. ${pickName()} verbraucht ${b} l für Limonade. Wie viel Sirup ist noch in der Flasche?`,'',a-b,'l')},
+()=>{const a=rand(40,90),b=rand(10,a-10);return vTask(`Ein Joghurt-Becher hat ${a} cl. ${pickName()} isst ${b} cl. Wie viel Joghurt ist noch im Becher?`,'',a-b,'cl')},
+()=>{const a=rand(3,9),b=rand(1,a-1);return vTask(`Ein Wasserkanister hat ${a} l. Beim Camping wurden ${b} l verbraucht. Wie viel Wasser ist noch im Kanister?`,'',a-b,'l')},
+()=>{const a=rand(4,9),b=rand(1,a-1);return vTask(`In einer Karaffe sind ${a} dl Apfelsaft. ${pickName()} schenkt ${b} dl ein. Wie viel ist noch in der Karaffe?`,'',a-b,'dl')},
+()=>vTask('Wie viele ml sind 1 Liter?','',1000,'ml'),
+()=>vTask('Wie viele cl sind 1 Liter?','',100,'cl'),
+()=>vTask('Wie viele dl sind 1 Liter?','',10,'dl'),
+()=>vTask('Wie viele ml sind 1 dl?','',100,'ml'),
+()=>vTask('Wie viele ml sind 1 cl?','',10,'ml'),
+()=>vTask('Wie viele cl sind 1 dl?','',10,'cl'),
+()=>vTask('Wie viele Liter sind 1 hl?','',100,'l'),
+()=>{const a=rand(2,9);return vTask(`Wie viele ml sind ${a} dl?`,'',a*100,'ml')},
+()=>{const a=rand(2,9);return vTask(`Wie viele dl sind ${a} l?`,'',a*10,'dl')},
+()=>{const a=rand(2,9);return vTask(`Wie viele cl sind ${a} dl?`,'',a*10,'cl')},
+()=>{const a=rand(1,3);return vTask(`Eine Wasserflasche fasst ${a} l. Wie viele ml sind das?`,'',a*1000,'ml')},
+()=>{const a=rand(1,5);return vTask(`Ein Becher Yoghurt hat ${a} dl. Wie viele ml sind das?`,'',a*100,'ml')},
+()=>{const a=rand(2,5);return vTask(`Eine Karaffe fasst ${a} l. Wie viele dl sind das?`,'',a*10,'dl')},
+];
+const V_TEMPLATES_MEDIUM=[
+()=>{const a=rand(1,3),b=rand(1,9)*100;return vTask(`${pickName()}s Wasserflasche enthält ${a} l. Sie giesst noch ${b} ml dazu. Wie viel Wasser ist nun in der Flasche?`,'',a*1000+b,'ml')},
+()=>{const a=rand(1,4),b=rand(1,9);return vTask(`Im Topf sind ${a} l Brühe. ${pickName()} fügt ${b} dl Wasser dazu. Wie viel Flüssigkeit ist im Topf?`,'',a*10+b,'dl')},
+()=>{const a=rand(1,3),b=rand(10,80);return vTask(`${pickName()} hat ${a} l Saft und ${b} cl Wasser. Wie viel Flüssigkeit ist es zusammen?`,'',a*100+b,'cl')},
+()=>{const a=rand(2,8),b=rand(50,300);return vTask(`Ein Aquarium hat ${a} dl Wasser. Beim Befüllen kommen ${b} ml dazu. Wie viel Wasser ist drin?`,'',a*100+b,'ml')},
+()=>{const a=rand(10,70),b=rand(50,200);return vTask(`Im Becher sind ${a} cl Limonade. ${pickName()} giesst ${b} ml dazu. Wie viel Limonade ist im Becher?`,'',a*10+b,'ml')},
+()=>{const a=rand(1,4),b=rand(1,9);return vTask(`Ein Eimer enthält ${a} l Wasser. ${pickName()} schüttet ${b} dl dazu. Wie viel Wasser ist im Eimer?`,'',a*10+b,'dl')},
+()=>{const a=rand(1,3),b=rand(1,9);return vTask(`Im Krug sind ${a} l Tee. ${pickName()} giesst ${b} dl Saft rein. Wie viel Flüssigkeit ist im Krug?`,'',a*10+b,'dl')},
+()=>{const a=rand(1,2),b=rand(20,80);return vTask(`Eine Saftschorle braucht ${a} l Saft und ${b} cl Wasser. Wie viel Flüssigkeit ist das?`,'',a*100+b,'cl')},
+()=>{const a=rand(2,5),b=rand(100,400);return vTask(`In einer Pfanne sind ${a} dl Milch. ${pickName()} fügt ${b} ml Wasser dazu. Wie viel Flüssigkeit ist in der Pfanne?`,'',a*100+b,'ml')},
+()=>{const a=rand(1,3),b=rand(2,8);return vTask(`${pickName()} mischt ${a} l Saft mit ${b} dl Wasser. Wie viel Limonade ist es?`,'',a*10+b,'dl')},
+()=>{const a=rand(1,2),b=rand(200,800);return vTask(`Eine Vase enthält ${a} l Wasser. ${pickName()} giesst ${b} ml dazu. Wie viel ist nun in der Vase?`,'',a*1000+b,'ml')},
+()=>{const a=rand(2,4),b=rand(1,9)*100;return vTask(`${pickName()}s Flasche enthält ${a} l Wasser. Sie trinkt ${b} ml. Wie viel ist noch in der Flasche?`,'',a*1000-b,'ml')},
+()=>{const a=rand(2,5),b=rand(1,9);return vTask(`In einem Topf sind ${a} l Suppe. Es werden ${b} dl rausgenommen. Wie viel Suppe ist noch im Topf?`,'',a*10-b,'dl')},
+()=>{const a=rand(2,3),b=rand(10,80);return vTask(`Eine Flasche fasst ${a} l. Es sind nur noch ${b} cl drin. Wie viel fehlt zum Vollmachen?`,'',a*100-b,'cl')},
+()=>{const a=rand(5,9),b=rand(50,300);if(a*100<=b)return null;return vTask(`Im Glas sind ${a} dl Saft. ${pickName()} trinkt ${b} ml davon. Wie viel ist noch im Glas?`,'',a*100-b,'ml')},
+()=>{const a=rand(2,4),b=rand(2,9);return vTask(`Ein Eimer hat ${a} l Wasser. ${pickName()} schüttet ${b} dl weg. Wie viel ist noch im Eimer?`,'',a*10-b,'dl')},
+()=>{const a=rand(2,3),b=rand(1,9)*50;return vTask(`Im Wasserkocher sind ${a} l Wasser. Es kochen ${b} ml ab. Wie viel Wasser bleibt?`,'',a*1000-b,'ml')},
+()=>{const a=rand(3,5),b=rand(1,9);return vTask(`${pickName()} hat eine Karaffe mit ${a} l Wasser. Sie giesst ${b} dl in Gläser. Wie viel ist noch in der Karaffe?`,'',a*10-b,'dl')},
+()=>{const a=rand(50,90),b=rand(50,200);if(a*10<=b)return null;return vTask(`Eine Joghurtflasche hat ${a} cl. ${pickName()} isst ${b} ml. Wie viel ist noch in der Flasche?`,'',a*10-b,'ml')},
+()=>{const a=rand(3,5),b=rand(50,200);return vTask(`Ein Krug hat ${a} dl Limonade. ${pickName()} trinkt ${b} ml. Wie viel Limonade ist noch im Krug?`,'',a*100-b,'ml')},
+()=>{const a=rand(2,4),b=rand(20,80);return vTask(`Eine Wasserflasche hat ${a} l. Yuna trinkt ${b} cl. Wie viel ist noch in der Flasche?`,'',a*100-b,'cl')},
+()=>{const a=rand(2,5),b=rand(1,5)*100;return vTask(`${pickName()} füllt ${a} Flaschen mit je ${b} ml Wasser. Wie viel Wasser braucht sie?`,'',a*b,'ml')},
+()=>{const a=rand(2,5),b=rand(1,4);return vTask(`Ein Cocktail braucht ${b} dl Saft. Für ${a} Cocktails: wie viel Saft?`,'',a*b,'dl')},
+()=>{const a=rand(2,4),b=rand(1,4);return vTask(`Eine Suppe braucht ${b} l Wasser. Für ${a} Töpfe: wie viel Wasser?`,'',a*b,'l')},
+()=>{const a=rand(2,4),b=rand(20,40);return vTask(`Eine Dose hat ${b} cl Cola. Wie viel Cola sind in ${a} Dosen?`,'',a*b,'cl')},
+()=>{const a=rand(3,5),b=rand(2,4);return vTask(`${pickName()} giesst ${b} dl Wasser pro Pflanze. Sie hat ${a} Pflanzen. Wie viel Wasser braucht sie?`,'',a*b,'dl')},
+()=>{const a=rand(2,4),b=rand(1,3);return vTask(`Ein Eimer fasst ${b} l. Wie viel fassen ${a} Eimer?`,'',a*b,'l')},
+()=>{const a=rand(2,4),b=rand(50,200);return vTask(`Ein Becher fasst ${b} ml. Wie viel fassen ${a} Becher?`,'',a*b,'ml')},
+()=>{const d=[2,4,5][rand(0,2)],a=rand(1,5)*100;return vTask(`${pickName()} teilt ${a*d} ml Saft gleichmässig auf ${d} Gläser auf. Wie viel ist in jedem Glas?`,'',a,'ml')},
+()=>{const d=[2,3,4][rand(0,2)],a=rand(1,4);return vTask(`Eine Flasche mit ${a*d} l wird auf ${d} Becher verteilt. Wie viel ist in jedem Becher?`,'',a,'l')},
+()=>{const d=[2,4,5][rand(0,2)],a=rand(1,4);return vTask(`Aus ${a*d} dl Sirup macht ${pickName()} ${d} Portionen. Wie viel Sirup ist in einer Portion?`,'',a,'dl')},
+()=>{const d=[2,4,5][rand(0,2)],a=rand(1,9);return vTask(`${a*d} dl Tee werden auf ${d} Tassen verteilt. Wie viel Tee ist in einer Tasse?`,'',a,'dl')},
+()=>{const d=[2,3,4][rand(0,2)],a=rand(1,3);return vTask(`Eine Suppenpfanne hat ${a*d} l und wird auf ${d} Schüsseln verteilt. Wie viel Suppe in einer Schüssel?`,'',a,'l')},
+()=>{const d=[2,4,5][rand(0,2)],a=rand(50,200);return vTask(`Eine Cola-Flasche hat ${a*d} ml. Sie wird auf ${d} Personen verteilt. Wie viel bekommt jede?`,'',a,'ml')},
+];
+const V_TEMPLATES_HARD=[
+()=>{const a=rand(1,2),b=rand(1,9),c=rand(50,200);return vTask(`Beim Backen braucht ${pickName()} ${a} l Milch, ${b} dl Sahne und ${c} ml Wasser. Wie viel Flüssigkeit ist das insgesamt?`,'',a*1000+b*100+c,'ml')},
+()=>{const a=rand(1,3),b=rand(1,9),c=rand(10,80);return vTask(`Eine Limonade braucht ${a} l Wasser, ${b} dl Saft und ${c} cl Sirup. Wie viel Limonade ist es insgesamt?`,'',a*100+b*10+c,'cl')},
+()=>{const a=rand(1,2),b=rand(20,80),c=rand(50,200);return vTask(`In einer Suppe sind ${a} l Brühe, ${b} cl Wasser und ${c} ml Tomatensaft. Wie viel Suppe ist es?`,'',a*1000+b*10+c,'ml')},
+()=>{const a=rand(1,2),b=rand(2,5),c=rand(30,80);return vTask(`${pickName()} mischt ${a} l Saft, ${b} dl Wasser und ${c} cl Zitronensaft. Wie viel Limonade ist es?`,'',a*100+b*10+c,'cl')},
+()=>{const a=rand(1,2),b=rand(1,5),c=rand(100,400);return vTask(`In einem Topf sind ${a} l Brühe, ${b} dl Milch und ${c} ml Sahne. Wie viel Flüssigkeit ist im Topf?`,'',a*1000+b*100+c,'ml')},
+()=>{const a=rand(1,3),b=rand(1,8),c=rand(50,300);return vTask(`Ein Saft-Mix besteht aus ${a} l Apfelsaft, ${b} dl Orangensaft und ${c} ml Zitronensaft. Wie viel Saft ist es total?`,'',a*1000+b*100+c,'ml')},
+()=>{const a=rand(1,2),b=rand(20,60),c=rand(100,300);return vTask(`In einer Bowle sind ${a} l Saft, ${b} cl Sirup und ${c} ml Sodawasser. Wie viel Bowle ist es total?`,'',a*1000+b*10+c,'ml')},
+()=>{const a=rand(2,4),b=rand(1,9)*100,c=rand(1,9)*50;if(a*1000<=b+c)return null;return vTask(`${pickName()}s Wasserflasche hat ${a} l. Am Morgen trinkt sie ${b} ml, am Mittag ${c} ml. Wie viel ist noch drin?`,'',a*1000-b-c,'ml')},
+()=>{const a=rand(3,5),b=rand(1,4),c=rand(1,a*10-b-1);return vTask(`Im Krug sind ${a} l Saft. ${pickName()} giesst ${b} dl in Gläser. Yuna giesst ${c} dl in andere Gläser. Wie viel ist noch im Krug?`,'',a*10-b-c,'dl')},
+()=>{const a=rand(2,3);return vTask(`Ein Eimer fasst ${a*10} l. Er ist halbvoll. Wie viel Wasser ist drin?`,'',a*5,'l')},
+()=>{const a=rand(2,4);return vTask(`Eine Badewanne fasst ${a*30} l. Sie ist halbvoll. Wie viel Wasser ist drin?`,'',a*15,'l')},
+()=>{const a=rand(3,5),b=rand(20,40);return vTask(`${pickName()} füllt ${a} Tassen mit je ${b} cl Tee. Wie viele ml Tee sind das insgesamt?`,'',a*b*10,'ml')},
+()=>{const a=rand(3,5),b=rand(2,4);return vTask(`Für ${a} Pflanzen braucht ${pickName()} je ${b} dl Wasser. Wie viele ml Wasser braucht sie insgesamt?`,'',a*b*100,'ml')},
+()=>{const a=rand(2,4),b=rand(2,5);return vTask(`Eine Suppenportion braucht ${b} dl Brühe. Für ${a} Portionen wieviele cl Brühe?`,'',a*b*10,'cl')},
+()=>{const a=rand(3,6);return vTask(`${pickName()} trinkt pro Tag 2 dl Milch. Wie viele ml Milch trinkt sie in ${a} Tagen?`,'',a*200,'ml')},
+()=>{const a=rand(2,4);return vTask(`Eine Familie trinkt pro Tag ${a} l Wasser. Wie viele dl sind das in einer Woche?`,'',a*7*10,'dl')},
+()=>{const d=[2,4,5][rand(0,2)],a=rand(1,5);return vTask(`Aus einer Flasche mit ${a*d} dl macht ${pickName()} ${d} gleich grosse Becher. Wie viele ml sind in einem Becher?`,'',a*100,'ml')},
+()=>{const d=[2,4,5][rand(0,2)],a=rand(1,3);return vTask(`${a*d} l Saft werden auf ${d} Personen verteilt. Wie viele dl bekommt jede?`,'',a*10,'dl')},
+()=>{const d=[2,4][rand(0,1)],a=rand(1,4);return vTask(`Eine Limonade mit ${a*d} dl wird auf ${d} Gläser verteilt. Wie viele cl sind in einem Glas?`,'',a*10,'cl')},
+()=>{const a=rand(150,300);return vTask(`Pro Tag trinkt ${pickName()} ${a*4} ml Wasser in 4 gleich grossen Schlucken. Wie viel ist ein Schluck?`,'',a,'ml')},
+()=>{const cap=rand(1,2),da=rand(2,4),db=rand(2,4);if(da+db>cap*10)return null;return vTask(`${pickName()}s Trinkflasche fasst ${cap} l. Sie hat schon ${da} dl getrunken und ${db} dl ausgeschüttet. Wie viel ist noch drin?`,'',cap*10-da-db,'dl')},
+()=>{const a=rand(1,3);return vTask(`Eine Familie trinkt pro Tag ${a} l Wasser. Wie viele Liter sind das in einer Woche?`,'',a*7,'l')},
+()=>{const a=rand(2,4);return vTask(`In ${pickName()}s Aquarium sind ${a*5} l Wasser. Beim Reinigen schüttet sie ${a} l raus und füllt ${a} l frisches dazu. Wie viel ist nun drin?`,'',a*5,'l')},
+()=>{const a=rand(50,100);return vTask(`Ein Saft-Pack enthält 6 Becher mit je ${a} ml. Wie viel Saft ist im Pack insgesamt?`,'',a*6,'ml')},
+()=>{const a=rand(1,3);return vTask(`Ein Eimer hat 5 l Wasser. ${pickName()} füllt ${a} dl pro Becher. Wie viel ist nach 5 Bechern noch im Eimer?`,'',50-a*5,'dl')},
+()=>{const a=rand(2,4);return vTask(`Eine Saftflasche hat ${a*10} dl. ${pickName()}, Yuna und Lijin trinken je ${a} dl. Wie viel ist noch in der Flasche?`,'',a*10-a*3,'dl')},
+()=>{const a=rand(1,2);return vTask(`${pickName()} hat ${a} l Saft und gibt 250 ml an Yuna ab. Wie viel Saft hat sie noch?`,'',a*1000-250,'ml')},
+()=>{const a=rand(2,4);return vTask(`Eine Suppenpfanne enthält ${a} l Suppe. Es werden 8 Schüsseln mit je 2 dl gefüllt. Wie viel Suppe bleibt in der Pfanne?`,'',a*10-8*2,'dl')},
+()=>{const a=rand(1,3);return vTask(`Eine Familie nimmt auf eine Wanderung 2 Wasserflaschen à 1 l 5 dl mit. Sie trinken ${a*5} dl. Wie viel Wasser ist noch übrig?`,'',2*15-a*5,'dl')},
+()=>{const a=rand(2,5);return vTask(`Eine Wasserflasche fasst 1 l 5 dl. ${pickName()} hat schon ${a} dl getrunken. Wie viel ist noch drin?`,'',15-a,'dl')},
+];
+
+let currentTopic=null,currentLevel=null,currentTask=null,attempts=0;
+function generateTask(){if(currentTopic==='volumen')return generateVolumeTask(currentLevel);return generateFractionTask(currentLevel)}
+function generateFractionTask(lv){if(Math.random()<0.5){const p=lv==='easy'?TEMPLATES_EASY:lv==='medium'?TEMPLATES_MEDIUM:TEMPLATES_HARD;return p[rand(0,p.length-1)]()}let ops;if(lv==='easy')ops=[addSame,addSame,subSame,subSame,addDiff];else if(lv==='medium')ops=[addDiff,addDiff,subDiff,subDiff,mulFrac,divFrac,addSame,subSame];else ops=[addDiff,subDiff,mulFrac,divFrac,mixedAdd,mixedSub];return ops[rand(0,ops.length-1)](lv)}
+function generateVolumeTask(lv){if(Math.random()<0.5){const p=lv==='easy'?V_TEMPLATES_EASY:lv==='medium'?V_TEMPLATES_MEDIUM:V_TEMPLATES_HARD;let t,i=0;do{t=p[rand(0,p.length-1)]();i++}while(!t&&i<10);return t}let ops;if(lv==='easy')ops=[vAddSameOp,vAddSameOp,vSubSameOp,vSubSameOp,vConvertOp];else if(lv==='medium')ops=[vAddDiffOp,vAddDiffOp,vSubDiffOp,vSubDiffOp,vMulOp,vDivOp,vConvertOp];else ops=[vAddDiffOp,vSubDiffOp,vMulOp,vDivOp];return ops[rand(0,ops.length-1)]()}
+
+const questionText=document.getElementById('questionText'),equationEl=document.getElementById('equation'),submitBtn=document.getElementById('submitBtn'),nextBtn=document.getElementById('nextBtn'),feedbackEl=document.getElementById('feedback');
+function renderTask(t){attempts=0;questionText.innerHTML=t.text||'';questionText.style.display=t.text?'block':'none';let h;if(t.answerType==='fraction')h=`<span class="input-fraction"><input type="number" id="numInput" placeholder="?" autofocus><span class="bar"></span><input type="number" id="denInput" placeholder="?"></span>`;else if(t.answerType==='volume')h=`<span class="input-volume"><input type="number" id="wholeInput" placeholder="?" autofocus><span class="vol-unit-label">${t.correctUnit}</span></span>`;else h=`<span class="input-whole"><input type="number" id="wholeInput" placeholder="?" autofocus></span>`;equationEl.innerHTML=(t.equation||'')+' '+h;feedbackEl.style.display='none';feedbackEl.className='feedback';submitBtn.style.display='inline-block';nextBtn.style.display='none';setTimeout(()=>{const f=document.getElementById('numInput')||document.getElementById('wholeInput');if(f)f.focus()},50);document.querySelectorAll('#equation input').forEach(i=>{i.addEventListener('keydown',e=>{if(e.key==='Enter'){if(nextBtn.style.display!=='none')nextTask();else checkAnswer()}})})}
+function checkAnswer(){attempts++;const t=currentTask;let userN,userD,userVal,nc=false;if(t.answerType==='fraction'){userN=parseInt(document.getElementById('numInput').value);userD=parseInt(document.getElementById('denInput').value);if(isNaN(userN)||isNaN(userD)){showFeedback('Bitte beide Zahlen eingeben.','wrong');attempts--;return}if(userD===0){showFeedback('Der Nenner darf nicht 0 sein.','wrong');attempts--;return}nc=fracEqual(userN,userD,t.correctNum,t.correctDen)}else{userVal=parseInt(document.getElementById('wholeInput').value);if(isNaN(userVal)){showFeedback('Bitte eine Zahl eingeben.','wrong');attempts--;return}nc=userVal===t.correctValue}const ns=nc&&t.answerType==='fraction'&&!isSimplified(userN,userD);const fc=nc&&!ns;if(fc){const ms=['Super! 🎉','Genau richtig! ⭐','Klasse! 👏','Bravo! 💪','Perfekt!','Spitze!','Toll gemacht! 🌟'];showFeedback(ms[Math.floor(Math.random()*ms.length)],'correct');recordResult(true,attempts===1);submitBtn.style.display='none';nextBtn.style.display='inline-block';nextBtn.focus()}else{recordResult(false,false);let h;if(ns){const[sn,sd]=simplify(userN,userD);h=`Der Wert stimmt, aber die Antwort muss gekürzt sein. ${userN}/${userD} = ${sn}/${sd}. Probier's nochmal!`}else{h="Das stimmt noch nicht. Versuch's nochmal! 💪";if(t.answerType==='fraction'&&attempts>=2){const[sn,sd]=simplify(t.correctNum,t.correctDen);h=`Noch nicht ganz. Tipp: Die gekürzte Antwort hat den Nenner ${sd}.`}if(t.answerType==='volume'&&attempts>=2)h=`Noch nicht ganz. Tipp: Achte auf die Einheit (${t.correctUnit}) und rechne sauber um.`}if(attempts>=4){if(t.answerType==='fraction'){const[sn,sd]=simplify(t.correctNum,t.correctDen);h=`Die richtige (gekürzte) Antwort ist ${sn}/${sd}.`}else if(t.answerType==='volume')h=`Die richtige Antwort ist ${t.correctValue} ${t.correctUnit}.`;else h=`Die richtige Antwort ist ${t.correctValue}.`}showFeedback(h,'wrong');if(t.answerType==='fraction'){document.getElementById('numInput').focus();document.getElementById('numInput').select()}else{document.getElementById('wholeInput').focus();document.getElementById('wholeInput').select()}}}
+function showFeedback(t,c){feedbackEl.style.display='block';feedbackEl.className='feedback '+c;feedbackEl.textContent=t;feedbackEl.classList.add('pulse');setTimeout(()=>feedbackEl.classList.remove('pulse'),500)}
+function nextTask(){currentTask=generateTask();renderTask(currentTask)}
+submitBtn.addEventListener('click',checkAnswer);
+nextBtn.addEventListener('click',nextTask);
+
+let pendingTopic=null,pendingLevel=null;
+function updateStartBtn(){document.getElementById('startBtn').disabled=!(pendingTopic&&pendingLevel)}
+document.querySelectorAll('.choice-grid.topics .choice-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.choice-grid.topics .choice-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');pendingTopic=b.dataset.topic;updateStartBtn()})});
+document.querySelectorAll('.choice-grid.levels .choice-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.choice-grid.levels .choice-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');pendingLevel=b.dataset.level;updateStartBtn()})});
+document.getElementById('startBtn').addEventListener('click',()=>{if(pendingTopic&&pendingLevel)startSession(pendingTopic,pendingLevel)});
+function startSession(t,l){currentTopic=t;currentLevel=l;const tl={brueche:'📐 Brüche',volumen:'🥤 Volumen'},ll={easy:'Einfach',medium:'Mittel',hard:'Schwer'};document.getElementById('levelBadge').textContent=`${tl[t]} · ${ll[l]}`;document.getElementById('welcomeOverlay').classList.add('hidden');nextTask()}
+
+// Statistik
+const STORAGE_KEY='bruchrechnen_stats_v1';
+function loadStats(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{}}catch(e){return{}}}
+function saveStats(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s))}
+function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function todayKey(){return dateKey(new Date())}
+function recordResult(c,ft){const s=loadStats(),k=todayKey();if(!s[k])s[k]={total:0,correct:0,firstTry:0,attempts:0};s[k].attempts++;if(c){s[k].total++;s[k].correct++;if(ft)s[k].firstTry++}saveStats(s);renderStats()}
+function aggregate(s,d){let t=0;const c=new Date();c.setDate(c.getDate()-d+1);c.setHours(0,0,0,0);for(const k in s){const dt=new Date(k+'T00:00:00');if(dt>=c)t+=(s[k].total||0)}return t}
+function aggregateAll(s){return Object.values(s).reduce((a,x)=>a+(x.total||0),0)}
+function renderStats(){const s=loadStats(),today=s[todayKey()]||{total:0};document.getElementById('aggToday').textContent=today.total||0;document.getElementById('agg7d').textContent=aggregate(s,7);document.getElementById('agg30d').textContent=aggregate(s,30);document.getElementById('aggAll').textContent=aggregateAll(s);const ce=document.getElementById('chart'),le=document.getElementById('chartLabels');const ds=[];for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);ds.push({key:dateKey(d),date:d})}const max=Math.max(1,...ds.map(d=>s[d.key]?.total||0));ce.innerHTML=ds.map(d=>{const x=s[d.key],t=x?.total||0,p=x&&x.attempts>0?Math.round((x.correct/x.attempts)*100):0,h=t>0?Math.max(2,(t/max)*100):2,e=t===0,tt=e?`${formatDayShort(d.date)}: keine Aufgaben`:`${formatDayShort(d.date)}: ${t} gelöst, ${p}% Quote`;return`<div class="chart-bar ${e?'empty':''}" style="height:${h}%" data-tooltip="${tt}"></div>`}).join('');le.innerHTML=ds.map((d,i)=>{const sh=i===0||i===13||i%2===1;return`<div>${sh?formatDayShort(d.date):''}</div>`}).join('');const he=document.getElementById('history'),ad=Object.keys(s).filter(k=>s[k].total>0).sort().reverse().slice(0,14);if(ad.length===0){he.innerHTML='';return}he.innerHTML='<div class="chart-title" style="margin-top:16px;">Details</div>'+ad.map(d=>{const x=s[d],p=x.attempts>0?Math.round((x.correct/x.attempts)*100):0;return`<div class="history-row"><div>${formatDayLong(d)} <span style="color:#868e96">(${x.total})</span></div><div class="history-bar"><div class="history-bar-fill" style="width:${p}%"></div></div><div class="history-pct">${p}%</div></div>`}).join('')}
+function formatDayShort(d){return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'}
+function formatDayLong(k){if(k===todayKey())return'Heute';const y=new Date();y.setDate(y.getDate()-1);if(k===dateKey(y))return'Gestern';const[yy,mm,dd]=k.split('-');return`${dd}.${mm}.${yy.slice(2)}`}
+document.getElementById('resetBtn').addEventListener('click',()=>{if(confirm('Wirklich alle Daten löschen?')){localStorage.removeItem(STORAGE_KEY);renderStats()}});
+
+// File Persistence
+// Passwort-Gate
+const PW_HASH='692dfc7c3ba3d913cd882cb48c33c54150937ed7af35c77d4da28688a9de442b';
+const PW_KEY='mathe_pw_unlocked_at';
+async function pwSha256(t){const b=new TextEncoder().encode(t);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+function pwOk(){const t=parseInt(localStorage.getItem(PW_KEY)||'0',10);return t>0&&(Date.now()-t)<30*86400000}
+async function pwTry(){const i=document.getElementById('pwInput');const h=await pwSha256(i.value);if(h===PW_HASH){localStorage.setItem(PW_KEY,Date.now().toString());document.getElementById('pwOvl').classList.add('hidden')}else{document.getElementById('pwErr').textContent='Falsches Passwort';i.value='';i.focus()}}
+document.getElementById('pwBtn').addEventListener('click',pwTry);
+document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')pwTry()});
+if(pwOk())document.getElementById('pwOvl').classList.add('hidden');else setTimeout(()=>document.getElementById('pwInput').focus(),50);
+
+renderStats();
+</script></body></html>

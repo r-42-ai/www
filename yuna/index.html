@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathe-Training für Yuna</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #e7f5ff 0%, #d0ebff 100%);
+    margin: 0; padding: 20px; min-height: 100vh; color: #1c2a3a;
+  }
+  .container { max-width: 700px; margin: 0 auto; }
+  header {
+    text-align: center; margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
+  }
+  h1 { font-size: 28px; margin: 0; color: #1c7ed6; }
+  .badge {
+    background: white; color: #1c7ed6; border: 2px solid #1c7ed6;
+    padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;
+  }
+
+  .overlay {
+    position: fixed; inset: 0; background: rgba(28,42,58,0.6);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; padding: 20px;
+  }
+  .overlay.hidden { display: none; }
+  .modal {
+    background: white; border-radius: 20px; padding: 36px;
+    max-width: 460px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    text-align: center;
+  }
+  .modal h2 { margin: 0 0 12px 0; color: #1c7ed6; font-size: 28px; }
+  .modal p { color: #495057; margin: 0 0 24px 0; font-size: 16px; }
+  .modal-start-btn {
+    width: 100%; background: #1c7ed6; color: white; border: none;
+    padding: 18px; border-radius: 14px; font-size: 20px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .modal-start-btn:hover { background: #1971c2; transform: translateY(-1px); }
+
+  .card {
+    background: white; border-radius: 16px; padding: 32px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 16px;
+  }
+  .equation {
+    display: flex; align-items: center; justify-content: center;
+    gap: 18px; font-size: 44px; margin: 24px 0; flex-wrap: wrap;
+    line-height: 1.1; font-weight: 600;
+  }
+  .equation .op { font-weight: 500; color: #495057; }
+  .input-whole { display: inline-flex; align-items: center; }
+  .input-whole input {
+    width: 130px; height: 70px; font-size: 36px; text-align: center;
+    border: 2px solid #1c7ed6; border-radius: 10px; font-family: inherit; font-weight: 600;
+  }
+  .input-whole input:focus {
+    outline: none; border-color: #1971c2;
+    box-shadow: 0 0 0 3px rgba(28, 126, 214, 0.2);
+  }
+  .actions { display: flex; gap: 12px; justify-content: center; margin-top: 24px; }
+  button.primary {
+    background: #1c7ed6; color: white; border: none;
+    padding: 14px 32px; border-radius: 12px; font-size: 18px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  button.primary:hover { background: #1971c2; transform: translateY(-1px); }
+  button.secondary {
+    background: white; color: #495057; border: 2px solid #ced4da;
+    padding: 12px 24px; border-radius: 12px; font-size: 16px; cursor: pointer;
+  }
+  .feedback {
+    text-align: center; padding: 16px; border-radius: 12px; margin-top: 16px;
+    font-size: 18px; font-weight: 500; min-height: 24px;
+  }
+  .feedback.correct { background: #d3f9d8; color: #2b8a3e; border: 2px solid #69db7c; }
+  .feedback.wrong { background: #ffe3e3; color: #c92a2a; border: 2px solid #ff8787; }
+
+  .stats {
+    background: white; border-radius: 16px; padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .stats h2 { margin: 0 0 12px 0; font-size: 18px; color: #495057; }
+  .agg-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  .agg-cell { background: #f8f9fa; border-radius: 8px; padding: 10px 8px; text-align: center; }
+  .agg-cell .num { font-size: 20px; font-weight: 700; color: #1c7ed6; }
+  .agg-cell .label { font-size: 11px; color: #868e96; text-transform: uppercase; margin-top: 2px; }
+  .chart-title { font-size: 13px; color: #495057; margin: 12px 0 6px 0; font-weight: 600; }
+  .chart {
+    display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px;
+    align-items: end; height: 110px; padding: 4px;
+    border-bottom: 1px solid #dee2e6;
+  }
+  .chart-bar {
+    position: relative; background: linear-gradient(to top, #1c7ed6, #74c0fc);
+    border-radius: 3px 3px 0 0; min-height: 2px; cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .chart-bar.empty { background: #e9ecef; }
+  .chart-bar:hover { opacity: 0.8; }
+  .chart-bar:hover::after {
+    content: attr(data-tooltip);
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+    background: #1c2a3a; color: white; padding: 4px 8px; border-radius: 4px;
+    font-size: 12px; white-space: nowrap; margin-bottom: 4px; z-index: 10;
+  }
+  .chart-labels {
+    display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px;
+    font-size: 10px; color: #868e96; text-align: center; margin-top: 4px;
+  }
+  .history { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; margin-top: 12px; }
+  .history-row { display: grid; grid-template-columns: 110px 1fr 60px; gap: 8px; align-items: center; font-size: 14px; padding: 4px 0; }
+  .history-bar { height: 14px; background: #e9ecef; border-radius: 4px; overflow: hidden; }
+  .history-bar-fill { height: 100%; background: linear-gradient(90deg, #69db7c, #51cf66); border-radius: 4px; }
+  .history-pct { text-align: right; color: #495057; font-weight: 500; }
+  .file-actions {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-top: 16px; padding-top: 12px; border-top: 1px solid #e9ecef;
+  }
+  .file-actions button {
+    background: #e9ecef; color: #495057; border: none;
+    padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;
+  }
+  .file-actions button:hover { background: #dee2e6; }
+  .file-actions .danger { background: #ffe3e3; color: #c92a2a; }
+  .file-status {
+    font-size: 12px; color: #868e96; margin-top: 8px; padding: 8px;
+    background: #f8f9fa; border-radius: 6px; display: none;
+  }
+  .file-status.connected { display: block; background: #d3f9d8; color: #2b8a3e; }
+  .pulse { animation: pulse 0.5s; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  .pw-ovl{position:fixed;inset:0;background:rgba(28,42,58,0.95);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+  .pw-ovl.hidden{display:none}
+  .pw-mod{background:white;border-radius:20px;padding:36px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+  .pw-mod .icon{font-size:48px;margin-bottom:12px}
+  .pw-mod h2{margin:0 0 20px 0;color:#495057;font-size:22px}
+  .pw-mod input{width:100%;padding:14px;font-size:18px;border:2px solid #ced4da;border-radius:10px;margin-bottom:12px;font-family:inherit;text-align:center}
+  .pw-mod input:focus{outline:none;border-color:#1c7ed6}
+  .pw-mod button{width:100%;padding:14px;font-size:18px;font-weight:600;background:#1c7ed6;color:white;border:none;border-radius:10px;cursor:pointer}
+  .pw-mod button:hover{background:#1971c2}
+  .pw-err{color:#c92a2a;margin-top:8px;min-height:20px;font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="pw-ovl" id="pwOvl"><div class="pw-mod"><div class="icon">🔒</div><h2>Passwort</h2><input type="password" id="pwInput" autocomplete="current-password"><button id="pwBtn">OK</button><div class="pw-err" id="pwErr"></div></div></div>
+
+<div class="overlay" id="welcomeOverlay">
+  <div class="modal">
+    <h2>Hallo Yuna! 🎉</h2>
+    <p>Bist du bereit für Mathe?</p>
+    <button class="modal-start-btn" id="startBtn">Los geht's! 🚀</button>
+  </div>
+</div>
+
+<div class="container">
+  <header>
+    <h1>Yunas Mathe</h1>
+    <span class="badge">+ − × :</span>
+  </header>
+
+  <div class="card">
+    <div class="equation" id="equation"></div>
+    <div class="actions">
+      <button class="primary" id="submitBtn">Prüfen</button>
+      <button class="secondary" id="nextBtn" style="display:none;">Nächste Aufgabe</button>
+    </div>
+    <div class="feedback" id="feedback" style="display:none;"></div>
+  </div>
+
+  <div class="stats">
+    <h2>Statistik über die Zeit</h2>
+    <div class="agg-row">
+      <div class="agg-cell"><div class="num" id="aggToday">0</div><div class="label">Heute</div></div>
+      <div class="agg-cell"><div class="num" id="agg7d">0</div><div class="label">7 Tage</div></div>
+      <div class="agg-cell"><div class="num" id="agg30d">0</div><div class="label">30 Tage</div></div>
+      <div class="agg-cell"><div class="num" id="aggAll">0</div><div class="label">Total</div></div>
+    </div>
+    <div class="chart-title">Letzte 14 Tage (Anzahl gelöste Aufgaben)</div>
+    <div class="chart" id="chart"></div>
+    <div class="chart-labels" id="chartLabels"></div>
+    <div class="history" id="history"></div>
+    <div class="file-actions"><button id="resetBtn" class="danger">Statistik zurücksetzen</button></div>
+  </div>
+</div>
+
+<script>
+function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+// ============ Aufgabengenerierung ============
+// Algorithmisch: + und - bis 100, · bis 5×4, : als Umkehrung
+function generateTask() {
+  const ops = ['add', 'sub', 'mul', 'div'];
+  // Multiplikation/Division seltener als +/- (für 6-Jährige fokus auf +/-)
+  const weighted = ['add','add','add','sub','sub','sub','mul','div'];
+  const op = weighted[rand(0, weighted.length - 1)];
+  if (op === 'add') {
+    const a = rand(0, 99);
+    const b = rand(0, 100 - a);
+    return { equation: `${a} <span class="op">+</span> ${b} <span class="op">=</span>`, answer: a + b };
+  }
+  if (op === 'sub') {
+    const a = rand(1, 100);
+    const b = rand(0, a);
+    return { equation: `${a} <span class="op">−</span> ${b} <span class="op">=</span>`, answer: a - b };
+  }
+  if (op === 'mul') {
+    // 1..5 × 1..4 (oder Umstellung der Faktoren)
+    const x = rand(1, 5);
+    const y = rand(1, 4);
+    // Reihenfolge zufällig
+    const swap = Math.random() < 0.5;
+    const f1 = swap ? y : x;
+    const f2 = swap ? x : y;
+    return { equation: `${f1} <span class="op">·</span> ${f2} <span class="op">=</span>`, answer: x * y };
+  }
+  // div: c : b = a, wo a*b=c (a∈1..5, b∈1..4)
+  const a = rand(1, 5);
+  const b = rand(1, 4);
+  const product = a * b;
+  // Zufällig durch a oder b teilen
+  if (Math.random() < 0.5) {
+    return { equation: `${product} <span class="op">:</span> ${b} <span class="op">=</span>`, answer: a };
+  } else {
+    return { equation: `${product} <span class="op">:</span> ${a} <span class="op">=</span>`, answer: b };
+  }
+}
+
+let currentTask = null;
+let attempts = 0;
+
+const equationEl = document.getElementById('equation');
+const submitBtn = document.getElementById('submitBtn');
+const nextBtn = document.getElementById('nextBtn');
+const feedbackEl = document.getElementById('feedback');
+
+function renderTask(task) {
+  attempts = 0;
+  equationEl.innerHTML = task.equation + ` <span class="input-whole"><input type="number" id="answerInput" placeholder="?" autofocus></span>`;
+  feedbackEl.style.display = 'none';
+  feedbackEl.className = 'feedback';
+  submitBtn.style.display = 'inline-block';
+  nextBtn.style.display = 'none';
+  setTimeout(() => {
+    const inp = document.getElementById('answerInput');
+    if (inp) inp.focus();
+  }, 50);
+  document.querySelectorAll('#equation input').forEach(inp => {
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        if (nextBtn.style.display !== 'none') nextTask();
+        else checkAnswer();
+      }
+    });
+  });
+}
+
+function checkAnswer() {
+  attempts++;
+  const userVal = parseInt(document.getElementById('answerInput').value);
+  if (isNaN(userVal)) { showFeedback('Bitte eine Zahl eingeben.', 'wrong'); attempts--; return; }
+  const correct = userVal === currentTask.answer;
+  if (correct) {
+    const msgs = ['Super! 🎉','Genau richtig! ⭐','Klasse! 👏','Bravo! 💪','Perfekt!','Spitze! 🌟','Toll gemacht! 🦄'];
+    showFeedback(msgs[Math.floor(Math.random() * msgs.length)], 'correct');
+    recordResult(true, attempts === 1);
+    submitBtn.style.display = 'none';
+    nextBtn.style.display = 'inline-block';
+    nextBtn.focus();
+  } else {
+    recordResult(false, false);
+    let hint = "Das stimmt noch nicht. Versuch's nochmal! 💪";
+    if (attempts >= 3) hint = `Die richtige Antwort ist ${currentTask.answer}. Trag das ein und drück nochmal Prüfen.`;
+    showFeedback(hint, 'wrong');
+    document.getElementById('answerInput').focus();
+    document.getElementById('answerInput').select();
+  }
+}
+
+function showFeedback(text, type) {
+  feedbackEl.style.display = 'block';
+  feedbackEl.className = 'feedback ' + type;
+  feedbackEl.textContent = text;
+  feedbackEl.classList.add('pulse');
+  setTimeout(() => feedbackEl.classList.remove('pulse'), 500);
+}
+
+function nextTask() {
+  currentTask = generateTask();
+  renderTask(currentTask);
+}
+
+submitBtn.addEventListener('click', checkAnswer);
+nextBtn.addEventListener('click', nextTask);
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  document.getElementById('welcomeOverlay').classList.add('hidden');
+  nextTask();
+});
+
+// ============ Statistik ============
+const STORAGE_KEY = 'yuna_mathe_stats_v1';
+function loadStats() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch (e) { return {}; } }
+function saveStats(stats) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+}
+function dateKey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function todayKey() { return dateKey(new Date()); }
+function recordResult(correct, firstTry) {
+  const stats = loadStats();
+  const key = todayKey();
+  if (!stats[key]) stats[key] = { total: 0, correct: 0, firstTry: 0, attempts: 0 };
+  stats[key].attempts++;
+  if (correct) {
+    stats[key].total++;
+    stats[key].correct++;
+    if (firstTry) stats[key].firstTry++;
+  }
+  saveStats(stats);
+  renderStats();
+}
+function aggregate(stats, days) {
+  let total = 0;
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - days + 1); cutoff.setHours(0,0,0,0);
+  for (const day in stats) {
+    const dt = new Date(day + 'T00:00:00');
+    if (dt >= cutoff) total += (stats[day].total || 0);
+  }
+  return total;
+}
+function aggregateAll(stats) { return Object.values(stats).reduce((sum, s) => sum + (s.total || 0), 0); }
+
+function renderStats() {
+  const stats = loadStats();
+  const today = stats[todayKey()] || { total: 0 };
+  document.getElementById('aggToday').textContent = today.total || 0;
+  document.getElementById('agg7d').textContent = aggregate(stats, 7);
+  document.getElementById('agg30d').textContent = aggregate(stats, 30);
+  document.getElementById('aggAll').textContent = aggregateAll(stats);
+
+  const chartEl = document.getElementById('chart');
+  const labelsEl = document.getElementById('chartLabels');
+  const days = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    days.push({ key: dateKey(d), date: d });
+  }
+  const maxTotal = Math.max(1, ...days.map(d => stats[d.key]?.total || 0));
+  chartEl.innerHTML = days.map(d => {
+    const s = stats[d.key];
+    const total = s?.total || 0;
+    const pct = s && s.attempts > 0 ? Math.round((s.correct / s.attempts) * 100) : 0;
+    const height = total > 0 ? Math.max(2, (total / maxTotal) * 100) : 2;
+    const empty = total === 0;
+    const tooltip = empty ? `${formatDayShort(d.date)}: keine Aufgaben` : `${formatDayShort(d.date)}: ${total} gelöst, ${pct}% Quote`;
+    return `<div class="chart-bar ${empty?'empty':''}" style="height:${height}%" data-tooltip="${tooltip}"></div>`;
+  }).join('');
+  labelsEl.innerHTML = days.map((d, i) => {
+    const show = i === 0 || i === 13 || i % 2 === 1;
+    return `<div>${show ? formatDayShort(d.date) : ''}</div>`;
+  }).join('');
+
+  const historyEl = document.getElementById('history');
+  const activeDays = Object.keys(stats).filter(k => stats[k].total > 0).sort().reverse().slice(0, 14);
+  if (activeDays.length === 0) {
+    historyEl.innerHTML = '';
+    return;
+  }
+  historyEl.innerHTML = '<div class="chart-title" style="margin-top:16px;">Details</div>' + activeDays.map(day => {
+    const s = stats[day];
+    const pct = s.attempts > 0 ? Math.round((s.correct / s.attempts) * 100) : 0;
+    return `<div class="history-row"><div>${formatDayLong(day)} <span style="color:#868e96">(${s.total})</span></div><div class="history-bar"><div class="history-bar-fill" style="width:${pct}%"></div></div><div class="history-pct">${pct}%</div></div>`;
+  }).join('');
+}
+function formatDayShort(d) { return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.'; }
+function formatDayLong(key) {
+  const today = todayKey();
+  if (key === today) return 'Heute';
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+  if (key === dateKey(yesterday)) return 'Gestern';
+  const [y, m, d] = key.split('-');
+  return `${d}.${m}.${y.slice(2)}`;
+}
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (confirm('Wirklich alle Daten löschen?')) {
+    localStorage.removeItem(STORAGE_KEY);
+    renderStats();
+  }
+});
+
+// ============ Passwort-Gate ============
+const PW_HASH = '692dfc7c3ba3d913cd882cb48c33c54150937ed7af35c77d4da28688a9de442b';
+const PW_KEY = 'mathe_pw_unlocked_at';
+async function pwSha256(t) { const b = new TextEncoder().encode(t); const h = await crypto.subtle.digest('SHA-256', b); return Array.from(new Uint8Array(h)).map(x => x.toString(16).padStart(2, '0')).join(''); }
+function pwOk() { const t = parseInt(localStorage.getItem(PW_KEY) || '0', 10); return t > 0 && (Date.now() - t) < 30 * 86400000; }
+async function pwTry() {
+  const i = document.getElementById('pwInput');
+  const h = await pwSha256(i.value);
+  if (h === PW_HASH) {
+    localStorage.setItem(PW_KEY, Date.now().toString());
+    document.getElementById('pwOvl').classList.add('hidden');
+  } else {
+    document.getElementById('pwErr').textContent = 'Falsches Passwort';
+    i.value = ''; i.focus();
+  }
+}
+document.getElementById('pwBtn').addEventListener('click', pwTry);
+document.getElementById('pwInput').addEventListener('keydown', e => { if (e.key === 'Enter') pwTry(); });
+if (pwOk()) document.getElementById('pwOvl').classList.add('hidden');
+else setTimeout(() => document.getElementById('pwInput').focus(), 50);
+
+renderStats();
+</script>
+</body>
+</html>
