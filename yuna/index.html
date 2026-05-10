@@ -46,6 +46,8 @@
     background: white; border-radius: 16px; padding: 32px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 16px;
   }
+  .question-text { font-size: 18px; line-height: 1.5; color: #1c2a3a; text-align: center; margin-bottom: 16px; min-height: 0; }
+  .question-text:empty { display: none; }
   .equation {
     display: flex; align-items: center; justify-content: center;
     gap: 18px; font-size: 44px; margin: 24px 0; flex-wrap: wrap;
@@ -164,6 +166,7 @@
   </header>
 
   <div class="card">
+    <div class="question-text" id="questionText"></div>
     <div class="equation" id="equation"></div>
     <div class="actions">
       <button class="primary" id="submitBtn">Prüfen</button>
@@ -192,10 +195,88 @@
 function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
 // ============ Aufgabengenerierung ============
-// Algorithmisch: + und - bis 100, · bis 5×4, : als Umkehrung
+// Algorithmisch: + und - bis 100, · bis 5×4, : als Umkehrung. ~25% Textaufgaben.
+const NAMES_Y = ['Nea','Yuna','Lukas','Mia','Lea','Ben','Anna','Tim','Emma','Felix','Lina','Noah'];
+function pickName() { return NAMES_Y[rand(0, NAMES_Y.length - 1)]; }
+function pickTwoNames() { const a = pickName(); let b = pickName(); while (b === a) b = pickName(); return [a, b]; }
+const wp = (text, answer) => ({ text, answer });
+
+const TEMPLATES = [
+  // ADDITION (25)
+  () => { const a=rand(3,40), b=rand(2,Math.min(50,100-a)); return wp(`${pickName()} hat ${a} Bonbons. Mama gibt noch ${b} dazu. Wie viele Bonbons sind das?`, a+b); },
+  () => { const a=rand(5,40), b=rand(3,Math.min(50,100-a)); return wp(`Im Korb sind ${a} Äpfel. Papa legt ${b} dazu. Wie viele Äpfel sind im Korb?`, a+b); },
+  () => { const a=rand(8,30), b=rand(2,Math.min(40,100-a)); return wp(`${pickName()} hat ${a} Stickers und bekommt ${b} neue dazu. Wie viele Stickers hat sie jetzt?`, a+b); },
+  () => { const a=rand(7,40), b=rand(3,Math.min(40,100-a)); return wp(`In der Klasse sind ${a} Kinder. ${b} weitere kommen dazu. Wie viele sind es jetzt?`, a+b); },
+  () => { const a=rand(5,30), b=rand(3,Math.min(40,100-a)); return wp(`Auf dem Spielplatz sind ${a} Kinder. ${b} mehr kommen dazu. Wie viele sind es?`, a+b); },
+  () => { const a=rand(8,40), b=rand(2,Math.min(30,100-a)); return wp(`${pickName()} hat ${a} Murmeln und findet ${b} mehr. Wie viele hat er nun?`, a+b); },
+  () => { const a=rand(5,30), b=rand(3,Math.min(40,100-a)); return wp(`${pickName()} liest am Morgen ${a} Seiten und am Abend nochmal ${b}. Wie viele Seiten?`, a+b); },
+  () => { const a=rand(10,50), b=rand(5,Math.min(40,100-a)); return wp(`Im Kasten sind ${a} Spielsachen. ${pickName()} legt ${b} dazu. Wie viele sind drin?`, a+b); },
+  () => { const a=rand(3,15), b=rand(3,15); return wp(`Papa kauft ${a} Bananen und ${b} Äpfel. Wie viele Früchte sind das zusammen?`, a+b); },
+  () => { const a=rand(8,40), b=rand(5,Math.min(40,100-a)); const [n1,n2]=pickTwoNames(); return wp(`${n1} hat ${a} Buntstifte und ${n2} hat ${b}. Wie viele Stifte zusammen?`, a+b); },
+  () => { const a=rand(5,30), b=rand(3,Math.min(30,100-a)); return wp(`Im Aquarium sind ${a} Fische. ${b} kommen dazu. Wie viele Fische sind drin?`, a+b); },
+  () => { const a=rand(5,25), b=rand(3,20); return wp(`Auf dem Tisch liegen ${a} Kekse. Mama bringt ${b} weitere. Wie viele Kekse?`, a+b); },
+  () => { const a=rand(10,40), b=rand(5,Math.min(40,100-a)); return wp(`${pickName()} sammelt ${a} Steine und findet dann ${b} mehr. Wie viele Steine?`, a+b); },
+  () => { const a=rand(5,30), b=rand(4,Math.min(30,100-a)); return wp(`Im Garten blühen ${a} Blumen. ${b} weitere blühen heute. Wie viele Blumen?`, a+b); },
+  () => { const a=rand(5,30), b=rand(3,Math.min(30,100-a)); return wp(`Im Zoo sind ${a} Pinguine. ${b} kommen aus dem Wasser. Wie viele Pinguine?`, a+b); },
+  () => { const a=rand(8,30), b=rand(5,Math.min(30,100-a)); return wp(`${pickName()} hat ${a} Murmeln. Beim Spielen gewinnt sie ${b} dazu. Wie viele?`, a+b); },
+  () => { const a=rand(10,40), b=rand(5,Math.min(40,100-a)); return wp(`Auf der Wiese sind ${a} Schafe. ${b} kommen dazu. Wie viele Schafe?`, a+b); },
+  () => { const a=rand(3,15), b=rand(3,15); return wp(`${pickName()} isst ${a} Trauben am Morgen und ${b} am Mittag. Wie viele Trauben?`, a+b); },
+  () => { const a=rand(8,30), b=rand(5,Math.min(30,100-a)); return wp(`${pickName()} hat ${a} Sticker und bekommt ${b} beim Tauschen dazu. Wie viele?`, a+b); },
+  () => { const a=rand(8,30), b=rand(8,30); return wp(`Im Sportverein sind ${a} Mädchen und ${b} Jungen. Wie viele Kinder sind das?`, a+b); },
+  () => { const a=rand(5,20), b=rand(5,20); return wp(`Papa pflückt ${a} Beeren, Mama pflückt ${b}. Wie viele Beeren zusammen?`, a+b); },
+  () => { const a=rand(10,40), b=rand(5,Math.min(40,100-a)); return wp(`${pickName()} zählt ${a} Wolken und sieht dann noch ${b}. Wie viele Wolken?`, a+b); },
+  () => { const a=rand(5,15), b=rand(3,15); return wp(`In der Bibliothek liest ${pickName()} ${a} Bücher und nimmt ${b} mit nach Hause. Wie viele Bücher hat sie zusammen?`, a+b); },
+  () => { const a=rand(5,20), b=rand(5,20); return wp(`${pickName()} kauft ${a} Stifte und ${b} Hefte. Wie viele Sachen sind das?`, a+b); },
+  () => { const a=rand(10,40), b=rand(5,Math.min(40,100-a)); return wp(`Auf der Strasse stehen ${a} Autos. ${b} weitere parken. Wie viele Autos?`, a+b); },
+
+  // SUBTRACTION (20)
+  () => { const a=rand(15,60), b=rand(3,a-1); return wp(`${pickName()} hat ${a} Bonbons und isst ${b}. Wie viele Bonbons bleiben?`, a-b); },
+  () => { const a=rand(15,50), b=rand(3,a-1); return wp(`Im Korb waren ${a} Äpfel. ${b} wurden gegessen. Wie viele sind noch drin?`, a-b); },
+  () => { const a=rand(15,50), b=rand(3,a-1); return wp(`${pickName()} hat ${a} Murmeln und verliert ${b}. Wie viele hat er noch?`, a-b); },
+  () => { const a=rand(30,80), b=rand(10,a-5); return wp(`Im Buch sind ${a} Seiten. ${pickName()} hat ${b} gelesen. Wie viele fehlen noch?`, a-b); },
+  () => { const a=rand(15,40), b=rand(3,a-1); return wp(`${pickName()} hat ${a} Stickers und verschenkt ${b}. Wie viele bleiben?`, a-b); },
+  () => { const a=rand(10,30), b=rand(3,a-1); return wp(`Auf dem Spielplatz waren ${a} Kinder. ${b} gehen heim. Wie viele bleiben?`, a-b); },
+  () => { const a=rand(10,30), b=rand(2,a-1); return wp(`Papa kauft ${a} Brötchen. Die Familie isst ${b}. Wie viele sind übrig?`, a-b); },
+  () => { const a=rand(20,60), b=rand(5,a-1); return wp(`${pickName()} hat ${a} Bonbons und gibt ${b} ihrer Schwester. Wie viele bleiben?`, a-b); },
+  () => { const a=rand(20,60), b=rand(5,a-1); return wp(`Im Kasten sind ${a} Spielsachen. ${pickName()} räumt ${b} weg. Wie viele bleiben?`, a-b); },
+  () => { const a=rand(50,100), b=rand(10,a-5); return wp(`Mama hat ${a} Franken und zahlt ${b}. Wie viel hat sie noch?`, a-b); },
+  () => { const a=rand(15,40), b=rand(3,a-1); return wp(`Im Garten waren ${a} Blumen. ${b} wurden gepflückt. Wie viele blühen noch?`, a-b); },
+  () => { const a=rand(15,40), b=rand(3,a-1); return wp(`${pickName()} hat ${a} Buntstifte. ${b} sind weg. Wie viele hat sie noch?`, a-b); },
+  () => { const a=rand(40,90), b=rand(10,a-5); return wp(`Im Glas sind ${a} Bonbons. ${pickName()} nimmt ${b}. Wie viele bleiben?`, a-b); },
+  () => { const a=rand(10,30), b=rand(2,a-1); return wp(`Auf der Wiese standen ${a} Schafe. ${b} laufen weg. Wie viele bleiben?`, a-b); },
+  () => { const a=rand(15,40), b=rand(3,a-1); return wp(`${pickName()} hat ${a} Sticker. Sie verschenkt ${b}. Wie viele bleiben?`, a-b); },
+  () => { const a=rand(20,60), b=rand(5,a-1); return wp(`Im Buch sind ${a} Bilder. ${pickName()} schaut ${b} an. Wie viele kommen noch?`, a-b); },
+  () => { const a=rand(20,60), b=rand(5,a-1); return wp(`Papa hat ${a} Münzen. ${b} fallen runter. Wie viele bleiben in der Hand?`, a-b); },
+  () => { const a=rand(15,50), b=rand(3,a-1); return wp(`Im Zoo waren ${a} Affen. ${b} schlafen. Wie viele sind wach?`, a-b); },
+  () => { const a=rand(20,60), b=rand(5,a-1); return wp(`${pickName()} sammelt ${a} Stifte. ${b} sind kaputt. Wie viele sind ganz?`, a-b); },
+  () => { const a=rand(15,40), b=rand(3,a-1); return wp(`${pickName()} kauft ${a} Bonbons und isst ${b}. Wie viele sind übrig?`, a-b); },
+
+  // MULTIPLICATION (10) - 1..5 × 1..4
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`${pickName()} hat ${a} Tüten mit je ${b} Bonbons. Wie viele Bonbons sind das?`, a*b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`In ${a} Boxen sind je ${b} Äpfel. Wie viele Äpfel sind das?`, a*b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`Mama backt ${a} Bleche mit je ${b} Keksen. Wie viele Kekse sind das?`, a*b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`Im Karton sind ${a} Reihen mit je ${b} Eiern. Wie viele Eier?`, a*b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`${pickName()} hat ${a} Pakete mit je ${b} Stickern. Wie viele Sticker sind das?`, a*b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`Im Kasten sind ${a} Schubladen mit je ${b} Sockenpaaren. Wie viele Paare?`, a*b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`Papa kauft ${a} Beutel mit je ${b} Brötchen. Wie viele Brötchen?`, a*b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`${pickName()} hat ${a} Tassen mit je ${b} Murmeln. Wie viele Murmeln?`, a*b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`In ${a} Schalen sind je ${b} Bananen. Wie viele Bananen?`, a*b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`Im Spiel gibt es ${a} Runden mit je ${b} Punkten. Wie viele Punkte?`, a*b); },
+
+  // DIVISION (5) - inverse of mul
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`${pickName()} hat ${a*b} Bonbons und teilt sie auf ${a} Tüten gleichmässig auf. Wie viele Bonbons sind in jeder Tüte?`, b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`${a*b} Äpfel werden auf ${b} Schalen verteilt. Wie viele Äpfel sind in jeder Schale?`, a); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`Mama hat ${a*b} Kekse und gibt jedem von ${a} Kindern gleich viele. Wie viele Kekse bekommt jedes Kind?`, b); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`${a*b} Stifte werden gleichmässig auf ${b} Mäppchen verteilt. Wie viele Stifte sind in jedem Mäppchen?`, a); },
+  () => { const a=rand(2,5), b=rand(2,4); return wp(`${a*b} Stickers werden auf ${a} Kinder verteilt. Wie viele Stickers bekommt jedes Kind?`, b); },
+];
+
 function generateTask() {
-  const ops = ['add', 'sub', 'mul', 'div'];
-  // Multiplikation/Division seltener als +/- (für 6-Jährige fokus auf +/-)
+  // ~25% Textaufgaben
+  if (Math.random() < 0.25) {
+    return TEMPLATES[rand(0, TEMPLATES.length - 1)]();
+  }
+  // 75% reine Aufgaben (mit Gewichtung)
   const weighted = ['add','add','add','sub','sub','sub','mul','div'];
   const op = weighted[rand(0, weighted.length - 1)];
   if (op === 'add') {
@@ -209,20 +290,16 @@ function generateTask() {
     return { equation: `${a} <span class="op">−</span> ${b} <span class="op">=</span>`, answer: a - b };
   }
   if (op === 'mul') {
-    // 1..5 × 1..4 (oder Umstellung der Faktoren)
     const x = rand(1, 5);
     const y = rand(1, 4);
-    // Reihenfolge zufällig
     const swap = Math.random() < 0.5;
     const f1 = swap ? y : x;
     const f2 = swap ? x : y;
     return { equation: `${f1} <span class="op">·</span> ${f2} <span class="op">=</span>`, answer: x * y };
   }
-  // div: c : b = a, wo a*b=c (a∈1..5, b∈1..4)
   const a = rand(1, 5);
   const b = rand(1, 4);
   const product = a * b;
-  // Zufällig durch a oder b teilen
   if (Math.random() < 0.5) {
     return { equation: `${product} <span class="op">:</span> ${b} <span class="op">=</span>`, answer: a };
   } else {
@@ -240,7 +317,13 @@ const feedbackEl = document.getElementById('feedback');
 
 function renderTask(task) {
   attempts = 0;
-  equationEl.innerHTML = task.equation + ` <span class="input-whole"><input type="number" id="answerInput" placeholder="?" autofocus></span>`;
+  const qt = document.getElementById('questionText');
+  qt.textContent = task.text || '';
+  if (task.text) {
+    equationEl.innerHTML = `<span class="input-whole"><input type="number" id="answerInput" placeholder="?" autofocus></span>`;
+  } else {
+    equationEl.innerHTML = task.equation + ` <span class="input-whole"><input type="number" id="answerInput" placeholder="?" autofocus></span>`;
+  }
   feedbackEl.style.display = 'none';
   feedbackEl.className = 'feedback';
   submitBtn.style.display = 'inline-block';
