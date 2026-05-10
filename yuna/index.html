@@ -80,18 +80,18 @@
   .feedback.wrong { background: #ffe3e3; color: #c92a2a; border: 2px solid #ff8787; }
 
   .stats {
-    background: white; border-radius: 16px; padding: 20px;
+    background: white; border-radius: 14px; padding: 12px 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   }
-  .stats h2 { margin: 0 0 12px 0; font-size: 18px; color: #495057; }
-  .agg-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
-  .agg-cell { background: #f8f9fa; border-radius: 8px; padding: 10px 8px; text-align: center; }
-  .agg-cell .num { font-size: 20px; font-weight: 700; color: #1c7ed6; }
-  .agg-cell .label { font-size: 11px; color: #868e96; text-transform: uppercase; margin-top: 2px; }
-  .chart-title { font-size: 13px; color: #495057; margin: 12px 0 6px 0; font-weight: 600; }
+  .stats h2 { margin: 0 0 6px 0; font-size: 11px; color: #868e96; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .agg-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
+  .agg-cell { background: #f8f9fa; border-radius: 6px; padding: 5px 4px; text-align: center; }
+  .agg-cell .num { font-size: 16px; font-weight: 700; color: #1c7ed6; line-height: 1.1; }
+  .agg-cell .label { font-size: 9px; color: #868e96; text-transform: uppercase; margin-top: 1px; }
+  .chart-title { font-size: 10px; color: #868e96; margin: 6px 0 3px 0; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
   .chart {
-    display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px;
-    align-items: end; height: 110px; padding: 4px;
+    display: grid; grid-template-columns: repeat(14, 1fr); gap: 3px;
+    align-items: end; height: 42px; padding: 2px;
     border-bottom: 1px solid #dee2e6;
   }
   .chart-bar {
@@ -108,17 +108,17 @@
     font-size: 12px; white-space: nowrap; margin-bottom: 4px; z-index: 10;
   }
   .chart-labels {
-    display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px;
-    font-size: 10px; color: #868e96; text-align: center; margin-top: 4px;
+    display: grid; grid-template-columns: repeat(14, 1fr); gap: 3px;
+    font-size: 9px; color: #adb5bd; text-align: center; margin-top: 2px;
   }
-  .history { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; margin-top: 12px; }
+  .history { display: none; }
   .history-row { display: grid; grid-template-columns: 110px 1fr 60px; gap: 8px; align-items: center; font-size: 14px; padding: 4px 0; }
   .history-bar { height: 14px; background: #e9ecef; border-radius: 4px; overflow: hidden; }
   .history-bar-fill { height: 100%; background: linear-gradient(90deg, #69db7c, #51cf66); border-radius: 4px; }
   .history-pct { text-align: right; color: #495057; font-weight: 500; }
   .file-actions {
     display: flex; gap: 8px; flex-wrap: wrap;
-    margin-top: 16px; padding-top: 12px; border-top: 1px solid #e9ecef;
+    margin-top: 8px; padding-top: 8px; border-top: 1px solid #e9ecef;
   }
   .file-actions button {
     background: #e9ecef; color: #495057; border: none;
