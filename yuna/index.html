@@ -271,10 +271,29 @@ const TEMPLATES = [
   () => { const a=rand(2,5), b=rand(2,4); return wp(`${a*b} Stickers werden auf ${a} Kinder verteilt. Wie viele Stickers bekommt jedes Kind?`, b); },
 ];
 
+// Anti-Wiederholung: kein Template doppelt innerhalb des Fensters, keine identische Aufgabe innerhalb der letzten 15
+const recentTpl = [], recentSigs = [];
+function taskSig(t) { return (t.text || t.equation || '') + '|' + t.answer; }
 function generateTask() {
+  for (let i = 0; i < 15; i++) {
+    const t = makeTask();
+    const sig = taskSig(t);
+    if (recentSigs.includes(sig)) continue;
+    recentSigs.push(sig);
+    if (recentSigs.length > 15) recentSigs.shift();
+    return t;
+  }
+  return makeTask();
+}
+
+function makeTask() {
   // ~25% Textaufgaben
   if (Math.random() < 0.25) {
-    return TEMPLATES[rand(0, TEMPLATES.length - 1)]();
+    let idx = rand(0, TEMPLATES.length - 1), tries = 0;
+    while (recentTpl.includes(idx) && tries < 30) { idx = rand(0, TEMPLATES.length - 1); tries++; }
+    recentTpl.push(idx);
+    if (recentTpl.length > 35) recentTpl.shift();
+    return TEMPLATES[idx]();
   }
   // 75% reine Aufgaben (mit Gewichtung)
   const weighted = ['add','add','add','sub','sub','sub','mul','div'];

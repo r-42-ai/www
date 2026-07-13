@@ -165,6 +165,9 @@ function mulFrac(){const d1=rand(2,8),d2=rand(2,8),a=rand(1,d1-1),b=rand(1,d2-1)
 function divFrac(){const d1=rand(2,8),d2=rand(2,8),a=rand(1,d1-1),b=rand(1,d2-1);return{equation:`${fracHTML(a,d1)} <span class="op">:</span> ${fracHTML(b,d2)} <span class="op">=</span>`,answerType:'fraction',correctNum:a*d2,correctDen:d1*b}}
 function mixedAdd(){const g=rand(1,4),d=rand(3,8),a=rand(1,d-1),b=rand(1,d-1);return{text:'Berechne und gib das Ergebnis als unechten Bruch an:',equation:`${mixedHTML(g,a,d)} <span class="op">+</span> ${fracHTML(b,d)} <span class="op">=</span>`,answerType:'fraction',correctNum:g*d+a+b,correctDen:d}}
 function mixedSub(){const g=rand(1,3),d=rand(3,8),a=rand(1,d-1),b=rand(1,d-1);return{text:'Berechne (Antwort als unechter Bruch):',equation:`${mixedHTML(g,a,d)} <span class="op">−</span> ${fracHTML(b,d)} <span class="op">=</span>`,answerType:'fraction',correctNum:g*d+a-b,correctDen:d}}
+function simplifyFrac(){const b=rand(4,9),a=rand(1,b-1),g=gcd(a,b),sa=a/g,sb=b/g,k=rand(2,4);return{text:'Kürze den Bruch so weit wie möglich:',equation:`${fracHTML(sa*k,sb*k)} <span class="op">=</span>`,answerType:'fraction',correctNum:sa,correctDen:sb}}
+function mulFracWhole(){const d=rand(2,9),a=rand(1,d-1),k=rand(2,5);return{equation:`${k} <span class="op">·</span> ${fracHTML(a,d)} <span class="op">=</span>`,answerType:'fraction',correctNum:k*a,correctDen:d}}
+function fracOfNumber(lv){const ds=lv==='easy'?[2,3,4]:[2,3,4,5,6,8];const d=ds[rand(0,ds.length-1)];const a=lv==='easy'?1:rand(1,d-1);const t=d*rand(2,lv==='hard'?9:6);return{text:'Berechne:',equation:`${fracHTML(a,d)} <span class="op">von</span> ${t} <span class="op">=</span>`,answerType:'whole',correctValue:(t/d)*a}}
 const fp=(t,n,d)=>({text:t,equation:'',answerType:'fraction',correctNum:n,correctDen:d});
 const wp=(t,v)=>({text:t,equation:'',answerType:'whole',correctValue:v});
 
@@ -201,6 +204,34 @@ const TEMPLATES_EASY=[
 ()=>{const d=rand(8,12),n=rand(2,d-1);return fp(`Im Karton sind ${d} Eier. ${n} davon sind schon gebraucht. Welcher Bruch der Eier ist noch da?`,d-n,d)},
 ()=>{const d=rand(6,10),n=rand(1,d-1);return fp(`${pickName()} hat ${d} Hausaufgaben. ${n} davon sind noch offen. Welcher Bruch der Aufgaben ist noch offen?`,n,d)},
 ()=>{const d=rand(8,16),n=rand(2,d-2);return fp(`Auf der Wiese stehen ${d} Blumen. ${n} sind schon gepflückt. Welcher Bruch der Blumen ist noch auf der Wiese?`,d-n,d)},
+()=>{const d=rand(6,12),n=rand(1,d-1);return fp(`${pickName()} baut einen Turm aus ${d} Legosteinen. ${n} davon sind rot. Welcher Bruch der Steine ist rot?`,n,d)},
+()=>{const d=rand(6,12),n=rand(1,d-1);return fp(`Mama backt ${d} Muffins. ${n} davon haben Schoggistückli. Welcher Bruch der Muffins hat Schoggi?`,n,d)},
+()=>{const n=rand(1,11);return fp(`Ein Jahr hat 12 Monate. In ${n} Monat${n===1?'':'en'} hat es geschneit. Welcher Bruch des Jahres ist das?`,n,12)},
+()=>{const d=rand(6,12),n=rand(1,d-1);return fp(`An einer Kette sind ${d} Perlen. ${n} davon glitzern. Welcher Bruch der Perlen glitzert?`,n,d)},
+()=>{const d=rand(8,16),n=rand(2,d-2);return fp(`${pickName()} hat ${d} Fussballkarten. ${n} davon zeigen Torhüter. Welcher Bruch der Karten zeigt Torhüter?`,n,d)},
+()=>{const d=rand(6,10),n=rand(1,d-1);return fp(`Auf dem Geburtstagskuchen brennen ${d} Kerzen. ${pickName()} bläst ${n} aus. Welcher Bruch der Kerzen brennt noch?`,d-n,d)},
+()=>{const d=rand(6,12),n=rand(1,d-1);return fp(`Im Parkhaus sind ${d} Parkplätze. ${n} davon sind besetzt. Welcher Bruch der Plätze ist noch frei?`,d-n,d)},
+()=>{const d=rand(6,10),n=rand(1,d-1);return fp(`${pickName()} pflanzt ${d} Samen. Aus ${n} davon wächst eine Blume. Welcher Bruch der Samen ist aufgegangen?`,n,d)},
+()=>{const d=rand(8,14),n=rand(2,d-2);return fp(`Im Bus hat es ${d} Sitzplätze. ${n} sind besetzt. Welcher Bruch der Plätze ist besetzt?`,n,d)},
+()=>{const d=rand(5,9),a=rand(1,d-2),b=rand(1,d-a);return fp(`${pickName()} malt am Montag ${fracHTML(a,d)} eines Bildes und am Dienstag ${fracHTML(b,d)}. Wie viel des Bildes ist fertig?`,a+b,d)},
+()=>{const d=rand(5,10),a=rand(2,d-1),b=rand(1,a-1);return fp(`Eine Kerze ist noch ${fracHTML(a,d)} lang. Sie brennt um ${fracHTML(b,d)} ab. Wie lang ist sie jetzt noch?`,a-b,d)},
+()=>{const d=rand(6,12),n=rand(1,d-1);return fp(`Ein Zug hat ${d} Wagen. ${n} davon sind Wagen der 1. Klasse. Welcher Bruch der Wagen ist 1. Klasse?`,n,d)},
+()=>{const d=rand(6,12),n=rand(1,d-1);return fp(`In der Bäckerei liegen ${d} Gipfeli im Korb. ${n} davon ${n===1?'ist':'sind'} schon verkauft. Welcher Bruch der Gipfeli ist verkauft?`,n,d)},
+()=>{const d=rand(6,14),n=rand(2,d-2);return fp(`Im Zoo leben ${d} Pinguine. ${n} davon schwimmen gerade im Wasser. Welcher Bruch der Pinguine schwimmt?`,n,d)},
+()=>{const d=rand(6,10),n=rand(1,d-1);return fp(`Am Sporttag gibt es ${d} Posten. ${pickName()} hat ${n} Posten geschafft. Welcher Bruch der Posten fehlt noch?`,d-n,d)},
+()=>{const d=rand(5,9),n=rand(1,d-1);return fp(`${pickName()} leiht in der Bibliothek ${d} Bücher aus und bringt ${n} davon zurück. Welcher Bruch der Bücher ist noch ausgeliehen?`,d-n,d)},
+()=>{const d=rand(6,12),n=rand(1,d-1);return fp(`Im Zeltlager sollen ${d} Zelte aufgestellt werden. ${n} ${n===1?'Zelt steht':'Zelte stehen'} schon. Welcher Bruch der Zelte steht schon?`,n,d)},
+()=>{const d=rand(8,16),n=rand(2,d-2);return fp(`Auf dem Bauernhof erntet ${pickName()} ${d} Rüebli. ${n} davon bekommen die Kaninchen. Welcher Bruch der Rüebli ist für die Kaninchen?`,n,d)},
+()=>{const d=rand(10,16),n=rand(2,d-2);return fp(`Auf der Schulreise sind ${d} Kinder. ${n} davon haben eine Regenjacke dabei. Welcher Bruch der Kinder hat eine Regenjacke?`,n,d)},
+()=>{const d=rand(4,8),n=rand(1,d-1);return fp(`In der Musikstunde übt ${pickName()} ein Lied mit ${d} Strophen. ${n} davon ${n===1?'klappt':'klappen'} schon. Welcher Bruch der Strophen muss noch geübt werden?`,d-n,d)},
+()=>{const d=rand(8,16),n=rand(2,d-2);return fp(`Ein Brettspiel hat einen Weg mit ${d} Feldern. ${pickName()}s Figur ist schon ${n} Felder weit gekommen. Welcher Bruch des Weges ist geschafft?`,n,d)},
+()=>{const d=rand(6,12),n=rand(2,d-2);return fp(`Im Zirkus treten ${d} Tiere auf. ${n} davon sind Ponys. Welcher Bruch der Tiere ist das?`,n,d)},
+()=>{const d=rand(6,10),n=rand(1,d-1);return fp(`Eine Piraten-Schatzkarte ist in ${d} Teile zerrissen. ${pickName()} hat ${n} Teil${n===1?'':'e'} gefunden. Welcher Bruch der Karte fehlt noch?`,d-n,d)},
+()=>{const d=rand(4,9),n=rand(1,d-1);return fp(`Eine Ritterburg hat ${d} Türme. Auf ${n} ${n===1?'Turm weht eine Fahne':'Türmen wehen Fahnen'}. Welcher Bruch der Türme hat eine Fahne?`,n,d)},
+()=>{const d=rand(5,10),a=rand(2,d-1),b=rand(1,a-1);return fp(`Der Tank einer Rakete ist zu ${fracHTML(a,d)} voll. Beim Start werden ${fracHTML(b,d)} verbraucht. Welcher Bruch des Tanks ist noch voll?`,a-b,d)},
+()=>{const d=rand(5,10),a=rand(1,d-2),b=rand(1,d-a);return fp(`Auf dem Markt kauft ${pickName()} ${fracHTML(a,d)} kg Zwetschgen und ${fracHTML(b,d)} kg Trauben. Wie viel kg Früchte sind das zusammen?`,a+b,d)},
+()=>{const d=rand(5,9),a=rand(1,d-2),b=rand(1,d-a);return fp(`Für das Theaterstück lernt ${pickName()} am Montag ${fracHTML(a,d)} des Textes und am Dienstag ${fracHTML(b,d)}. Welcher Bruch des Textes ist jetzt gelernt?`,a+b,d)},
+()=>{const d=rand(5,10),a=rand(2,d-1),b=rand(1,a-1);return fp(`Ein Vogel-Futterhäuschen ist zu ${fracHTML(a,d)} mit Körnern gefüllt. Die Vögel fressen ${fracHTML(b,d)}. Welcher Bruch des Häuschens ist jetzt noch gefüllt?`,a-b,d)},
 ];
 const TEMPLATES_MEDIUM=[
 ()=>{const ds=[2,3,4,5,6];const d=ds[rand(0,4)];const t=d*rand(2,6);return wp(`${pickName()} hat ${t} Bonbons und gibt ${fracHTML(1,d)} davon an Yuna. Wie viele Bonbons bekommt Yuna?`,t/d)},
@@ -219,15 +250,39 @@ const TEMPLATES_MEDIUM=[
 ()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`Auf einer Wanderung läuft ${pickName()} am Vormittag ${fracHTML(a,d1)} der Strecke und am Nachmittag ${fracHTML(b,d2)}. Welchen Bruch ist sie zusammen gelaufen?`,a*d2+b*d1,d1*d2)},
 ()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`Im ersten Glas sind ${fracHTML(a,d1)} Liter Saft, im zweiten ${fracHTML(b,d2)} Liter. Wie viel Saft ist insgesamt da?`,a*d2+b*d1,d1*d2)},
 ()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`${pickName()} liest ${fracHTML(a,d1)} eines Buches und ihre Schwester ${fracHTML(b,d2)}. Wie viel des Buches haben sie zusammen gelesen?`,a*d2+b*d1,d1*d2)},
-()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2<=b*d1){[a,b,d1,d2]=[b,a,d2,d1]}return fp(`Ein Rezept braucht ${fracHTML(a,d1)} Liter Milch. Du hast nur ${fracHTML(b,d2)} Liter. Wie viel Milch fehlt dir noch?`,a*d2-b*d1,d1*d2)},
-()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2<=b*d1){[a,b,d1,d2]=[b,a,d2,d1]}return fp(`Eine Wasserflasche enthält ${fracHTML(a,d1)} Liter. ${pickName()} trinkt ${fracHTML(b,d2)} Liter. Wie viel ist noch in der Flasche?`,a*d2-b*d1,d1*d2)},
-()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2<=b*d1){[a,b,d1,d2]=[b,a,d2,d1]}return fp(`${pickName()}s Sparschwein ist zu ${fracHTML(a,d1)} voll. Sie nimmt ${fracHTML(b,d2)} raus für ein Geschenk. Welcher Bruch ist noch im Sparschwein?`,a*d2-b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2===b*d1)b=b>1?b-1:b+1;if(a*d2<b*d1){[a,b,d1,d2]=[b,a,d2,d1]}return fp(`Ein Rezept braucht ${fracHTML(a,d1)} Liter Milch. Du hast nur ${fracHTML(b,d2)} Liter. Wie viel Milch fehlt dir noch?`,a*d2-b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2===b*d1)b=b>1?b-1:b+1;if(a*d2<b*d1){[a,b,d1,d2]=[b,a,d2,d1]}return fp(`Eine Wasserflasche enthält ${fracHTML(a,d1)} Liter. ${pickName()} trinkt ${fracHTML(b,d2)} Liter. Wie viel ist noch in der Flasche?`,a*d2-b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2===b*d1)b=b>1?b-1:b+1;if(a*d2<b*d1){[a,b,d1,d2]=[b,a,d2,d1]}return fp(`${pickName()}s Sparschwein ist zu ${fracHTML(a,d1)} voll. Sie nimmt ${fracHTML(b,d2)} raus für ein Geschenk. Welcher Bruch ist noch im Sparschwein?`,a*d2-b*d1,d1*d2)},
 ()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`${pickName()} läuft eine Strecke. Nach ${fracHTML(a,d)} macht sie eine Pause. Welcher Bruch der Strecke muss sie noch laufen?`,d-a,d)},
 ()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`Yuna ist ${fracHTML(a,d)} mit ihrem Buch durch. Welcher Bruch fehlt ihr noch?`,d-a,d)},
 ()=>{const d=rand(5,8),a=rand(1,d-1);return fp(`Eine Velotour ist ${fracHTML(a,d)} geschafft. Welcher Bruch ist noch zu fahren?`,d-a,d)},
 ()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`${pickName()} hat ein Puzzle. Sie hat ${fracHTML(a,d)} schon gelegt. Welcher Bruch fehlt noch?`,d-a,d)},
 ()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`Ein Rezept braucht ${fracHTML(a,d)} Liter Milch. Du machst die doppelte Menge. Wie viel Milch brauchst du?`,2*a,d)},
 ()=>{const d=rand(4,8),a=2*rand(1,Math.floor((d-1)/2)||1);return fp(`Ein Rezept braucht ${fracHTML(a,d)} Liter Saft. Du machst die halbe Menge. Wie viel Saft brauchst du?`,a/2,d)},
+()=>{const ds=[2,3,4,5,6];const d=ds[rand(0,4)];const t=d*rand(2,6);return wp(`Im Kino hat es ${t} Plätze. ${fracHTML(1,d)} davon sind noch frei. Wie viele Plätze sind frei?`,t/d)},
+()=>{const ds=[2,3,4,5];const d=ds[rand(0,3)];const t=d*rand(2,6);const a=rand(1,d-1);return wp(`${pickName()} hat ${t} Fotos gemacht. ${fracHTML(a,d)} davon sind verwackelt. Wie viele Fotos sind verwackelt?`,(t/d)*a)},
+()=>{const ds=[2,3,4,6];const d=ds[rand(0,3)];const t=d*rand(2,5);return wp(`Im Obstkorb liegen ${t} Früchte. ${fracHTML(1,d)} davon sind Bananen. Wie viele Bananen sind es?`,t/d)},
+()=>{const ds=[2,3,4,5];const d=ds[rand(0,3)];const t=d*rand(3,6);const a=rand(1,d-1);return wp(`Ein Zug hat ${t} Sitzplätze. ${fracHTML(a,d)} davon sind reserviert. Wie viele Plätze sind reserviert?`,(t/d)*a)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`${pickName()} übt ${fracHTML(a,d1)} Stunden Klavier und ${fracHTML(b,d2)} Stunden Gitarre. Wie lange übt sie insgesamt?`,a*d2+b*d1,d1*d2)},
+()=>{const d=rand(4,9),a=rand(1,d-1);return fp(`Ein Film ist zu ${fracHTML(a,d)} vorbei. Welcher Bruch des Films kommt noch?`,d-a,d)},
+()=>{const d=rand(5,8),a=rand(1,Math.floor((d-1)/2)||1);return fp(`${pickName()} giesst ${fracHTML(a,d)} Liter Wasser in eine Vase und gleich viel in eine zweite. Wie viel Wasser hat sie gebraucht?`,2*a,d)},
+()=>{const ds=[2,4,5,10];const d=ds[rand(0,3)];const t=d*rand(2,6);return wp(`Auf dem Flohmarkt verkauft ${pickName()} ${fracHTML(1,d)} ihrer ${t} Bücher. Wie viele Bücher verkauft sie?`,t/d)},
+()=>{const ds=[2,3,4,6];const d=ds[rand(0,3)];const t=d*rand(2,5);return wp(`Die Bäckerei backt am Morgen ${t} Gipfeli. ${fracHTML(1,d)} davon sind schon verkauft. Wie viele Gipfeli sind verkauft?`,t/d)},
+()=>{const ds=[3,4,5,6];const d=ds[rand(0,3)];const t=d*rand(2,5);const a=rand(1,d-1);return wp(`Im Zoo leben ${t} Affen. ${fracHTML(a,d)} davon sind Jungtiere. Wie viele Jungtiere sind das?`,(t/d)*a)},
+()=>{const ds=[2,3,4,5];const d=ds[rand(0,3)];const t=d*rand(3,6);return wp(`Am Sporttag machen ${t} Kinder mit. ${fracHTML(1,d)} davon starten beim Sackhüpfen. Wie viele Kinder starten beim Sackhüpfen?`,t/d)},
+()=>{const ds=[3,4,5,6];const d=ds[rand(0,3)];const t=d*rand(2,6);const a=rand(1,d-1);return wp(`In der Bibliothek stehen ${t} Bücher auf dem Rückgabewagen. ${fracHTML(a,d)} davon sind Comics. Wie viele Comics sind das?`,(t/d)*a)},
+()=>{const ds=[2,3,4,6];const d=ds[rand(0,3)];const t=d*rand(2,5);return wp(`Im Zeltlager sind ${t} Kinder. ${fracHTML(1,d)} davon schlafen im blauen Zelt. Wie viele Kinder schlafen im blauen Zelt?`,t/d)},
+()=>{const ds=[2,3,4,5];const d=ds[rand(0,3)];const t=d*rand(3,6);const a=rand(1,d-1);return wp(`Auf dem Bauernhof erntet ${pickName()} ${t} Rüebli. ${fracHTML(a,d)} davon bekommen die Hasen. Wie viele Rüebli bekommen die Hasen?`,(t/d)*a)},
+()=>{const ds=[2,3,4,6];const d=ds[rand(0,3)];const t=d*rand(2,6);const a=rand(1,d-1);return wp(`Im Zirkus verteilt der Clown ${t} Ballone. ${fracHTML(a,d)} davon sind rot. Wie viele Ballone sind rot?`,(t/d)*a)},
+()=>{const ds=[3,4,5,6];const d=ds[rand(0,3)];const t=d*rand(2,6);const a=rand(1,d-1);return wp(`Die Piraten finden ${t} Goldmünzen. ${fracHTML(a,d)} davon bekommt der Kapitän. Wie viele Goldmünzen bekommt der Kapitän?`,(t/d)*a)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`Auf dem Markt kauft ${pickName()} ${fracHTML(a,d1)} kg Trauben und ${fracHTML(b,d2)} kg Erdbeeren. Wie viel kg Früchte sind das zusammen?`,a*d2+b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`Im Hallenbad schwimmt ${pickName()} ${fracHTML(a,d1)} Stunden am Morgen und ${fracHTML(b,d2)} Stunden am Nachmittag. Wie viel Stunden sind das zusammen?`,a*d2+b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);while(a*d2<=b*d1){a=rand(1,d1-1);b=rand(1,d2-1)}return fp(`Ein Lieferwagen soll ${fracHTML(a,d1)} Tonnen Sand laden. Aufgeladen sind erst ${fracHTML(b,d2)} Tonnen. Wie viel Tonnen fehlen noch?`,a*d2-b*d1,d1*d2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);while(a*d2<=b*d1){a=rand(1,d1-1);b=rand(1,d2-1)}return fp(`Ein Schneehaufen ist ${fracHTML(a,d1)} Meter hoch. Am Nachmittag schmilzt er um ${fracHTML(b,d2)} Meter. Wie viel Meter hoch ist der Schneehaufen noch?`,a*d2-b*d1,d1*d2)},
+()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`Auf der Ritterburg ist ${fracHTML(a,d)} der Burgmauer frisch gestrichen. Welcher Bruch der Mauer ist noch nicht gestrichen?`,d-a,d)},
+()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`Beim Brettspiel hat ${pickName()} schon ${fracHTML(a,d)} der Felder bis zum Ziel geschafft. Welcher Bruch der Felder fehlt noch bis zum Ziel?`,d-a,d)},
+()=>{const d=rand(4,8),a=rand(1,d-1);return fp(`Für einen Zaubertrank braucht die Hexe ${fracHTML(a,d)} Liter Beerensaft. Wie viel Liter Beerensaft braucht die Hexe für zwei Zaubertränke?`,2*a,d)},
+()=>{const d=rand(4,8),a=2*rand(1,Math.floor((d-1)/2));return fp(`In der Flasche sind ${fracHTML(a,d)} Liter Eistee. ${pickName()} giesst die Hälfte davon in ein Glas. Wie viel Liter Eistee sind im Glas?`,a/2,d)},
 ];
 const TEMPLATES_HARD=[
 ()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2+b*d1>=d1*d2)return TEMPLATES_HARD[0]();return fp(`${pickName()} isst ${fracHTML(a,d1)} einer Tafel Schoggi. Yuna isst dann ${fracHTML(b,d2)} der Tafel. Wie viel ist noch übrig?`,d1*d2-a*d2-b*d1,d1*d2)},
@@ -246,6 +301,28 @@ const TEMPLATES_HARD=[
 ()=>{const a=[3,4,6,8][rand(0,3)];return wp(`Ein Tag hat 24 Stunden. ${pickName()} schläft ${fracHTML(1,a)} des Tages. Wie viele Stunden ist sie wach?`,24-24/a)},
 ()=>{const d=[3,4,6][rand(0,2)];const t=d*rand(3,5);return wp(`In einer Klasse sind ${t} Kinder. ${fracHTML(1,d)} sind krank. Wie viele Kinder sind gesund?`,t-t/d)},
 ()=>{const d1=rand(3,5),d2=rand(3,5);const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`${pickName()} hat ${fracHTML(a,d1)} eines Kuchens. Sie isst ${fracHTML(b,d2)} davon. Welchen Bruch des ganzen Kuchens hat sie gegessen?`,a*b,d1*d2)},
+()=>{const ds=[4,6,8,10];const d=ds[rand(0,3)];const t=d*rand(2,5);const a=rand(2,d-1);return wp(`Ein Schwimmbecken fasst ${t} hl Wasser. Es ist zu ${fracHTML(a,d)} gefüllt. Wie viele hl Wasser sind im Becken?`,(t/d)*a)},
+()=>{const d=[4,5,6,8][rand(0,3)];const t=d*rand(3,6);const a=rand(2,d-1);return wp(`Von ${t} Schülern haben ${fracHTML(a,d)} das Turnzeug dabei. Wie viele Schüler sind das?`,(t/d)*a)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2++;let a=rand(1,d1-1),b=rand(1,d2-1);if(a*d2+b*d1>=d1*d2){a=1;b=1}return fp(`${pickName()} verbringt ${fracHTML(a,d1)} des Tages in der Schule und ${fracHTML(b,d2)} mit Schlafen. Welcher Bruch des Tages bleibt übrig?`,d1*d2-a*d2-b*d1,d1*d2)},
+()=>{const d=rand(4,6),a=rand(1,d-1),k=rand(2,4);return fp(`Ein Rezept braucht ${fracHTML(a,d)} Liter Rahm. ${pickName()} kocht die ${k===2?'doppelte':k===3?'dreifache':'vierfache'} Menge. Wie viel Rahm braucht sie?`,k*a,d)},
+()=>{const d1=rand(2,4),d2=rand(2,4);const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`${pickName()} hat ${fracHTML(a,d1)} einer Pizza übrig und gibt ${fracHTML(b,d2)} davon ihrem Bruder. Welchen Bruch der ganzen Pizza bekommt der Bruder?`,a*b,d1*d2)},
+()=>{const t=[12,18,24,30][rand(0,3)];return wp(`${pickName()} hat ${t} Franken. Sie gibt ${fracHTML(1,3)} für ein Buch und ${fracHTML(1,6)} für Glace aus. Wie viele Franken bleiben ihr?`,t-t/3-t/6)},
+()=>{const d=rand(5,9),a=rand(2,d-1),b=rand(1,a-1);return fp(`Ein Wassertank ist zu ${fracHTML(a,d)} gefüllt. Nach dem Giessen sind noch ${fracHTML(b,d)} drin. Welcher Bruch wurde verbraucht?`,a-b,d)},
+()=>{const d=[3,4,6][rand(0,2)],t=d*rand(4,8);return wp(`In der Bäckerei liegen am Morgen ${t} Gipfeli. Bis zum Mittag wird ${fracHTML(1,d)} davon verkauft, am Nachmittag werden noch einmal gleich viele Gipfeli verkauft. Wie viele Gipfeli sind am Abend übrig?`,t-2*(t/d))},
+()=>{const t=12*rand(2,5);return wp(`Im Zoo leben ${t} Papageien. ${fracHTML(1,3)} davon sitzen im Baum, ${fracHTML(1,4)} baden im Wasser. Der Rest frisst Körner. Wie viele Papageien fressen Körner?`,t-t/3-t/4)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2=d1===6?5:d1+1;return fp(`Am Sporttag macht ${fracHTML(1,d1)} der Kinder beim Sprint mit und ${fracHTML(1,d2)} beim Weitsprung. Der Rest spielt Völkerball. Welcher Bruch der Kinder spielt Völkerball?`,d1*d2-d1-d2,d1*d2)},
+()=>{const t=4*rand(4,12);return wp(`Im Zeltlager sind ${t} Würstli im Vorrat. Am ersten Abend wird ${fracHTML(1,4)} des Vorrats gebraten, am zweiten Abend ${fracHTML(1,2)} des Vorrats. Wie viele Würstli bleiben übrig?`,t-t/4-t/2)},
+()=>{const d=[4,5,6][rand(0,2)],a=rand(2,d-1),t=d*rand(3,6);return wp(`Auf dem Bauernhof erntet ${pickName()} ${t} Rüebli. ${fracHTML(a,d)} davon bekommen die Hasen. Wie viele Rüebli bleiben für die Küche?`,t-(t/d)*a)},
+()=>{const d=[4,5,6][rand(0,2)],a=rand(1,d-2),t=d*rand(2,5);return wp(`Die Schulreise ist ${t} km lang. Bis zur Mittagsrast schafft die Klasse ${fracHTML(a,d)} der Strecke. Wie viele Kilometer fehlen noch bis zum Ziel?`,t-(t/d)*a)},
+()=>{const d=[3,4,6][rand(0,2)];return wp(`Die Musikstunde dauert 60 Minuten. ${fracHTML(1,2)} der Zeit übt die Klasse Flöte, ${fracHTML(1,d)} der Zeit wird gesungen. Wie viele Minuten bleiben für Rhythmusspiele?`,60-30-60/d)},
+()=>{const d1=rand(2,4),d2=rand(2,4);return fp(`In einem Brettspiel sind ${fracHTML(1,d1)} aller Karten Ereigniskarten. ${fracHTML(1,d2)} der Ereigniskarten glitzert golden. Welcher Bruch aller Karten glitzert golden?`,1,d1*d2)},
+()=>{const d=rand(6,10),a=rand(2,d-3),b=rand(1,d-a-1);return fp(`Eine Rakete fliegt zum Mond. Am ersten Tag schafft sie ${fracHTML(a,d)} des Weges, am zweiten Tag ${fracHTML(b,d)}. Welcher Bruch des Weges fehlt noch?`,d-a-b,d)},
+()=>{const d=[3,4,6][rand(0,2)],t=2*d*rand(2,5);return wp(`Eine Piratenbande findet eine Truhe mit ${t} Goldmünzen. ${fracHTML(1,d)} der Münzen bekommt der Kapitän, die Hälfte des Restes wird auf der Insel vergraben. Wie viele Münzen bleiben in der Truhe?`,(t-t/d)/2)},
+()=>{let d1=rand(3,6),d2=rand(3,6);if(d1===d2)d2=d1===6?5:d1+1;const a=rand(1,d1-1),b=rand(1,d2-1);return fp(`Beim Fest auf der Ritterburg trinkt ein Ritter ${fracHTML(a,d1)} Liter Most und ein Knappe ${fracHTML(b,d2)} Liter. Wie viel Most trinken die beiden zusammen?`,a*d2+b*d1,d1*d2)},
+()=>{const d=[2,3][rand(0,1)],t=2*d*rand(2,6);return wp(`Im Zirkus treten ${t} Tiere auf. ${fracHTML(1,d)} davon sind Pferde, und die Hälfte der Pferde ist weiss. Wie viele weisse Pferde treten auf?`,t/d/2)},
+()=>{const d=rand(5,6),a=rand(1,3),b=rand(1,d-a-1),t=d*rand(3,8);return wp(`Am Glace-Stand werden ${t} Kugeln Glace verkauft. ${fracHTML(a,d)} davon sind Schoggi, ${fracHTML(b,d)} sind Erdbeer. Wie viele Kugeln sind andere Sorten?`,t-(t/d)*(a+b))},
+()=>{const d=rand(4,6),a=rand(1,d-1),k=rand(2,3),n=pickName();return fp(`Eine Velorunde ums Quartier ist ${fracHTML(a,d)} km lang. ${n} fährt die Runde ${k} Mal. Wie viel km fährt ${n} insgesamt?`,k*a,d)},
+()=>{const d=rand(3,6),n=pickName();return fp(`Für den Znüni nimmt ${n} ${fracHTML(1,2)} eines Zopfs mit. In der Pause isst ${n} ${fracHTML(1,d)} des ganzen Zopfs. Welcher Bruch des Zopfs bleibt ${n} vom Znüni übrig?`,d-2,2*d)},
 ];
 
 // ============ VOLUMEN: Operationen ============
@@ -296,6 +373,28 @@ const V_TEMPLATES_EASY=[
 ()=>{const a=rand(1,3);return vTask(`Eine Wasserflasche fasst ${a} l. Wie viele ml sind das?`,'',a*1000,'ml')},
 ()=>{const a=rand(1,5);return vTask(`Ein Becher Yoghurt hat ${a} dl. Wie viele ml sind das?`,'',a*100,'ml')},
 ()=>{const a=rand(2,5);return vTask(`Eine Karaffe fasst ${a} l. Wie viele dl sind das?`,'',a*10,'dl')},
+()=>{const a=rand(1,4),b=rand(1,5);return vTask(`${pickName()} füllt ${a} l Wasser in die Vogeltränke und später noch ${b} l. Wie viel Wasser hat sie eingefüllt?`,'',a+b,'l')},
+()=>{const a=rand(2,6),b=rand(1,3);return vTask(`In der Regentonne sind ${a} hl Wasser. Es regnet ${b} hl dazu. Wie viel Wasser ist in der Tonne?`,'',a+b,'hl')},
+()=>{const a=rand(20,60),b=rand(5,15);return vTask(`In der Thermosflasche sind ${a} cl Tee. ${pickName()} trinkt ${b} cl. Wie viel Tee bleibt?`,'',a-b,'cl')},
+()=>{const a=rand(3,7)*100,b=rand(1,2)*100;return vTask(`Ein Duschgel enthält ${a} ml. Die Familie verbraucht ${b} ml. Wie viel ist noch in der Flasche?`,'',a-b,'ml')},
+()=>{const a=rand(2,9);return vTask(`Wie viele Liter sind ${a} hl?`,'',a*100,'l')},
+()=>{const a=rand(2,9);return vTask(`Wie viele ml sind ${a} cl?`,'',a*10,'ml')},
+()=>{const a=rand(2,5),b=rand(1,4);return vTask(`In der Bäckerei giesst der Bäcker ${a} dl Milch und ${b} dl Rahm in den Teig. Wie viel Flüssigkeit kommt in den Teig?`,'',a+b,'dl')},
+()=>{const a=rand(1,5),b=rand(1,4);return vTask(`Im Zoo trinken die Elefanten am Morgen ${a} hl Wasser und am Abend ${b} hl. Wie viel Wasser trinken die Elefanten an diesem Tag?`,'',a+b,'hl')},
+()=>{const a=rand(4,9),b=rand(1,a-1);return vTask(`Am Sporttag füllt ${pickName()} die Trinkflasche mit ${a} dl Sirup. In der Pause sind ${b} dl getrunken. Wie viel Sirup ist noch in der Flasche?`,'',a-b,'dl')},
+()=>{const a=rand(2,5),b=rand(1,4);return vTask(`Am Geburtstagsfest mischt die Mutter ${a} l Orangensaft mit ${b} l Mineralwasser. Wie viel Fruchtpunsch gibt das?`,'',a+b,'l')},
+()=>{const a=rand(2,5),b=rand(2,4);return vTask(`Auf dem Bauernhof gibt die Ziege Bella am Morgen ${a} l Milch und am Abend ${b} l. Wie viel Milch gibt Bella an diesem Tag?`,'',a+b,'l')},
+()=>{const a=rand(30,90),b=rand(10,20);return vTask(`Auf der Schulreise hat ${pickName()} ${a} cl Eistee dabei. Beim Znüni sind ${b} cl getrunken. Wie viel Eistee ist noch da?`,'',a-b,'cl')},
+()=>{const a=rand(3,9),b=rand(1,a-1);return vTask(`Im Garten ist das Planschbecken mit ${a} hl Wasser gefüllt. Zum Putzen werden ${b} hl abgelassen. Wie viel Wasser bleibt im Becken?`,'',a-b,'hl')},
+()=>{const a=rand(5,9),b=rand(1,a-1);return vTask(`Im Mostfass am Marktstand sind am Morgen ${a} l Most. Am Abend sind noch ${b} l übrig. Wie viel Most wurde verkauft?`,'',a-b,'l')},
+()=>{const a=rand(4,9)*100,b=rand(1,a/100-1)*100;return vTask(`Im Raumschiff hat die Astronautin einen Trinkbeutel mit ${a} ml Wasser. Beim Frühstück sind ${b} ml getrunken. Wie viel Wasser ist noch im Beutel?`,'',a-b,'ml')},
+()=>{const a=rand(5,9),b=rand(1,4);return vTask(`Die Piraten haben ein Fass mit ${a} l Trinkwasser an Bord. Im Sturm gehen ${b} l verloren. Wie viel Trinkwasser bleibt im Fass?`,'',a-b,'l')},
+()=>{const a=rand(2,5),b=rand(1,4);return vTask(`Beim Fest auf der Ritterburg giesst der Koch ${a} dl Apfelmost und ${b} dl Traubensaft in einen Krug. Wie viel Festtrank ist im Krug?`,'',a+b,'dl')},
+()=>{const a=rand(2,5),b=rand(2,4);return vTask(`Im Zirkus braucht die Nebelmaschine am Nachmittag ${a} l Wasser und am Abend ${b} l. Wie viel Wasser braucht die Maschine insgesamt?`,'',a+b,'l')},
+()=>{const a=rand(2,9);return vTask(`Der Tank des Feuerwehrautos fasst ${a} hl Wasser. Wie viele Liter sind das?`,'',a*100,'l')},
+()=>{const a=rand(10,50),b=rand(10,40);return vTask(`In der Malstunde mischt ${pickName()} ${a} cl Wasser mit ${b} cl blauer Farbe. Wie viel Farbwasser gibt das?`,'',a+b,'cl')},
+()=>{const a=rand(1,5)*100,b=rand(1,9-a/100)*100;return vTask(`Am Glace-Stand mixt die Verkäuferin einen Frappé aus ${a} ml Milch und ${b} ml Erdbeer-Glace. Wie viel Frappé gibt das?`,'',a+b,'ml')},
+()=>{const a=rand(2,9);return vTask(`Beim Coiffeur enthält eine kleine Shampooflasche ${a} cl. Wie viele ml sind das?`,'',a*10,'ml')},
 ];
 const V_TEMPLATES_MEDIUM=[
 ()=>{const a=rand(1,3),b=rand(1,9)*100;return vTask(`${pickName()}s Wasserflasche enthält ${a} l. Sie giesst noch ${b} ml dazu. Wie viel Wasser ist nun in der Flasche?`,'',a*1000+b,'ml')},
@@ -332,6 +431,27 @@ const V_TEMPLATES_MEDIUM=[
 ()=>{const d=[2,4,5][rand(0,2)],a=rand(1,9);return vTask(`${a*d} dl Tee werden auf ${d} Tassen verteilt. Wie viel Tee ist in einer Tasse?`,'',a,'dl')},
 ()=>{const d=[2,3,4][rand(0,2)],a=rand(1,3);return vTask(`Eine Suppenpfanne hat ${a*d} l und wird auf ${d} Schüsseln verteilt. Wie viel Suppe in einer Schüssel?`,'',a,'l')},
 ()=>{const d=[2,4,5][rand(0,2)],a=rand(50,200);return vTask(`Eine Cola-Flasche hat ${a*d} ml. Sie wird auf ${d} Personen verteilt. Wie viel bekommt jede?`,'',a,'ml')},
+()=>{const a=rand(1,3),b=rand(1,9);return vTask(`Mit dem Gartenschlauch füllt ${pickName()} zuerst ${a} l und dann noch ${b} dl in die Giesskanne. Wie viel Wasser ist in der Kanne?`,'',a*10+b,'dl')},
+()=>{const a=rand(1,2),b=rand(10,90);return vTask(`${pickName()} kauft ${a} l Milch und ${b} cl Rahm. Wie viel ist das zusammen?`,'',a*100+b,'cl')},
+()=>{const a=rand(2,5),b=rand(2,8);return vTask(`Ein Kübel enthält ${a} l Wasser. ${pickName()} giesst ${b} dl davon in die Blumentöpfe. Wie viel bleibt im Kübel?`,'',a*10-b,'dl')},
+()=>{const a=rand(2,4),b=rand(10,40);return vTask(`Für ${a} Gläser Sirup braucht es je ${b} cl. Wie viel Sirup wird gebraucht?`,'',a*b,'cl')},
+()=>{const d=[2,3,4][rand(0,2)],a=rand(1,3)*100;return vTask(`${a*d} ml Suppe werden gleichmässig in ${d} Tassen gefüllt. Wie viel Suppe ist in jeder Tasse?`,'',a,'ml')},
+()=>{const a=rand(1,4),b=rand(1,9);return vTask(`In der Bäckerei giesst ${pickName()} ${a} l Milch und ${b} dl Wasser in den Teig. Wie viel Flüssigkeit kommt in den Teig?`,'',a*10+b,'dl')},
+()=>{const a=rand(2,5),b=rand(1,9);return vTask(`Im Zoo füllt der Tierpfleger ${a} l Wasser in den Trog. Die Ziege trinkt ${b} dl. Wie viel Wasser ist noch im Trog?`,'',a*10-b,'dl')},
+()=>{const a=rand(2,4),b=rand(10,90);return vTask(`Am Sporttag steht ein Kübel mit ${a} l Sirup bereit. Die Kinder trinken ${b} cl. Wie viel Sirup bleibt im Kübel?`,'',a*100-b,'cl')},
+()=>{const a=rand(1,3),b=rand(1,9)*100;return vTask(`Im Zeltlager kocht ${pickName()} ${a} l Tee und giesst ${b} ml kaltes Wasser dazu. Wie viel Flüssigkeit ist es jetzt?`,'',a*1000+b,'ml')},
+()=>{const a=rand(2,4),b=rand(1,8);return vTask(`Auf dem Bauernhof füllt ${pickName()} am Morgen ${a} l Milch in die Kanne und am Abend noch ${b} dl dazu. Wie viel Milch ist in der Kanne?`,'',a*10+b,'dl')},
+()=>{const a=rand(3,6),b=rand(20,30);return vTask(`Auf der Schulreise trinken ${a} Kinder je ${b} cl Apfelsaft. Wie viel Apfelsaft trinken sie zusammen?`,'',a*b,'cl')},
+()=>{const d=[2,3,4][rand(0,2)],a=rand(1,3)*100;return vTask(`Im Hallenbad kauft ${pickName()} eine Flasche mit ${a*d} ml Eistee für ${d} Kinder. Alle bekommen gleich viel. Wie viel bekommt jedes Kind?`,'',a,'ml')},
+()=>{const a=rand(1,2),b=rand(10,90);return vTask(`Am Markt verkauft ein Stand frischen Most. In der Kanne sind ${a} l. Ein Kunde kauft ${b} cl. Wie viel Most ist noch in der Kanne?`,'',a*100-b,'cl')},
+()=>{const a=rand(3,5),b=rand(1,5)*100;return vTask(`Eine Astronautin hat ${a} Trinkbeutel mit je ${b} ml Wasser dabei. Wie viel Wasser ist das insgesamt?`,'',a*b,'ml')},
+()=>{const d=[2,4,5][rand(0,2)],a=rand(2,9);return vTask(`${d} Piraten teilen einen Krug mit ${a*d} dl Apfelsaft gerecht untereinander auf. Wie viel bekommt jeder Pirat?`,'',a,'dl')},
+()=>{const a=rand(2,5),b=rand(2,9);return vTask(`Auf der Ritterburg hängt ein Kessel mit ${a} l Suppe über dem Feuer. Der Koch schöpft ${b} dl heraus. Wie viel Suppe ist noch im Kessel?`,'',a*10-b,'dl')},
+()=>{const a=rand(1,3),b=rand(1,9);return vTask(`Im Zirkus füllt der Clown ${a} l Wasser in den Spritzeimer und giesst noch ${b} dl dazu. Wie viel Wasser ist im Spritzeimer?`,'',a*10+b,'dl')},
+()=>{const a=rand(2,5),b=rand(2,4);return vTask(`Bei der Feuerwehrübung füllen die Kinder ${a} Eimer mit je ${b} l Wasser. Wie viel Wasser ist das insgesamt?`,'',a*b,'l')},
+()=>{const a=rand(2,6),b=rand(1,4)*100;return vTask(`Im Malatelier stellt ${pickName()} einen Krug mit ${a} dl Wasser für die Pinsel bereit und giesst ${b} ml frisches Wasser dazu. Wie viel Wasser ist im Krug?`,'',a*100+b,'ml')},
+()=>{const d=[2,3,4][rand(0,2)],a=rand(10,25);return vTask(`Am Geburtstagsfest verteilt ${pickName()} ${a*d} cl Punsch gleichmässig auf ${d} Becher. Wie viel Punsch ist in jedem Becher?`,'',a,'cl')},
+()=>{const a=rand(1,3),b=rand(1,9);return vTask(`Im Skilager nimmt ${pickName()} eine Thermosflasche mit ${a} l heisser Schoggi auf die Piste mit. Unterwegs werden ${b} dl getrunken. Wie viel Schoggi ist noch in der Flasche?`,'',a*10-b,'dl')},
 ];
 const V_TEMPLATES_HARD=[
 ()=>{const a=rand(1,2),b=rand(1,9),c=rand(50,200);return vTask(`Beim Backen braucht ${pickName()} ${a} l Milch, ${b} dl Sahne und ${c} ml Wasser. Wie viel Flüssigkeit ist das insgesamt?`,'',a*1000+b*100+c,'ml')},
@@ -364,12 +484,36 @@ const V_TEMPLATES_HARD=[
 ()=>{const a=rand(2,4);return vTask(`Eine Suppenpfanne enthält ${a} l Suppe. Es werden 8 Schüsseln mit je 2 dl gefüllt. Wie viel Suppe bleibt in der Pfanne?`,'',a*10-8*2,'dl')},
 ()=>{const a=rand(1,3);return vTask(`Eine Familie nimmt auf eine Wanderung 2 Wasserflaschen à 1 l 5 dl mit. Sie trinken ${a*5} dl. Wie viel Wasser ist noch übrig?`,'',2*15-a*5,'dl')},
 ()=>{const a=rand(2,5);return vTask(`Eine Wasserflasche fasst 1 l 5 dl. ${pickName()} hat schon ${a} dl getrunken. Wie viel ist noch drin?`,'',15-a,'dl')},
+()=>{const a=rand(1,2),b=rand(1,9),c=rand(1,9);return vTask(`Ein Kanister enthält ${a} l ${b} dl Wasser. ${pickName()} braucht ${c} dl zum Kochen. Wie viel Wasser bleibt (in dl)?`,'',a*10+b-c,'dl')},
+()=>{const a=rand(2,4),b=rand(2,5);return vTask(`${a} Freunde trinken je ${b} dl Most. Wie viele cl Most trinken sie zusammen?`,'',a*b*10,'cl')},
+()=>{const a=rand(1,3);return vTask(`Ein Brunnen spuckt pro Minute ${a} l Wasser. Wie viele dl sind das in 5 Minuten?`,'',a*5*10,'dl')},
+()=>{const a=rand(2,5);return vTask(`Eine Regentonne fasst ${a} hl. Wie viele Liter sind das?`,'',a*100,'l')},
+()=>{const a=rand(1,2),b=rand(1,9),c=rand(50,300);return vTask(`Eine Hexe braut einen Zaubertrank aus ${a} l Quellwasser, ${b} dl Beerensaft und ${c} ml Morgentau. Wie viele ml Zaubertrank sind das insgesamt?`,'',a*1000+b*100+c,'ml')},
+()=>{const a=rand(2,4),b=rand(3,8),c=rand(3,8);return vTask(`Der Tierpfleger im Zoo füllt einen Kessel mit ${a} l Wasser. Das Zebra trinkt ${b} dl, der Esel trinkt ${c} dl. Wie viele dl Wasser bleiben im Kessel?`,'',a*10-b-c,'dl')},
+()=>{const a=rand(3,5),b=rand(5,12),c=rand(5,12);return vTask(`Am Sporttag mischt ${pickName()} ${a} l Sirup. Am Morgen trinken die Kinder ${b} dl, am Nachmittag ${c} dl. Wie viele dl bleiben übrig?`,'',a*10-b-c,'dl')},
+()=>{const a=rand(4,6),b=rand(3,5),c=rand(2,4);return vTask(`In der Bibliothek steht ein Wasserspender mit ${a} l Wasser. ${b} Kinder zapfen je ${c} dl. Wie viele dl Wasser bleiben im Spender?`,'',a*10-b*c,'dl')},
+()=>{const a=rand(2,4),b=rand(1,9),c=rand(100,400);return vTask(`Im Zeltlager kocht ${pickName()} für die Gruppe Punsch aus ${a} l Tee, ${b} dl Apfelsaft und ${c} ml Zitronensaft. Wie viele ml Punsch sind das insgesamt?`,'',a*1000+b*100+c,'ml')},
+()=>{const a=rand(5,9);return vTask(`Auf dem Bauernhof gibt eine Ziege pro Tag ${a} dl Milch. Wie viele dl Milch gibt die Ziege in einer Woche?`,'',a*7,'dl')},
+()=>{const d=[2,4,5][rand(0,2)],a=rand(1,3);return vTask(`Auf der Schulreise werden ${a} l Eistee gerecht auf ${d} Kinder verteilt. Wie viele cl Eistee bekommt jedes Kind?`,'',a*100/d,'cl')},
+()=>{const a=2*rand(1,4);return vTask(`Das Planschbecken im Hallenbad fasst ${a} hl. Es ist erst zur Hälfte gefüllt. Wie viele hl Wasser fehlen noch, bis es voll ist?`,'',a/2,'hl')},
+()=>{const a=rand(20,30),b=rand(5,9),c=rand(5,9);return vTask(`Ein Stand auf dem Markt hat ein Fass mit ${a} l Most. Am Morgen werden ${b} l verkauft, am Nachmittag ${c} l. Wie viele l Most bleiben im Fass?`,'',a-b-c,'l')},
+()=>{const a=rand(50,90);return vTask(`Auf der Raumstation trinkt ein Astronaut pro Tag ${a} cl Wasser aus einem Trinkbeutel. Wie viele cl sind das in einer Woche?`,'',a*7,'cl')},
+()=>{const k=rand(1,2),a=4*k;return vTask(`Ein Piratenfass fasst ${a} l. Es ist nur zu einem Viertel mit Trinkwasser gefüllt. Wie viele dl Trinkwasser sind im Fass?`,'',k*10,'dl')},
+()=>{const a=rand(1,3),b=rand(1,9),c=rand(10,80);return vTask(`Für das Fest auf der Ritterburg mischt der Koch ${a} l Traubensaft, ${b} dl Wasser und ${c} cl Honigsirup. Wie viele cl Festtrank gibt das insgesamt?`,'',a*100+b*10+c,'cl')},
+()=>{const a=rand(2,4),b=rand(2,4);return vTask(`Der Clown im Zirkus verspritzt in jeder Vorstellung ${a} dl Wasser aus seiner Spritzblume. Wie viele ml Wasser sind das bei ${b} Vorstellungen?`,'',a*100*b,'ml')},
+()=>{const a=rand(8,12),b=rand(2,4),c=rand(2,3);return vTask(`Der Tank des Feuerwehrautos enthält ${a} hl Wasser. Bei der Übung verspritzt die Feuerwehr zuerst ${b} hl und dann ${c} hl. Wie viele hl bleiben im Tank?`,'',a-b-c,'hl')},
+()=>{const a=rand(2,5),b=rand(10,40);return vTask(`Im Malatelier mischt die Klasse Fingerfarbe aus ${a} dl Wasser und ${b} cl flüssiger Farbe. Wie viele ml Fingerfarbe gibt das?`,'',a*100+b*10,'ml')},
+()=>{const a=rand(50,150);return vTask(`Ein Welpe bekommt morgens und abends je ${a} ml Milch aus dem Schoppen. Wie viele ml Milch trinkt der Welpe in einer Woche?`,'',a*14,'ml')},
 ];
 
 let currentTopic=null,currentLevel=null,currentTask=null,attempts=0;
-function generateTask(){if(currentTopic==='volumen')return generateVolumeTask(currentLevel);return generateFractionTask(currentLevel)}
-function generateFractionTask(lv){if(Math.random()<0.5){const p=lv==='easy'?TEMPLATES_EASY:lv==='medium'?TEMPLATES_MEDIUM:TEMPLATES_HARD;return p[rand(0,p.length-1)]()}let ops;if(lv==='easy')ops=[addSame,addSame,subSame,subSame,addDiff];else if(lv==='medium')ops=[addDiff,addDiff,subDiff,subDiff,mulFrac,divFrac,addSame,subSame];else ops=[addDiff,subDiff,mulFrac,divFrac,mixedAdd,mixedSub];return ops[rand(0,ops.length-1)](lv)}
-function generateVolumeTask(lv){if(Math.random()<0.5){const p=lv==='easy'?V_TEMPLATES_EASY:lv==='medium'?V_TEMPLATES_MEDIUM:V_TEMPLATES_HARD;let t,i=0;do{t=p[rand(0,p.length-1)]();i++}while(!t&&i<10);return t}let ops;if(lv==='easy')ops=[vAddSameOp,vAddSameOp,vSubSameOp,vSubSameOp,vConvertOp];else if(lv==='medium')ops=[vAddDiffOp,vAddDiffOp,vSubDiffOp,vSubDiffOp,vMulOp,vDivOp,vConvertOp];else ops=[vAddDiffOp,vSubDiffOp,vMulOp,vDivOp];return ops[rand(0,ops.length-1)]()}
+// Anti-Wiederholung: kein Template doppelt innerhalb des Fensters, keine identische Aufgabe innerhalb der letzten 30
+const recentTplIdx={},recentSigs=[];
+function pickFrom(pool,key){const rec=recentTplIdx[key]||(recentTplIdx[key]=[]);const win=Math.min(pool.length-1,Math.floor(pool.length*0.6));let i=rand(0,pool.length-1),tries=0;while(rec.includes(i)&&tries<30){i=rand(0,pool.length-1);tries++}rec.push(i);while(rec.length>win)rec.shift();return pool[i]}
+function taskSig(t){return(t.text||'')+'|'+(t.equation||'')+'|'+(t.correctNum!==undefined?t.correctNum+'/'+t.correctDen:t.correctValue+''+(t.correctUnit||''))}
+function generateTask(){for(let i=0;i<20;i++){const t=currentTopic==='volumen'?generateVolumeTask(currentLevel):generateFractionTask(currentLevel);if(!t)continue;const sig=taskSig(t);if(recentSigs.includes(sig))continue;recentSigs.push(sig);while(recentSigs.length>30)recentSigs.shift();return t}return currentTopic==='volumen'?vAddSameOp():addSame(currentLevel)}
+function generateFractionTask(lv){if(Math.random()<0.5){const p=lv==='easy'?TEMPLATES_EASY:lv==='medium'?TEMPLATES_MEDIUM:TEMPLATES_HARD;return pickFrom(p,'ft-'+lv)()}let ops;if(lv==='easy')ops=[addSame,addSame,subSame,subSame,addDiff,simplifyFrac,fracOfNumber];else if(lv==='medium')ops=[addDiff,addDiff,subDiff,subDiff,mulFrac,divFrac,addSame,subSame,simplifyFrac,mulFracWhole,fracOfNumber];else ops=[addDiff,subDiff,mulFrac,divFrac,mixedAdd,mixedSub,mulFracWhole,fracOfNumber];return pickFrom(ops,'fo-'+lv)(lv)}
+function generateVolumeTask(lv){if(Math.random()<0.5){const p=lv==='easy'?V_TEMPLATES_EASY:lv==='medium'?V_TEMPLATES_MEDIUM:V_TEMPLATES_HARD;let t,i=0;do{t=pickFrom(p,'vt-'+lv)();i++}while(!t&&i<10);return t}let ops;if(lv==='easy')ops=[vAddSameOp,vAddSameOp,vSubSameOp,vSubSameOp,vConvertOp];else if(lv==='medium')ops=[vAddDiffOp,vAddDiffOp,vSubDiffOp,vSubDiffOp,vMulOp,vDivOp,vConvertOp];else ops=[vAddDiffOp,vSubDiffOp,vMulOp,vDivOp,vConvertOp];return pickFrom(ops,'vo-'+lv)()}
 
 const questionText=document.getElementById('questionText'),equationEl=document.getElementById('equation'),submitBtn=document.getElementById('submitBtn'),nextBtn=document.getElementById('nextBtn'),feedbackEl=document.getElementById('feedback');
 function renderTask(t){attempts=0;questionText.innerHTML=t.text||'';questionText.style.display=t.text?'block':'none';let h;if(t.answerType==='fraction')h=`<span class="input-fraction"><input type="number" id="numInput" placeholder="?" autofocus><span class="bar"></span><input type="number" id="denInput" placeholder="?"></span>`;else if(t.answerType==='volume')h=`<span class="input-volume"><input type="number" id="wholeInput" placeholder="?" autofocus><span class="vol-unit-label">${t.correctUnit}</span></span>`;else h=`<span class="input-whole"><input type="number" id="wholeInput" placeholder="?" autofocus></span>`;equationEl.innerHTML=(t.equation||'')+' '+h;feedbackEl.style.display='none';feedbackEl.className='feedback';submitBtn.style.display='inline-block';nextBtn.style.display='none';setTimeout(()=>{const f=document.getElementById('numInput')||document.getElementById('wholeInput');if(f)f.focus()},50);document.querySelectorAll('#equation input').forEach(i=>{i.addEventListener('keydown',e=>{if(e.key==='Enter'){if(nextBtn.style.display!=='none')nextTask();else checkAnswer()}})})}
