@@ -2,30 +2,49 @@
 <html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mathe-Training für Nea</title>
+<meta name="description" content="Mathe-Training für Nea – üben, bis es sitzt.">
+<meta name="theme-color" content="#0d9488">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://42.ai/nea/">
+<meta property="og:title" content="Mathe-Training für Nea">
+<meta property="og:description" content="Üben, bis es sitzt.">
+<meta property="og:image" content="https://42.ai/nea/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(135deg,#e6fcf5 0%,#e8f4ff 100%);margin:0;padding:20px;min-height:100vh;color:#2d2d44}
+body{font-family:Outfit,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(135deg,#e6faf8 0%,#e8f4ff 100%);margin:0;padding:20px;min-height:100vh;color:#2d2d44}
 .container{max-width:700px;margin:0 auto}
 header{text-align:center;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
-h1{font-size:26px;margin:0;color:#0ca678}
-.level-badge{background:white;color:#0ca678;border:2px solid #0ca678;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600}
+.brand{width:40px;height:40px;flex:0 0 auto;filter:drop-shadow(0 3px 8px rgba(13,148,136,0.3))}
+h1{letter-spacing:-0.01em;font-weight:700}
+h1{font-size:26px;margin:0;color:#0d9488}
+.level-badge{background:white;color:#0d9488;border:2px solid #0d9488;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600}
 .overlay{position:fixed;inset:0;background:rgba(45,45,68,0.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
 .overlay.hidden{display:none}
 .modal{background:white;border-radius:20px;padding:28px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center;max-height:90vh;overflow-y:auto}
-.modal h2{margin:0 0 20px 0;color:#0ca678;font-size:24px}
+.modal h2{margin:0 0 20px 0;color:#0d9488;font-size:24px}
 .modal-section{margin-bottom:20px}
 .modal-section h3{margin:0 0 10px 0;font-size:14px;color:#495057;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
 .choice-grid{display:grid;gap:8px}
-.choice-grid.topics{grid-template-columns:1fr 1fr}
+.choice-grid.topics{grid-template-columns:repeat(3,1fr)}
+@media(max-width:430px){.choice-grid.topics{grid-template-columns:1fr}}
 .choice-grid.levels{grid-template-columns:1fr 1fr 1fr}
 .choice-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 10px;background:white;border:2px solid #ced4da;border-radius:12px;cursor:pointer;transition:all 0.15s;font-family:inherit;color:inherit}
-.choice-btn:hover{border-color:#0ca678;background:#e6fcf5}
-.choice-btn.selected{border-color:#0ca678;background:#c3fae8;box-shadow:0 0 0 3px rgba(12,166,120,0.2)}
+.choice-btn:hover{border-color:#0d9488;background:#e6faf8}
+.choice-btn.selected{border-color:#0d9488;background:#b5f2ec;box-shadow:0 0 0 3px rgba(13,148,136,0.2)}
 .choice-btn .icon{font-size:26px}
 .choice-btn .title{font-weight:600;font-size:15px}
 .choice-btn .desc{font-size:11px;color:#868e96;text-align:center;line-height:1.3}
-.modal-start-btn{width:100%;margin-top:8px;background:#0ca678;color:white;border:none;padding:14px;border-radius:12px;font-size:17px;font-weight:600;cursor:pointer;transition:all 0.15s}
-.modal-start-btn:hover:not(:disabled){background:#099268;transform:translateY(-1px)}
+.modal-start-btn{width:100%;margin-top:8px;background:#0d9488;color:white;border:none;padding:14px;border-radius:12px;font-size:17px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.modal-start-btn:hover:not(:disabled){background:#0b7f75;transform:translateY(-1px)}
 .modal-start-btn:disabled{opacity:0.4;cursor:not-allowed}
 .card{background:white;border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:16px}
 .question-text{font-size:17px;line-height:1.55;margin-bottom:16px;text-align:center;min-height:24px}
@@ -48,19 +67,23 @@ h1{font-size:26px;margin:0;color:#0ca678}
 .question-text .mixed .whole::after{content:'\00a0'}
 .question-text .vol-unit{font-size:0.9em}
 .input-fraction{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
-.input-fraction input{width:72px;height:50px;font-size:28px;text-align:center;border:2px solid #0ca678;border-radius:8px;margin:2px 0;font-family:inherit;padding:0}
-.input-fraction input:focus{outline:none;border-color:#099268;box-shadow:0 0 0 3px rgba(12,166,120,0.2)}
-.input-fraction .bar{width:72px;height:3px;background:#0ca678;border-radius:2px;margin:4px 0}
+.input-fraction input{width:72px;height:50px;font-size:28px;text-align:center;border:2px solid #0d9488;border-radius:8px;margin:2px 0;font-family:inherit;padding:0}
+.input-fraction input:focus{outline:none;border-color:#0b7f75;box-shadow:0 0 0 3px rgba(13,148,136,0.2)}
+.input-fraction .bar{width:72px;height:3px;background:#0d9488;border-radius:2px;margin:4px 0}
 .input-whole{display:inline-flex;align-items:center}
-.input-whole input{width:110px;height:60px;font-size:30px;text-align:center;border:2px solid #0ca678;border-radius:8px;font-family:inherit}
-.input-whole input:focus{outline:none;border-color:#099268;box-shadow:0 0 0 3px rgba(12,166,120,0.2)}
+.input-whole input{width:110px;height:60px;font-size:30px;text-align:center;border:2px solid #0d9488;border-radius:8px;font-family:inherit}
+.input-whole input:focus{outline:none;border-color:#0b7f75;box-shadow:0 0 0 3px rgba(13,148,136,0.2)}
 .input-volume{display:inline-flex;align-items:center;gap:8px}
-.input-volume input{width:110px;height:60px;font-size:30px;text-align:center;border:2px solid #0ca678;border-radius:8px;font-family:inherit}
-.input-volume input:focus{outline:none;border-color:#099268;box-shadow:0 0 0 3px rgba(12,166,120,0.2)}
+.input-volume input{width:110px;height:60px;font-size:30px;text-align:center;border:2px solid #0d9488;border-radius:8px;font-family:inherit}
+.input-volume input:focus{outline:none;border-color:#0b7f75;box-shadow:0 0 0 3px rgba(13,148,136,0.2)}
 .input-volume .vol-unit-label{font-size:22px;font-weight:500;color:#495057}
+.input-num{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.input-num input{width:140px;height:60px;font-size:28px;text-align:center;border:2px solid #0d9488;border-radius:8px;font-family:inherit;padding:0 6px}
+.input-num input:focus{outline:none;border-color:#0b7f75;box-shadow:0 0 0 3px rgba(13,148,136,0.2)}
+.input-num .unit{font-size:20px;font-weight:500;color:#495057}
 .actions{display:flex;gap:12px;justify-content:center;margin-top:24px}
-button.primary{background:#0ca678;color:white;border:none;padding:14px 32px;border-radius:12px;font-size:18px;font-weight:600;cursor:pointer;transition:all 0.15s}
-button.primary:hover{background:#099268;transform:translateY(-1px)}
+button.primary{background:#0d9488;color:white;border:none;padding:14px 32px;border-radius:12px;font-size:18px;font-weight:600;cursor:pointer;transition:all 0.15s}
+button.primary:hover{background:#0b7f75;transform:translateY(-1px)}
 button.secondary{background:white;color:#495057;border:2px solid #ced4da;padding:12px 24px;border-radius:12px;font-size:16px;cursor:pointer}
 .feedback{text-align:center;padding:16px;border-radius:12px;margin-top:16px;font-size:16px;font-weight:500;min-height:24px}
 .feedback.correct{background:#d3f9d8;color:#2b8a3e;border:2px solid #69db7c}
@@ -69,11 +92,11 @@ button.secondary{background:white;color:#495057;border:2px solid #ced4da;padding
 .stats h2{margin:0 0 6px 0;font-size:11px;color:#868e96;text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
 .agg-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px}
 .agg-cell{background:#f8f9fa;border-radius:6px;padding:5px 4px;text-align:center}
-.agg-cell .num{font-size:16px;font-weight:700;color:#0ca678;line-height:1.1}
+.agg-cell .num{font-size:16px;font-weight:700;color:#0d9488;line-height:1.1}
 .agg-cell .label{font-size:9px;color:#868e96;text-transform:uppercase;margin-top:1px}
 .chart-title{font-size:10px;color:#868e96;margin:6px 0 3px 0;font-weight:500;text-transform:uppercase;letter-spacing:0.3px}
 .chart{display:grid;grid-template-columns:repeat(14,1fr);gap:3px;align-items:end;height:42px;padding:2px;border-bottom:1px solid #dee2e6}
-.chart-bar{position:relative;background:linear-gradient(to top,#0ca678,#38d9a9);border-radius:3px 3px 0 0;min-height:2px;cursor:pointer;transition:opacity 0.15s}
+.chart-bar{position:relative;background:linear-gradient(to top,#0d9488,#2dd4cd);border-radius:3px 3px 0 0;min-height:2px;cursor:pointer;transition:opacity 0.15s}
 .chart-bar.empty{background:#e9ecef}
 .chart-bar:hover{opacity:0.8}
 .chart-bar:hover::after{content:attr(data-tooltip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#2d2d44;color:white;padding:4px 8px;border-radius:4px;font-size:12px;white-space:nowrap;margin-bottom:4px;z-index:10}
@@ -97,9 +120,9 @@ button.secondary{background:white;color:#495057;border:2px solid #ced4da;padding
 .pw-mod .icon{font-size:48px;margin-bottom:12px}
 .pw-mod h2{margin:0 0 20px 0;color:#495057;font-size:22px}
 .pw-mod input{width:100%;padding:14px;font-size:18px;border:2px solid #ced4da;border-radius:10px;margin-bottom:12px;font-family:inherit;text-align:center}
-.pw-mod input:focus{outline:none;border-color:#0ca678}
-.pw-mod button{width:100%;padding:14px;font-size:18px;font-weight:600;background:#0ca678;color:white;border:none;border-radius:10px;cursor:pointer}
-.pw-mod button:hover{background:#099268}
+.pw-mod input:focus{outline:none;border-color:#0d9488}
+.pw-mod button{width:100%;padding:14px;font-size:18px;font-weight:600;background:#0d9488;color:white;border:none;border-radius:10px;cursor:pointer}
+.pw-mod button:hover{background:#0b7f75}
 .pw-err{color:#c92a2a;margin-top:8px;min-height:20px;font-size:14px}
 </style></head><body>
 <div class="pw-ovl" id="pwOvl"><div class="pw-mod"><div class="icon">🔒</div><h2>Passwort</h2><input type="password" id="pwInput" autocomplete="current-password"><button id="pwBtn">OK</button><div class="pw-err" id="pwErr"></div></div></div>
@@ -109,6 +132,7 @@ button.secondary{background:white;color:#495057;border:2px solid #ced4da;padding
 <div class="choice-grid topics">
 <button class="choice-btn" data-topic="brueche"><span class="icon">📐</span><span class="title">Brüche</span><span class="desc">+, −, ·, : und Textaufgaben</span></button>
 <button class="choice-btn" data-topic="volumen"><span class="icon">🥤</span><span class="title">Volumen</span><span class="desc">ml, cl, dl, l, hl</span></button>
+<button class="choice-btn" data-topic="dreisatz"><span class="icon">⚖️</span><span class="title">Dreisätze</span><span class="desc">direkt &amp; umgekehrt</span></button>
 </div></div>
 <div class="modal-section"><h3>Welche Schwierigkeit?</h3>
 <div class="choice-grid levels">
@@ -119,7 +143,7 @@ button.secondary{background:white;color:#495057;border:2px solid #ced4da;padding
 <button class="modal-start-btn" id="startBtn" disabled>Los geht's!</button>
 </div></div>
 <div class="container">
-<header><h1>Mathe-Training</h1><span class="level-badge" id="levelBadge">–</span></header>
+<header><svg class="brand" viewBox="0 0 128 128" aria-hidden="true"><defs><linearGradient id="bq" x1="0" y1="0" x2=".55" y2="1"><stop offset="0" stop-color="#3ad9cd"/><stop offset="1" stop-color="#0b9992"/></linearGradient><radialGradient id="bs" cx=".28" cy=".14" r=".9"><stop offset="0" stop-color="#ffffff" stop-opacity=".26"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient></defs><rect width="128" height="128" rx="29" fill="url(#bq)"/><rect width="128" height="128" rx="29" fill="url(#bs)"/><g fill="#ffffff"><rect x="12" y="12" width="46" height="46" rx="15"/><rect x="70" y="12" width="46" height="46" rx="15"/><rect x="12" y="70" width="46" height="46" rx="15"/><rect x="70" y="70" width="46" height="46" rx="15"/></g><g fill="none" stroke-width="8.5" stroke-linecap="round"><path d="M35 23v24M23 35h24" stroke="#0d9488"/><path d="M81 35h24" stroke="#f59e0b"/><path d="M26.5 84.5 43.5 101.5M43.5 84.5 26.5 101.5" stroke="#ec4899"/><path d="M81 93h24" stroke="#6366f1"/></g><g fill="#6366f1"><circle cx="93" cy="82.5" r="4.5"/><circle cx="93" cy="103.5" r="4.5"/></g></svg><h1>Mathe-Training</h1><span class="level-badge" id="levelBadge">–</span></header>
 <div class="card">
 <div class="question-text" id="questionText"></div>
 <div class="equation" id="equation"></div>
@@ -506,18 +530,195 @@ const V_TEMPLATES_HARD=[
 ()=>{const a=rand(50,150);return vTask(`Ein Welpe bekommt morgens und abends je ${a} ml Milch aus dem Schoppen. Wie viele ml Milch trinkt der Welpe in einer Woche?`,'',a*14,'ml')},
 ];
 
+// ============ DREISATZ: Helfer ============
+const dTask=(t,v,u,h)=>({text:t,equation:'',answerType:'num',correctValue:v,correctUnit:u||'',hint:h||''});
+const dFrc=(t,n,d,h)=>({text:t,equation:'',answerType:'fraction',correctNum:n,correctDen:d,hint:h||''});
+function chf(x){return(Math.round(x*100)/100).toFixed(2)}
+function dnum(x){return Number.isInteger(x)?String(x):String(Math.round(x*1000)/1000)}
+function rand2(lo,hi){const a=rand(lo,hi);let b=rand(lo,hi),g=0;while(b===a&&g++<60)b=rand(lo,hi);return[a,b]}
+const DCOMP=[12,16,18,20,24,30,36,40,48,60,72,80,90,96,120,144,180,240,360];
+const DSMALL=[12,16,18,20,24,30,36,40,48,60];
+function divIn(n,lo,hi){const r=[];for(let i=lo;i<=hi;i++)if(n%i===0)r.push(i);return r}
+function invPair(lo,hi,pool){pool=pool||DCOMP;for(let k=0;k<80;k++){const n=pool[rand(0,pool.length-1)];const ds=divIn(n,lo,hi).filter(x=>n/x>=2);if(ds.length>=2){const i=rand(0,ds.length-1);let j=rand(0,ds.length-1);while(j===i)j=rand(0,ds.length-1);return[n,ds[i],ds[j]]}}return[24,4,6]}
+const HD='Tipp: Rechne zuerst auf 1 herunter (÷), dann auf die gesuchte Anzahl hoch (·).';
+const HI='Tipp: Umgekehrter Dreisatz – mehr bedeutet hier weniger! Rechne zuerst das Ganze aus (Anzahl · Wert) und teile dann.';
+
+// ============ DREISATZ: Textaufgaben EINFACH ============
+const D_TEMPLATES_EASY=[
+// --- direkt: Preise ---
+()=>{const p=rand(2,9),[a,b]=rand2(2,9);return dTask(`${a} Hefte kosten ${a*p} CHF. Wie viel kosten ${b} Hefte?`,b*p,'CHF',HD)},
+()=>{const p=rand(2,8),[a,b]=rand2(2,9);return dTask(`${a} gleiche Bleistifte kosten zusammen ${a*p} CHF. Was kosten ${b} solche Bleistifte?`,b*p,'CHF',HD)},
+()=>{const p=rand(3,9),[a,b]=rand2(2,8);return dTask(`${a} kg Äpfel kosten ${a*p} CHF. Wie viel kosten ${b} kg Äpfel?`,b*p,'CHF',HD)},
+()=>{const p=rand(2,6),[a,b]=rand2(3,12);return dTask(`${a} Brötchen kosten ${a*p} CHF. Wie viel kosten ${b} Brötchen?`,b*p,'CHF',HD)},
+()=>{const p=rand(8,15),[a,b]=rand2(2,8);return dTask(`${a} Kinokarten kosten zusammen ${a*p} CHF. Was bezahlt man für ${b} Karten?`,b*p,'CHF',HD)},
+()=>{const p=rand(2,7),[a,b]=rand2(3,10);return dTask(`${a} Postkarten kosten ${a*p} CHF. Wie viel kosten ${b} Postkarten?`,b*p,'CHF',HD)},
+()=>{const p=rand(3,8),[a,b]=rand2(2,9);return dTask(`${pickName()} kauft ${a} Blumen für ${a*p} CHF. Wie viel würden ${b} Blumen kosten?`,b*p,'CHF',HD)},
+()=>{const p=rand(2,5),[a,b]=rand2(4,12);return dTask(`${a} Sticker kosten ${a*p} CHF. Was kosten ${b} Sticker?`,b*p,'CHF',HD)},
+()=>{const p=rand(4,9),[a,b]=rand2(2,8);return dTask(`Ein Seil wird nach Länge verkauft: ${a} m kosten ${a*p} CHF. Wie viel kosten ${b} m?`,b*p,'CHF',HD)},
+()=>{const p=rand(6,12),[a,b]=rand2(2,7),n=pickName();return dTask(`${n} verdient beim Rasenmähen für ${a} Stunden ${a*p} CHF. Wie viel verdient ${n} für ${b} Stunden?`,b*p,'CHF',HD)},
+// --- direkt: rückwärts (wie viele?) ---
+()=>{const p=rand(2,9),[a,b]=rand2(2,9);return dTask(`${a} Stück Seife kosten ${a*p} CHF. Wie viele Stück Seife bekommt man für ${b*p} CHF?`,b,'Stück',HD)},
+()=>{const p=rand(3,8),[a,b]=rand2(2,9);return dTask(`${a} Eintrittskarten kosten ${a*p} CHF. Für wie viele Karten reichen ${b*p} CHF?`,b,'Karten',HD)},
+()=>{const p=rand(2,6),[a,b]=rand2(3,10);return dTask(`${a} Luftballons kosten ${a*p} CHF. Wie viele Luftballons gibt es für ${b*p} CHF?`,b,'Ballons',HD)},
+// --- direkt: Geschwindigkeit & Strecke ---
+()=>{const s=rand(15,30)*10,[a,b]=rand2(2,9);return dTask(`Ein Velo fährt in ${a} Minuten ${a*s} m weit. Wie weit kommt es bei gleichem Tempo in ${b} Minuten?`,b*s,'m',HD)},
+()=>{const s=rand(4,9),[a,b]=rand2(2,8);return dTask(`Ein Zug fährt in ${a} Minuten ${a*s} km. Wie weit fährt er in ${b} Minuten?`,b*s,'km',HD)},
+()=>{const s=rand(50,90),[a,b]=rand2(2,9),n=pickName();return dTask(`${n} geht in ${a} Minuten ${a*s} m. Wie weit kommt ${n} in ${b} Minuten?`,b*s,'m',HD)},
+()=>{const s=rand(2,6),[a,b]=rand2(2,9);return dTask(`Eine Schnecke kriecht in ${a} Minuten ${a*s} cm weit. Wie weit kriecht sie in ${b} Minuten?`,b*s,'cm',HD)},
+// --- direkt: Arbeit & Menge pro Zeit ---
+()=>{const s=rand(15,40),[a,b]=rand2(2,8),n=pickName();return dTask(`${n} liest in ${a} Stunden ${a*s} Seiten. Wie viele Seiten sind es in ${b} Stunden?`,b*s,'Seiten',HD)},
+()=>{const s=rand(8,20),[a,b]=rand2(2,9);return dTask(`Ein Drucker druckt in ${a} Minuten ${a*s} Seiten. Wie viele Seiten schafft er in ${b} Minuten?`,b*s,'Seiten',HD)},
+()=>{const s=rand(3,9),[a,b]=rand2(2,8);return dTask(`Eine Maschine füllt in ${a} Minuten ${a*s} Schachteln. Wie viele Schachteln füllt sie in ${b} Minuten?`,b*s,'Schachteln',HD)},
+()=>{const s=rand(4,12),[a,b]=rand2(2,7),n=pickName();return dTask(`${n} steckt in ${a} Minuten ${a*s} Perlen auf eine Schnur. Wie viele Perlen sind es in ${b} Minuten?`,b*s,'Perlen',HD)},
+// --- direkt: Hohlmasse ---
+()=>{const s=rand(2,5),[a,b]=rand2(2,9);return dTask(`${a} gleiche Flaschen enthalten zusammen ${a*s} l Sirup. Wie viel Sirup ist in ${b} solchen Flaschen?`,b*s,'l',HD)},
+()=>{const s=rand(2,5),[a,b]=rand2(2,9);return dTask(`Für ${a} Kinder braucht man ${a*s} dl Punsch. Wie viel Punsch braucht man für ${b} Kinder?`,b*s,'dl',HD)},
+()=>{const s=rand(1,5)*50,[a,b]=rand2(2,8);return dTask(`${a} Gläser fassen zusammen ${a*s} ml Wasser. Wie viel fassen ${b} gleiche Gläser?`,b*s,'ml',HD)},
+()=>{const s=rand(4,9),[a,b]=rand2(2,9);return dTask(`Aus dem Wasserhahn fliessen in ${a} Minuten ${a*s} l Wasser. Wie viel fliesst in ${b} Minuten?`,b*s,'l',HD)},
+()=>{const s=rand(10,40),[a,b]=rand2(2,8);return dTask(`${a} Becher enthalten zusammen ${a*s} cl Milch. Wie viel Milch ist in ${b} Bechern?`,b*s,'cl',HD)},
+()=>{const s=rand(1,4)*100,[a,b]=rand2(2,8),n=pickName();return dTask(`${n} giesst ${a} Pflanzen mit ${a*s} ml Wasser. Wie viel Wasser braucht ${n} für ${b} Pflanzen?`,b*s,'ml',HD)},
+// --- direkt: Rezepte & Gewicht ---
+()=>{const s=rand(4,12)*25,[a,b]=rand2(2,8);return dTask(`Für ${a} Personen braucht ein Rezept ${a*s} g Mehl. Wie viel Mehl braucht man für ${b} Personen?`,b*s,'g',HD)},
+()=>{const s=rand(2,4),[a,b]=rand2(2,6);return dTask(`Für ${a} Kuchen braucht man ${a*s} Eier. Wie viele Eier braucht man für ${b} Kuchen?`,b*s,'Eier',HD)},
+()=>{const s=rand(20,60),[a,b]=rand2(3,10);return dTask(`${a} gleiche Schrauben wiegen ${a*s} g. Wie viel wiegen ${b} solche Schrauben?`,b*s,'g',HD)},
+()=>{const s=rand(2,6),[a,b]=rand2(3,12);return dTask(`${a} Backsteine wiegen ${a*s} kg. Wie viel wiegen ${b} Backsteine?`,b*s,'kg',HD)},
+()=>{const s=rand(8,25),[a,b]=rand2(2,9);return dTask(`Ein Hamster frisst in ${a} Tagen ${a*s} g Futter. Wie viel frisst er in ${b} Tagen?`,b*s,'g',HD)},
+()=>{const s=rand(3,9),[a,b]=rand2(2,8);return dTask(`${a} Hühner legen an einem Tag zusammen ${a*s} Eier. Wie viele Eier legen ${b} Hühner an einem Tag?`,b*s,'Eier',HD)},
+()=>{const s=rand(2,8),[a,b]=rand2(2,9);return dTask(`Ein Bus hat ${a} Reihen mit zusammen ${a*s} Sitzplätzen. Wie viele Sitzplätze haben ${b} Reihen?`,b*s,'Sitzplätze',HD)},
+()=>{const s=rand(6,15),[a,b]=rand2(2,8);return dTask(`In ${a} gleichen Packungen sind ${a*s} Gummibärli. Wie viele Gummibärli sind in ${b} Packungen?`,b*s,'Gummibärli',HD)},
+// --- indirekt (umgekehrt) ---
+()=>{const[n,a,b]=invPair(2,9,DSMALL);return dTask(`${a} Kinder teilen ${n} Bonbons gerecht auf. Jedes bekommt ${n/a} Bonbons. Wie viele bekommt jedes Kind, wenn ${b} Kinder teilen?`,n/b,'Bonbons',HI)},
+()=>{const[n,a,b]=invPair(2,9,DSMALL);return dTask(`${a} Freunde teilen sich ${n} Kuchenstücke gerecht. Wie viele Stücke bekommt jeder, wenn es ${b} Freunde sind?`,n/b,'Stücke',HI)},
+()=>{const[n,a,b]=invPair(2,8,DSMALL);return dTask(`${a} Arbeiter brauchen für einen Zaun ${n/a} Tage. Wie lange brauchen ${b} Arbeiter (alle arbeiten gleich schnell)?`,n/b,'Tage',HI)},
+()=>{const[n,a,b]=invPair(2,9,DSMALL);return dTask(`Das Futter reicht für ${a} Pferde ${n/a} Tage. Für wie viele Tage reicht es bei ${b} Pferden?`,n/b,'Tage',HI)},
+()=>{const[n,a,b]=invPair(2,9,DSMALL);return dTask(`${n} Bücher werden gleichmässig auf ${a} Regale verteilt – das gibt ${n/a} Bücher pro Regal. Wie viele Bücher stehen pro Regal, wenn man ${b} Regale nimmt?`,n/b,'Bücher',HI)},
+];
+
+// ============ DREISATZ: Textaufgaben MITTEL ============
+const D_TEMPLATES_MEDIUM=[
+// --- direkt: Preise mit Rappen ---
+()=>{const r=rand(6,50)*5,[a,b]=rand2(3,12);return dTask(`${a} Gipfeli kosten ${chf(a*r/100)} CHF. Wie viel kosten ${b} Gipfeli?`,b*r/100,'CHF',HD)},
+()=>{const r=rand(20,90)*5,[a,b]=rand2(2,9);return dTask(`${a} kg Kartoffeln kosten ${chf(a*r/100)} CHF. Was kosten ${b} kg?`,b*r/100,'CHF',HD)},
+()=>{const r=rand(30,90)*5,[a,b]=rand2(3,12);return dTask(`${a} l Benzin kosten ${chf(a*r/100)} CHF. Wie viel kosten ${b} l?`,b*r/100,'CHF',HD)},
+()=>{const r=rand(10,60)*5,[a,b]=rand2(2,10);return dTask(`${a} m Schnur kosten ${chf(a*r/100)} CHF. Wie viel kosten ${b} m Schnur?`,b*r/100,'CHF',HD)},
+()=>{const r=rand(8,40)*5,[a,b]=rand2(4,15);return dTask(`${a} Farbkopien kosten ${chf(a*r/100)} CHF. Was kosten ${b} Kopien?`,b*r/100,'CHF',HD)},
+()=>{const r=rand(30,120)*5,[a,b]=rand2(2,8);return dTask(`${a} Portionen Glace kosten ${chf(a*r/100)} CHF. Wie viel kosten ${b} Portionen?`,b*r/100,'CHF',HD)},
+()=>{const r=rand(12,60)*5,[a,b]=rand2(2,9);return dTask(`${a*100} g Trockenfrüchte kosten ${chf(a*r/100)} CHF. Wie viel kosten ${b*100} g?`,b*r/100,'CHF',HD)},
+()=>{const r=rand(20,60)*5,[a,b]=rand2(2,9),n=pickName();return dTask(`${n} bekommt für ${a} Stunden Ferienjob ${chf(a*r*10/100)} CHF. Wie viel verdient ${n} in ${b} Stunden?`,b*r*10/100,'CHF',HD)},
+()=>{const r=rand(4,20)*5,[a,b]=rand2(3,12);return dTask(`${a} Bleistifte kosten ${chf(a*r/100)} CHF. Wie viele Bleistifte bekommt man für ${chf(b*r/100)} CHF?`,b,'Stück',HD)},
+// --- direkt: Hohlmasse mit Umrechnung ---
+()=>{const s=rand(2,9),[a,b]=rand2(2,9);return dTask(`${a} Flaschen enthalten zusammen ${a*s} dl Sirup. Wie viele Milliliter enthalten ${b} Flaschen?`,b*s*100,'ml',HD)},
+()=>{const s=rand(2,5)*100,[a,b]=rand2(2,9);return dTask(`${a} gleiche Becher fassen zusammen ${a*s} ml. Wie viele Deziliter fassen ${b} Becher?`,b*s/100,'dl',HD)},
+()=>{const s=rand(2,6),[a,b]=rand2(2,9);return dTask(`Für ${a} Gäste braucht man ${a*s} dl Suppe. Wie viele Liter Suppe braucht man für ${b} Gäste?`,b*s/10,'l',HD)},
+()=>{const s=rand(1,5)*5,[a,b]=rand2(2,8);return dTask(`${a} Gläser fassen zusammen ${a*s} cl Saft. Wie viele Milliliter fassen ${b} Gläser?`,b*s*10,'ml',HD)},
+()=>{const s=rand(2,9),[a,b]=rand2(2,9);return dTask(`Ein Wasserhahn füllt in ${a} Minuten ${a*s} l. Wie viele Deziliter fliessen in ${b} Minuten?`,b*s*10,'dl',HD)},
+()=>{const s=rand(2,5),[a,b]=rand2(2,6);return dTask(`${a} Giesskannen fassen zusammen ${a*s} l. Wie viele Zentiliter fassen ${b} Giesskannen?`,b*s*100,'cl',HD)},
+()=>{const s=rand(2,8),[a,b]=rand2(2,9);return dTask(`In ${a} Fässern sind zusammen ${a*s} hl Most. Wie viele Liter Most sind in ${b} Fässern?`,b*s*100,'l',HD)},
+()=>{const s=rand(1,4)*250,[a,b]=rand2(2,8),n=pickName();return dTask(`${n} füllt ${a} Trinkflaschen mit total ${a*s} ml Tee. Wie viele Deziliter Tee braucht ${n} für ${b} Flaschen?`,b*s/100,'dl',HD)},
+()=>{const s=rand(2,6)*5,[a,b]=rand2(2,9);return dTask(`${a} Ampullen enthalten zusammen ${a*s} ml Medizin. Wie viele Zentiliter sind in ${b} Ampullen?`,b*s/10,'cl',HD)},
+// --- direkt: Strecke, Zeit, Verbrauch ---
+()=>{const s=rand(6,14),[a,b]=rand2(2,9);return dTask(`Ein Auto braucht für ${a*100} km ${a*s} l Benzin. Wie viel Benzin braucht es für ${b*100} km?`,b*s,'l',HD)},
+()=>{const s=rand(4,9),[a,b]=rand2(2,9);return dTask(`Ein Zug fährt gleichmässig und legt in ${a} Minuten ${a*s} km zurück. Wie viele Minuten braucht er für ${b*s} km?`,b,'Minuten',HD)},
+()=>{const s=rand(20,60),[a,b]=rand2(2,9);return dTask(`Ein Mähroboter mäht in ${a} Stunden ${a*s} m² Rasen. Wie viele Stunden braucht er für ${b*s} m²?`,b,'Stunden',HD)},
+()=>{const s=rand(3,8),[a,b]=rand2(2,9);return dTask(`Mit ${a} l Farbe streicht man ${a*s} m² Wand. Wie viele Quadratmeter streicht man mit ${b} l?`,b*s,'m²',HD)},
+()=>{const s=rand(15,45),[a,b]=rand2(2,8);return dTask(`Eine Familie verbraucht in ${a} Tagen ${a*s} dl Milch. Wie viele Deziliter verbraucht sie in ${b} Tagen?`,b*s,'dl',HD)},
+()=>{const s=rand(2,7),[a,b]=rand2(2,9);return dTask(`Eine Kerze brennt in ${a} Stunden ${a*s} cm ab. Wie viele Zentimeter brennt sie in ${b} Stunden ab?`,b*s,'cm',HD)},
+()=>{const s=rand(3,9),[a,b]=rand2(2,8);return dTask(`Ein Regenmesser sammelt in ${a} Stunden ${a*s} mm Regen. Wie viel sammelt er bei gleichem Regen in ${b} Stunden?`,b*s,'mm',HD)},
+()=>{const s=rand(4,12),[a,b]=rand2(2,9);return dTask(`Eine Solaranlage liefert in ${a} Stunden ${a*s} kWh Strom. Wie viel liefert sie in ${b} Stunden?`,b*s,'kWh',HD)},
+// --- direkt: Massstab ---
+()=>{const s=rand(2,9),[a,b]=rand2(2,9);return dTask(`Auf einer Karte entsprechen ${a} cm genau ${a*s} km in Wirklichkeit. Wie vielen Kilometern entsprechen ${b} cm?`,b*s,'km',HD)},
+()=>{const s=rand(2,8),[a,b]=rand2(2,9);return dTask(`Auf einem Plan sind ${a} cm gleich ${a*s} m. Wie viele Zentimeter braucht man auf dem Plan für ${b*s} m?`,b,'cm',HD)},
+// --- indirekt (umgekehrt proportional) ---
+()=>{const[n,a,b]=invPair(2,12,DSMALL);return dTask(`${a} Arbeiter brauchen für eine Mauer ${n/a} Tage. Wie lange brauchen ${b} Arbeiter, wenn alle gleich schnell arbeiten?`,n/b,'Tage',HI)},
+()=>{const[n,a,b]=invPair(2,12,DSMALL);return dTask(`${a} Maschinen erledigen eine Bestellung in ${n/a} Stunden. Wie lange brauchen ${b} gleiche Maschinen?`,n/b,'Stunden',HI)},
+()=>{const[n,a,b]=invPair(2,10,DSMALL);return dTask(`Ein Vorrat reicht für ${a} Personen genau ${n/a} Tage. Für wie viele Tage reicht derselbe Vorrat bei ${b} Personen?`,n/b,'Tage',HI)},
+()=>{const[n,a,b]=invPair(2,10,DSMALL);return dTask(`${n} l Most werden in Fässer zu je ${n/a} l abgefüllt – das gibt ${a} Fässer. Wie viele Fässer gibt es, wenn jedes ${n/b} l fasst?`,b,'Fässer',HI)},
+()=>{const[n,a,b]=invPair(2,12,DSMALL);return dTask(`Ein voller Krug füllt genau ${a} Gläser zu je ${n/a} dl. Wie viele Deziliter fasst ein Glas, wenn man denselben Krug auf ${b} Gläser verteilt?`,n/b,'dl',HI)},
+()=>{const[n,a,b]=invPair(2,12,DSMALL);return dTask(`Ein Sack Futter reicht ${a} Hasen ${n/a} Tage. Wie viele Tage reicht der Sack für ${b} Hasen?`,n/b,'Tage',HI)},
+()=>{const[n,a,b]=invPair(2,9,DSMALL);return dTask(`Beim Umzug trägt jedes der ${a} Kinder ${n/a} Kisten. Wie viele Kisten trägt jedes Kind, wenn ${b} Kinder gleich viele tragen?`,n/b,'Kisten',HI)},
+()=>{const[n,a,b]=invPair(2,12,DSMALL);return dTask(`Auf ${a} Tische verteilt stehen je ${n/a} Stühle. Wie viele Stühle kommen an einen Tisch, wenn man ${b} Tische aufstellt?`,n/b,'Stühle',HI)},
+()=>{const[n,a,b]=invPair(2,12,DSMALL);return dTask(`Ein Schwimmbad wird von ${a} gleichen Pumpen in ${n/a} Stunden gefüllt. Wie lange dauert es mit ${b} solchen Pumpen?`,n/b,'Stunden',HI)},
+()=>{const[n,a,b]=invPair(2,10,DSMALL);return dTask(`${a} Bagger heben eine Grube in ${n/a} Stunden aus. Wie viele Stunden brauchen ${b} Bagger?`,n/b,'Stunden',HI)},
+()=>{const h=rand(2,6),v=[20,30,40,60,80,90,120][rand(0,6)],n=v*h;const ds=divIn(n,20,120).filter(x=>x!==v);const w=ds.length?ds[rand(0,ds.length-1)]:v;return dTask(`Bei ${v} km/h braucht ein Auto für eine Strecke ${dnum(n/v)} Stunden. Wie lange braucht es bei ${w} km/h?`,n/w,'Stunden',HI)},
+()=>{const[n,a,b]=invPair(2,12,DSMALL);return dTask(`${n} Bonbons werden gerecht verteilt: Bei ${a} Kindern bekommt jedes ${n/a} Stück. Wie viele bekommt jedes bei ${b} Kindern?`,n/b,'Stück',HI)},
+()=>{const[n,a,b]=invPair(2,12,DSMALL);return dTask(`Eine Jugendherberge hat ${n} Betten. In Zimmern zu ${n/a} Betten gibt das ${a} Zimmer. Wie viele Betten hat ein Zimmer, wenn es ${b} Zimmer sein sollen?`,n/b,'Betten',HI)},
+()=>{const[n,a,b]=invPair(2,12,DSMALL);return dTask(`${a} Gärtner schneiden eine Hecke in ${n/a} Stunden. Wie lange brauchen ${b} Gärtner dafür?`,n/b,'Stunden',HI)},
+];
+
+// ============ DREISATZ: Textaufgaben SCHWER ============
+const DFRACS=[[1,2],[1,3],[2,3],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,6],[5,6],[3,8],[5,8],[7,10],[3,10]];
+const DFRACS_S=[[1,2],[1,3],[2,3],[1,4],[3,4],[1,6],[5,6],[2,5],[3,5]];
+const pickFrac=()=>DFRACS[rand(0,DFRACS.length-1)];
+const pickFracS=()=>DFRACS_S[rand(0,DFRACS_S.length-1)];
+const HDF='Tipp: Rechne zuerst auf 1 ganze Einheit – durch einen Bruch teilen heisst mit dem Kehrwert malnehmen.';
+const HZD='Tipp: Zusammengesetzter Dreisatz – gehe Schritt für Schritt und rechne immer zuerst auf 1 herunter.';
+const D_TEMPLATES_HARD=[
+// --- direkt: Bruchmengen ---
+()=>{const[n,d]=pickFrac(),P=d*rand(1,5),b=rand(2,7);return dTask(`${fracHTML(n,d)} kg Kirschen kosten ${dnum(P*n/d)} CHF. Wie viel kosten ${b} kg Kirschen?`,b*P,'CHF',HDF)},
+()=>{const[n,d]=pickFrac(),P=d*rand(1,4),b=rand(2,6);return dTask(`Für ${fracHTML(n,d)} m Stoff bezahlt man ${dnum(P*n/d)} CHF. Wie viel kosten ${b} m Stoff?`,b*P,'CHF',HDF)},
+()=>{const[n,d]=pickFrac(),P=d*rand(2,6),b=rand(2,6);return dTask(`${fracHTML(n,d)} l Olivenöl kosten ${dnum(P*n/d)} CHF. Wie viel kosten ${b} l?`,b*P,'CHF',HDF)},
+()=>{const[n,d]=pickFrac(),G=d*rand(20,60),b=rand(2,8);return dTask(`Für ${fracHTML(n,d)} kg Nüsse braucht man ${dnum(G*n/d)} g Verpackungsmaterial. Wie viel Verpackung braucht man für ${b} kg?`,b*G,'g',HDF)},
+()=>{const[n,d]=pickFracS(),V=d*rand(1,3),b=rand(2,6);return dTask(`In ${fracHTML(n,d)} Stunde legt ein Läufer ${dnum(V*n/d)} km zurück. Wie weit kommt er in ${b} Stunden?`,b*V,'km',HDF)},
+()=>{const[n,d]=pickFrac(),V=d*rand(2,8),b=rand(2,7);return dTask(`Ein Wasserhahn füllt in ${fracHTML(n,d)} Minute ${dnum(V*n/d)} dl. Wie viele Deziliter fliessen in ${b} Minuten?`,b*V,'dl',HDF)},
+()=>{const[n,d]=pickFrac(),M=d*rand(10,40),b=rand(2,6);return dTask(`Für ${fracHTML(n,d)} eines Kuchens braucht man ${dnum(M*n/d)} g Zucker. Wie viel Zucker braucht man für ${b} ganze Kuchen?`,b*M,'g',HDF)},
+()=>{const[n,d]=pickFrac(),L=d*rand(2,6),b=rand(2,5);return dTask(`${fracHTML(n,d)} eines Fasses sind ${dnum(L*n/d)} l. Wie viele Liter fassen ${b} volle Fässer?`,b*L,'l',HDF)},
+()=>{const[n,d]=pickFrac(),P=d*rand(1,4),a=rand(2,6);return dTask(`${a} kg Beeren kosten ${a*P} CHF. Wie viel kosten ${fracHTML(n,d)} kg?`,P*n/d,'CHF',HD)},
+()=>{const[n,d]=pickFracS(),V=d*rand(2,6);return dTask(`Ein Velo fährt in einer Stunde ${V} km. Wie weit kommt es in ${fracHTML(n,d)} Stunde?`,V*n/d,'km',HD)},
+()=>{const[n,d]=pickFrac(),M=d*rand(5,20),a=rand(2,5);return dTask(`${a} Portionen Müesli brauchen ${a*M} g Haferflocken. Wie viele Gramm braucht man für ${fracHTML(n,d)} Portion?`,M*n/d,'g',HD)},
+// --- direkt: Antwort als Bruch ---
+()=>{const a=rand(2,7),b=rand(a+1,a+7);return dFrc(`${a} Pizzen werden gerecht unter ${b} Kindern aufgeteilt. Welchen Bruch einer Pizza bekommt jedes Kind? (gekürzt angeben)`,a,b,'Tipp: Anteil = Anzahl Pizzen ÷ Anzahl Kinder.')},
+()=>{const a=rand(2,8),b=rand(a+1,a+8);return dFrc(`${a} l Saft werden gleichmässig auf ${b} Krüge verteilt. Welcher Bruch eines Liters kommt in jeden Krug? (gekürzt)`,a,b,'Tipp: Menge ÷ Anzahl Gefässe.')},
+()=>{const a=rand(2,6),b=rand(a+1,a+6);return dFrc(`${a} Tafeln Schoggi werden gerecht an ${b} Personen verteilt. Welchen Bruch einer Tafel bekommt jede Person? (gekürzt)`,a,b,'Tipp: Zuerst alles zusammen, dann durch die Anzahl teilen.')},
+()=>{const a=rand(3,9),b=rand(a+1,a+10);return dFrc(`${a} m Schnur werden in ${b} gleich lange Stücke geschnitten. Welcher Bruch eines Meters ist ein Stück? (gekürzt)`,a,b,'Tipp: Länge ÷ Anzahl Stücke.')},
+()=>{const a=rand(2,7),b=rand(a+2,a+9);return dFrc(`${b} gleiche Becher fassen zusammen ${a} l. Welchen Bruch eines Liters fasst ein Becher? (gekürzt)`,a,b,'Tipp: Gesamtmenge ÷ Anzahl Becher.')},
+()=>{const a=rand(2,6),b=rand(a+1,a+7);return dFrc(`${a} kg Futter reichen für genau ${b} Tage. Welcher Bruch eines Kilogramms wird pro Tag gefressen? (gekürzt)`,a,b,'Tipp: Menge ÷ Anzahl Tage.')},
+()=>{const a=rand(2,8),b=rand(a+1,a+8);return dFrc(`${a} hl Most werden auf ${b} gleiche Fässer verteilt. Welcher Bruch eines Hektoliters ist in einem Fass? (gekürzt)`,a,b,'Tipp: Menge ÷ Anzahl Fässer.')},
+// --- direkt: Dezimalzahlen und Hohlmasse ---
+()=>{const h=rand(15,90)*5,[a,b]=rand2(3,15);return dTask(`${dnum(a/2)} m Stoff kosten ${chf(a*h/100)} CHF. Wie viel kosten ${dnum(b/2)} m?`,b*h/100,'CHF',HD)},
+()=>{const s=rand(3,15),[a,b]=rand2(2,9);return dTask(`${a} Flaschen enthalten zusammen ${dnum(a*s/2)} dl Sirup. Wie viele Liter Sirup sind in ${b} Flaschen?`,b*s/20,'l',HD)},
+()=>{const s=rand(3,15),[a,b]=rand2(2,8);return dTask(`Für ${a} Personen braucht ein Rezept ${dnum(a*s/2)} dl Rahm. Wie viele Milliliter Rahm braucht man für ${b} Personen?`,b*s*50,'ml',HD)},
+()=>{const s=rand(5,25)*5,[a,b]=rand2(2,9);return dTask(`${a} Gläser fassen zusammen ${a*s} ml. Wie viele Zentiliter fassen ${b} Gläser?`,b*s/10,'cl',HD)},
+()=>{const s=rand(3,9),[a,b]=rand2(2,8);return dTask(`${a} Kannen enthalten zusammen ${a*s} dl Tee. Wie viele Zentiliter Tee sind in ${b} Kannen?`,b*s*10,'cl',HD)},
+()=>{const s=rand(2,8),[a,b]=rand2(2,6);return dTask(`In ${a} Tanks sind zusammen ${a*s} hl Wasser. Wie viele Liter Wasser sind in ${b} Tanks?`,b*s*100,'l',HD)},
+()=>{const s=rand(4,20)*25,[a,b]=rand2(2,9);return dTask(`${a} Portionen Suppe brauchen ${a*s} ml Bouillon. Wie viele Deziliter braucht man für ${b} Portionen?`,b*s/100,'dl',HD)},
+()=>{const s=rand(1,9)*250,[a,b]=rand2(2,8);return dTask(`Ein Abfüllautomat füllt in ${a} Minuten ${a*s} ml ab. Wie viele Liter füllt er in ${b} Minuten?`,b*s/1000,'l',HD)},
+()=>{const g=rand(2,9)*50,[a,b]=rand2(2,9);return dTask(`${a} Tafeln Schoggi wiegen zusammen ${a*g} g. Wie viele Kilogramm wiegen ${b} Tafeln?`,b*g/1000,'kg',HD)},
+()=>{const s=rand(2,9)*2,[a,b]=rand2(2,9);return dTask(`${a} Tanks enthalten zusammen ${a*s} l. Wie viele Hektoliter enthalten ${b} Tanks?`,b*s/100,'hl','Tipp: 100 l = 1 hl.')},
+()=>{const s=rand(2,9),a=rand(2,9);return dTask(`${a} Tanks fassen zusammen ${a*s} hl. Wie viele Deziliter fasst ein einziger Tank?`,s*1000,'dl','Tipp: 1 hl = 100 l = 1000 dl.')},
+()=>{const s=rand(2,9),[a,b]=rand2(2,9);return dTask(`Auf einer Karte im Massstab 1:${s*10000} entsprechen ${a} cm genau ${dnum(a*s/10)} km. Wie vielen Kilometern entsprechen ${b} cm?`,b*s/10,'km',HD)},
+()=>{const q=rand(2,9),p=rand(3,9),a=rand(2,6),b=rand(2,9);return dTask(`${a} Packungen à ${p} Stück kosten zusammen ${a*p*q} CHF. Wie viel kosten ${b} einzelne Stück?`,b*q,'CHF',HD)},
+// --- indirekt mit Brüchen ---
+()=>{const[n,d]=pickFrac(),T=n*rand(2,9);return dTask(`Ein Wasserhahn füllt ein Becken in ${T} Minuten. Wie lange dauert es, wenn er nur noch ${fracHTML(n,d)} so stark fliesst?`,T*d/n,'Minuten',HI)},
+()=>{const[n,d]=pickFrac(),T=n*rand(2,8);return dTask(`Eine Maschine braucht für einen Auftrag ${T} Stunden. Wie lange braucht eine Maschine, die nur ${fracHTML(n,d)} so schnell arbeitet?`,T*d/n,'Stunden',HI)},
+()=>{const[n,d]=pickFracS(),T=n*rand(3,9);return dTask(`Bei vollem Tempo braucht ein Zug ${T} Minuten für eine Strecke. Wie lange braucht er mit ${fracHTML(n,d)} des Tempos?`,T*d/n,'Minuten',HI)},
+()=>{const T=rand(2,12),f=[2,3,4,5][rand(0,3)];return dTask(`${f} gleiche Pumpen füllen ein Becken zusammen in ${T} Stunden. Wie lange braucht eine einzige Pumpe?`,T*f,'Stunden',HI)},
+()=>{const[n,a,b]=invPair(3,12,DSMALL);return dTask(`${a} Arbeiter brauchen für eine Halle ${n/a} Tage. Wie viele Tage brauchen ${b} Arbeiter?`,n/b,'Tage',HI)},
+()=>{const[n,a,b]=invPair(3,12,DSMALL);return dTask(`Der Proviant reicht ${a} Wanderern genau ${n/a} Tage. Wie lange reicht er für ${b} Wanderer?`,n/b,'Tage',HI)},
+()=>{const L=[6,8,10,12,15,18,20,24,30][rand(0,8)];const ds=divIn(L*10,5,60);const w=ds[rand(0,ds.length-1)];return dTask(`Ein Fass mit ${L} l wird in Flaschen zu je ${dnum(w/10)} l abgefüllt. Wie viele Flaschen gibt das?`,L*10/w,'Flaschen',HI)},
+()=>{const[n,a,b]=invPair(2,12,DSMALL);return dTask(`${n} dl Sirup werden in Gläser zu je ${n/a} dl gefüllt – das gibt ${a} Gläser. Wie viele Gläser gibt es bei ${n/b} dl pro Glas?`,b,'Gläser',HI)},
+// --- zusammengesetzter Dreisatz ---
+()=>{const p=rand(2,6),[a,b]=rand2(2,5),[t,u]=rand2(2,6);return dTask(`${a} Arbeiter schaffen in ${t} Tagen ${a*t*p} m Mauer. Wie viele Meter schaffen ${b} Arbeiter in ${u} Tagen?`,b*u*p,'m',HZD)},
+()=>{const p=rand(3,9),[a,b]=rand2(2,6),[t,u]=rand2(2,6);return dTask(`${a} Maschinen füllen in ${t} Stunden ${a*t*p} Kisten. Wie viele Kisten füllen ${b} Maschinen in ${u} Stunden?`,b*u*p,'Kisten',HZD)},
+()=>{const p=rand(2,5),[a,b]=rand2(2,6),[t,u]=rand2(2,6);return dTask(`${a} Kühe fressen in ${t} Tagen ${a*t*p} kg Heu. Wie viel Heu fressen ${b} Kühe in ${u} Tagen?`,b*u*p,'kg',HZD)},
+()=>{const p=rand(2,6)*100,[a,b]=rand2(2,5),[t,u]=rand2(2,6);return dTask(`${a} Wasserhähne füllen in ${t} Minuten zusammen ${a*t*p} ml. Wie viele Milliliter füllen ${b} Hähne in ${u} Minuten?`,b*u*p,'ml',HZD)},
+()=>{const p=rand(2,5),[a,b]=rand2(2,5),[t,u]=rand2(2,6);return dTask(`${a} Pumpen fördern in ${t} Stunden ${a*t*p} hl Wasser. Wie viele Hektoliter fördern ${b} Pumpen in ${u} Stunden?`,b*u*p,'hl',HZD)},
+()=>{const w=rand(2,6),a=rand(2,6),t=rand(2,6);const total=a*t;const ds=divIn(total*w,2,12).filter(x=>x!==a);const bb=ds.length?ds[rand(0,ds.length-1)]:a;return dTask(`${a} Arbeiter bauen eine Mauer in ${t} Tagen. Wie lange brauchen ${bb} Arbeiter für ${w} solche Mauern?`,total*w/bb,'Tage',HZD)},
+()=>{const a=rand(2,6),t=rand(2,8),k=rand(2,4);const total=a*t*k;const ds=divIn(total,2,12).filter(x=>x!==a);const b=ds.length?ds[rand(0,ds.length-1)]:a;return dTask(`${a} Gärtner brauchen ${t} Stunden für einen Park. Wie lange brauchen ${b} Gärtner für ${k} gleich grosse Parks?`,total/b,'Stunden',HZD)},
+];
+
 let currentTopic=null,currentLevel=null,currentTask=null,attempts=0;
 // Anti-Wiederholung: kein Template doppelt innerhalb des Fensters, keine identische Aufgabe innerhalb der letzten 30
 const recentTplIdx={},recentSigs=[];
 function pickFrom(pool,key){const rec=recentTplIdx[key]||(recentTplIdx[key]=[]);const win=Math.min(pool.length-1,Math.floor(pool.length*0.6));let i=rand(0,pool.length-1),tries=0;while(rec.includes(i)&&tries<30){i=rand(0,pool.length-1);tries++}rec.push(i);while(rec.length>win)rec.shift();return pool[i]}
 function taskSig(t){return(t.text||'')+'|'+(t.equation||'')+'|'+(t.correctNum!==undefined?t.correctNum+'/'+t.correctDen:t.correctValue+''+(t.correctUnit||''))}
-function generateTask(){for(let i=0;i<20;i++){const t=currentTopic==='volumen'?generateVolumeTask(currentLevel):generateFractionTask(currentLevel);if(!t)continue;const sig=taskSig(t);if(recentSigs.includes(sig))continue;recentSigs.push(sig);while(recentSigs.length>30)recentSigs.shift();return t}return currentTopic==='volumen'?vAddSameOp():addSame(currentLevel)}
+function generateTask(){for(let i=0;i<20;i++){const t=currentTopic==='volumen'?generateVolumeTask(currentLevel):currentTopic==='dreisatz'?generateDreisatzTask(currentLevel):generateFractionTask(currentLevel);if(!t)continue;const sig=taskSig(t);if(recentSigs.includes(sig))continue;recentSigs.push(sig);while(recentSigs.length>30)recentSigs.shift();return t}return currentTopic==='volumen'?vAddSameOp():currentTopic==='dreisatz'?generateDreisatzTask(currentLevel):addSame(currentLevel)}
 function generateFractionTask(lv){if(Math.random()<0.5){const p=lv==='easy'?TEMPLATES_EASY:lv==='medium'?TEMPLATES_MEDIUM:TEMPLATES_HARD;return pickFrom(p,'ft-'+lv)()}let ops;if(lv==='easy')ops=[addSame,addSame,subSame,subSame,addDiff,simplifyFrac,fracOfNumber];else if(lv==='medium')ops=[addDiff,addDiff,subDiff,subDiff,mulFrac,divFrac,addSame,subSame,simplifyFrac,mulFracWhole,fracOfNumber];else ops=[addDiff,subDiff,mulFrac,divFrac,mixedAdd,mixedSub,mulFracWhole,fracOfNumber];return pickFrom(ops,'fo-'+lv)(lv)}
 function generateVolumeTask(lv){if(Math.random()<0.5){const p=lv==='easy'?V_TEMPLATES_EASY:lv==='medium'?V_TEMPLATES_MEDIUM:V_TEMPLATES_HARD;let t,i=0;do{t=pickFrom(p,'vt-'+lv)();i++}while(!t&&i<10);return t}let ops;if(lv==='easy')ops=[vAddSameOp,vAddSameOp,vSubSameOp,vSubSameOp,vConvertOp];else if(lv==='medium')ops=[vAddDiffOp,vAddDiffOp,vSubDiffOp,vSubDiffOp,vMulOp,vDivOp,vConvertOp];else ops=[vAddDiffOp,vSubDiffOp,vMulOp,vDivOp,vConvertOp];return pickFrom(ops,'vo-'+lv)()}
 
+function generateDreisatzTask(lv){const p=lv==='easy'?D_TEMPLATES_EASY:lv==='medium'?D_TEMPLATES_MEDIUM:D_TEMPLATES_HARD;return pickFrom(p,'dt-'+lv)()}
 const questionText=document.getElementById('questionText'),equationEl=document.getElementById('equation'),submitBtn=document.getElementById('submitBtn'),nextBtn=document.getElementById('nextBtn'),feedbackEl=document.getElementById('feedback');
-function renderTask(t){attempts=0;questionText.innerHTML=t.text||'';questionText.style.display=t.text?'block':'none';let h;if(t.answerType==='fraction')h=`<span class="input-fraction"><input type="number" id="numInput" placeholder="?" autofocus><span class="bar"></span><input type="number" id="denInput" placeholder="?"></span>`;else if(t.answerType==='volume')h=`<span class="input-volume"><input type="number" id="wholeInput" placeholder="?" autofocus><span class="vol-unit-label">${t.correctUnit}</span></span>`;else h=`<span class="input-whole"><input type="number" id="wholeInput" placeholder="?" autofocus></span>`;equationEl.innerHTML=(t.equation||'')+' '+h;feedbackEl.style.display='none';feedbackEl.className='feedback';submitBtn.style.display='inline-block';nextBtn.style.display='none';setTimeout(()=>{const f=document.getElementById('numInput')||document.getElementById('wholeInput');if(f)f.focus()},50);document.querySelectorAll('#equation input').forEach(i=>{i.addEventListener('keydown',e=>{if(e.key==='Enter'){if(nextBtn.style.display!=='none')nextTask();else checkAnswer()}})})}
-function checkAnswer(){attempts++;const t=currentTask;let userN,userD,userVal,nc=false;if(t.answerType==='fraction'){userN=parseInt(document.getElementById('numInput').value);userD=parseInt(document.getElementById('denInput').value);if(isNaN(userN)||isNaN(userD)){showFeedback('Bitte beide Zahlen eingeben.','wrong');attempts--;return}if(userD===0){showFeedback('Der Nenner darf nicht 0 sein.','wrong');attempts--;return}nc=fracEqual(userN,userD,t.correctNum,t.correctDen)}else{userVal=parseInt(document.getElementById('wholeInput').value);if(isNaN(userVal)){showFeedback('Bitte eine Zahl eingeben.','wrong');attempts--;return}nc=userVal===t.correctValue}const ns=nc&&t.answerType==='fraction'&&!isSimplified(userN,userD);const fc=nc&&!ns;if(fc){const ms=['Super! 🎉','Genau richtig! ⭐','Klasse! 👏','Bravo! 💪','Perfekt!','Spitze!','Toll gemacht! 🌟'];showFeedback(ms[Math.floor(Math.random()*ms.length)],'correct');recordResult(true,attempts===1);submitBtn.style.display='none';nextBtn.style.display='inline-block';nextBtn.focus()}else{recordResult(false,false);let h;if(ns){const[sn,sd]=simplify(userN,userD);h=`Der Wert stimmt, aber die Antwort muss gekürzt sein. ${userN}/${userD} = ${sn}/${sd}. Probier's nochmal!`}else{h="Das stimmt noch nicht. Versuch's nochmal! 💪";if(t.answerType==='fraction'&&attempts>=2){const[sn,sd]=simplify(t.correctNum,t.correctDen);h=`Noch nicht ganz. Tipp: Die gekürzte Antwort hat den Nenner ${sd}.`}if(t.answerType==='volume'&&attempts>=2)h=`Noch nicht ganz. Tipp: Achte auf die Einheit (${t.correctUnit}) und rechne sauber um.`}if(attempts>=4){if(t.answerType==='fraction'){const[sn,sd]=simplify(t.correctNum,t.correctDen);h=`Die richtige (gekürzte) Antwort ist ${sn}/${sd}.`}else if(t.answerType==='volume')h=`Die richtige Antwort ist ${t.correctValue} ${t.correctUnit}.`;else h=`Die richtige Antwort ist ${t.correctValue}.`}showFeedback(h,'wrong');if(t.answerType==='fraction'){document.getElementById('numInput').focus();document.getElementById('numInput').select()}else{document.getElementById('wholeInput').focus();document.getElementById('wholeInput').select()}}}
+function renderTask(t){attempts=0;questionText.innerHTML=t.text||'';questionText.style.display=t.text?'block':'none';let h;if(t.answerType==='fraction')h=`<span class="input-fraction"><input type="number" id="numInput" placeholder="?" autofocus><span class="bar"></span><input type="number" id="denInput" placeholder="?"></span>`;else if(t.answerType==='volume')h=`<span class="input-volume"><input type="number" id="wholeInput" placeholder="?" autofocus><span class="vol-unit-label">${t.correctUnit}</span></span>`;else if(t.answerType==='num')h=`<span class="input-num"><input type="text" inputmode="decimal" id="wholeInput" placeholder="?" autocomplete="off" autofocus>${t.correctUnit?`<span class="unit">${t.correctUnit}</span>`:''}</span>`;else h=`<span class="input-whole"><input type="number" id="wholeInput" placeholder="?" autofocus></span>`;equationEl.innerHTML=(t.equation||'')+' '+h;feedbackEl.style.display='none';feedbackEl.className='feedback';submitBtn.style.display='inline-block';nextBtn.style.display='none';setTimeout(()=>{const f=document.getElementById('numInput')||document.getElementById('wholeInput');if(f)f.focus()},50);document.querySelectorAll('#equation input').forEach(i=>{i.addEventListener('keydown',e=>{if(e.key==='Enter'){if(nextBtn.style.display!=='none')nextTask();else checkAnswer()}})})}
+function checkAnswer(){attempts++;const t=currentTask;let userN,userD,userVal,nc=false;if(t.answerType==='fraction'){userN=parseInt(document.getElementById('numInput').value);userD=parseInt(document.getElementById('denInput').value);if(isNaN(userN)||isNaN(userD)){showFeedback('Bitte beide Zahlen eingeben.','wrong');attempts--;return}if(userD===0){showFeedback('Der Nenner darf nicht 0 sein.','wrong');attempts--;return}nc=fracEqual(userN,userD,t.correctNum,t.correctDen)}else if(t.answerType==='num'){const raw=(document.getElementById('wholeInput').value||'').replace(/\s/g,'').replace(',','.');if(raw===''||isNaN(Number(raw))){showFeedback('Bitte eine Zahl eingeben.','wrong');attempts--;return}userVal=Number(raw);nc=Math.abs(userVal-t.correctValue)<0.005}else{userVal=parseInt(document.getElementById('wholeInput').value);if(isNaN(userVal)){showFeedback('Bitte eine Zahl eingeben.','wrong');attempts--;return}nc=userVal===t.correctValue}const ns=nc&&t.answerType==='fraction'&&!isSimplified(userN,userD);const fc=nc&&!ns;if(fc){const ms=['Super! 🎉','Genau richtig! ⭐','Klasse! 👏','Bravo! 💪','Perfekt!','Spitze!','Toll gemacht! 🌟'];showFeedback(ms[Math.floor(Math.random()*ms.length)],'correct');recordResult(true,attempts===1);submitBtn.style.display='none';nextBtn.style.display='inline-block';nextBtn.focus()}else{recordResult(false,false);let h;if(ns){const[sn,sd]=simplify(userN,userD);h=`Der Wert stimmt, aber die Antwort muss gekürzt sein. ${userN}/${userD} = ${sn}/${sd}. Probier's nochmal!`}else{h="Das stimmt noch nicht. Versuch's nochmal! 💪";if(attempts>=2&&t.hint)h='Noch nicht ganz. '+t.hint;else if(t.answerType==='fraction'&&attempts>=2){const[sn,sd]=simplify(t.correctNum,t.correctDen);h=`Noch nicht ganz. Tipp: Die gekürzte Antwort hat den Nenner ${sd}.`}else if(t.answerType==='volume'&&attempts>=2)h=`Noch nicht ganz. Tipp: Achte auf die Einheit (${t.correctUnit}) und rechne sauber um.`}if(attempts>=4){if(t.answerType==='fraction'){const[sn,sd]=simplify(t.correctNum,t.correctDen);h=`Die richtige (gekürzte) Antwort ist ${sn}/${sd}.`}else if(t.answerType==='num')h=`Die richtige Antwort ist ${dnum(t.correctValue)}${t.correctUnit?' '+t.correctUnit:''}.`;else if(t.answerType==='volume')h=`Die richtige Antwort ist ${t.correctValue} ${t.correctUnit}.`;else h=`Die richtige Antwort ist ${t.correctValue}.`}showFeedback(h,'wrong');if(t.answerType==='fraction'){document.getElementById('numInput').focus();document.getElementById('numInput').select()}else{document.getElementById('wholeInput').focus();document.getElementById('wholeInput').select()}}}
 function showFeedback(t,c){feedbackEl.style.display='block';feedbackEl.className='feedback '+c;feedbackEl.textContent=t;feedbackEl.classList.add('pulse');setTimeout(()=>feedbackEl.classList.remove('pulse'),500)}
 function nextTask(){currentTask=generateTask();renderTask(currentTask)}
 submitBtn.addEventListener('click',checkAnswer);
@@ -528,7 +729,7 @@ function updateStartBtn(){document.getElementById('startBtn').disabled=!(pending
 document.querySelectorAll('.choice-grid.topics .choice-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.choice-grid.topics .choice-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');pendingTopic=b.dataset.topic;updateStartBtn()})});
 document.querySelectorAll('.choice-grid.levels .choice-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.choice-grid.levels .choice-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');pendingLevel=b.dataset.level;updateStartBtn()})});
 document.getElementById('startBtn').addEventListener('click',()=>{if(pendingTopic&&pendingLevel)startSession(pendingTopic,pendingLevel)});
-function startSession(t,l){currentTopic=t;currentLevel=l;const tl={brueche:'📐 Brüche',volumen:'🥤 Volumen'},ll={easy:'Einfach',medium:'Mittel',hard:'Schwer'};document.getElementById('levelBadge').textContent=`${tl[t]} · ${ll[l]}`;document.getElementById('welcomeOverlay').classList.add('hidden');nextTask()}
+function startSession(t,l){currentTopic=t;currentLevel=l;const tl={brueche:'📐 Brüche',volumen:'🥤 Volumen',dreisatz:'⚖️ Dreisätze'},ll={easy:'Einfach',medium:'Mittel',hard:'Schwer'};document.getElementById('levelBadge').textContent=`${tl[t]} · ${ll[l]}`;document.getElementById('welcomeOverlay').classList.add('hidden');nextTask()}
 
 // Statistik
 const STORAGE_KEY='bruchrechnen_stats_v1';

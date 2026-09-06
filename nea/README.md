@@ -1,13 +1,23 @@
-# Nea — Mathe-Training (Brüche & Volumen)
+# Nea — Mathe-Training (Brüche, Volumen & Dreisätze)
 
 URL: https://42.ai/nea/
 
 ## Funktionen
 - Brüche-Modus: Addition, Subtraktion, Multiplikation, Division — mit Textaufgaben
 - Volumen-Modus: ml, cl, dl, l, hl — mit Textaufgaben
+- Dreisatz-Modus: direkte und umgekehrte (indirekte) Dreisätze — mit Brüchen, Hohlmassen und Geld
 - 3 Schwierigkeitsstufen (Einfach / Mittel / Schwer), wählbar beim Start
 - Statistik über die Zeit (heute / 7T / 30T / Total + 14-Tage-Chart)
 - Antworten müssen gekürzt sein (z.B. 2/4 wird als falsch gewertet — richtig ist 1/2)
+
+## Dreisätze
+- 128 Aufgaben-Vorlagen (40 einfach / 42 mittel / 46 schwer), jede mit Zufallszahlen → über 12'000 verschiedene konkrete Aufgaben pro Stufe
+- Einfach: direkte Dreisätze mit ganzen Zahlen, dazu einfache umgekehrte (teilen, Arbeiter/Tage, Vorrat)
+- Mittel: Preise mit Rappen, Hohlmasse mit Umrechnung (ml/cl/dl/l/hl), Massstab, viele umgekehrte Dreisätze
+- Schwer: Bruchmengen (¾ kg, ⅖ l …), Antworten als gekürzter Bruch, Dezimalzahlen, mehrstufige Umrechnungen, zusammengesetzte Dreisätze
+- Antwort als Dezimalzahl möglich, Punkt und Komma werden beide akzeptiert (12.50 = 12,50)
+- Ab dem 2. Fehlversuch erscheint ein Tipp (direkt vs. umgekehrt), ab dem 4. die Lösung
+- Papier und Bleistift sind ausdrücklich erwünscht
 
 ## Passwort
 - Aktuell: `zug2026`
