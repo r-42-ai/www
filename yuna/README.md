@@ -12,7 +12,7 @@ URL: https://42.ai/yuna/
 - Statistik über die Zeit (heute / 7T / 30T / Total + 14-Tage-Chart)
 
 ## Passwort
-Siehe `/nea/README.md` — gleicher Hash, geteilte Session.
+Siehe `/pieks/README.md` — gleicher Hash, geteilte Session.
 
 ## Statistik
 - localStorage pro Gerät & Browser
@@ -20,4 +20,4 @@ Siehe `/nea/README.md` — gleicher Hash, geteilte Session.
 - Eigener Storage-Key (`yuna_mathe_stats_v1`) — vermischt sich nicht mit Neas Stats
 
 ## Updates via Claude
-Wie bei /nea/ — Ordner auswählen, editieren, pushen.
+Wie bei /pieks/ (Neas Mathe-Igel) — Ordner auswählen, editieren, pushen.

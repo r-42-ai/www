@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+  <radialGradient id="pk-st" cx="100" cy="112" r="96" gradientUnits="userSpaceOnUse">
+    <stop offset=".62" stop-color="#5E3E25"/><stop offset=".86" stop-color="#7E5230"/><stop offset="1" stop-color="#CFAE7E"/>
+  </radialGradient>
+  <radialGradient id="pk-st2" cx="100" cy="112" r="88" gradientUnits="userSpaceOnUse">
+    <stop offset=".6" stop-color="#7A4E2C"/><stop offset=".88" stop-color="#93633A"/><stop offset="1" stop-color="#E2C596"/>
+  </radialGradient>
+  <radialGradient id="pk-kugel" cx="50" cy="52" r="50" gradientUnits="userSpaceOnUse">
+    <stop offset=".55" stop-color="#5E3E25"/><stop offset=".84" stop-color="#83552F"/><stop offset="1" stop-color="#D8B886"/>
+  </radialGradient>
+  <radialGradient id="pk-kugel2" cx="50" cy="52" r="42" gradientUnits="userSpaceOnUse">
+    <stop offset=".5" stop-color="#7A4E2C"/><stop offset=".85" stop-color="#93633A"/><stop offset="1" stop-color="#E2C596"/>
+  </radialGradient>
+  <linearGradient id="pk-glas" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#E9F7FF" stop-opacity=".55"/><stop offset="1" stop-color="#9FD6F5" stop-opacity=".18"/>
+  </linearGradient>
+  <linearGradient id="pk-gold" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#FFE27A"/><stop offset="1" stop-color="#F2A813"/>
+  </linearGradient>
+  <linearGradient id="gk-gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#FFF0A6"/><stop offset=".5" stop-color="#F7C22E"/><stop offset="1" stop-color="#C98A0B"/>
+  </linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD27E"/><stop offset="1" stop-color="#F28C28"/></linearGradient>
+    <radialGradient id="glanz" cx=".5" cy=".42" r=".5"><stop offset="0" stop-color="#FFF4D6" stop-opacity=".9"/><stop offset="1" stop-color="#FFF4D6" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <g transform="translate(0 0) scale(1)">
+    <circle cx="256" cy="236" r="230" fill="url(#glanz)"/>
+    <g transform="translate(70 92) rotate(-20) scale(2.1)"><path d="M0 -17 L3 -9 L10 -12 L8 -4 L17 -3 L10 2 L13 10 L4 7 L2 16 L0 11 L-2 16 L-4 7 L-13 10 L-10 2 L-17 -3 L-8 -4 L-10 -12 L-3 -9 Z" fill="#D9432F"/></g><g transform="translate(446 128) rotate(30) scale(1.7)"><path d="M0 -17 L3 -9 L10 -12 L8 -4 L17 -3 L10 2 L13 10 L4 7 L2 16 L0 11 L-2 16 L-4 7 L-13 10 L-10 2 L-17 -3 L-8 -4 L-10 -12 L-3 -9 Z" fill="#C2562A"/></g><g transform="translate(84 420) rotate(50) scale(1.5)"><path d="M0 -17 L3 -9 L10 -12 L8 -4 L17 -3 L10 2 L13 10 L4 7 L2 16 L0 11 L-2 16 L-4 7 L-13 10 L-10 2 L-17 -3 L-8 -4 L-10 -12 L-3 -9 Z" fill="#B5652B"/></g>
+    <ellipse cx="256" cy="470" rx="170" ry="22" fill="#C2621B" opacity=".35"/>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -2 200 224" aria-hidden="true" focusable="false" x="50" y="34" width="412" height="461">
+  <g class="pk-ganz">
+    <g class="slot-ruecken"/>
+    <path class="pk-stacheln" d="M65.9 177.7 Q54.6 184.8 48.6 189.3 Q51.4 180.6 52.7 168.4 Q43.1 172.9 37.7 174.7 Q40.8 168.2 41.8 156.4 Q29.1 157.9 22.0 159.2 Q27.9 152.7 33.7 142.3 Q19.5 143.7 10.1 144.2 Q19.3 138.2 28.9 126.6 Q17.2 121.5 10.9 119.4 Q18.4 116.3 27.5 110.3 Q14.7 104.1 6.6 100.5 Q16.9 99.2 29.6 94.0 Q23.4 84.6 20.5 80.8 Q26.5 80.6 35.2 78.6 Q29.8 68.2 26.9 63.3 Q33.7 64.9 43.9 64.8 Q41.8 53.2 40.5 48.1 Q46.4 50.9 55.3 53.4 Q54.2 40.1 52.9 33.0 Q59.2 38.8 69.0 44.8 Q69.7 34.9 70.7 30.4 Q74.8 34.7 84.1 39.4 Q90.3 23.5 92.2 13.4 Q95.6 24.7 100.0 37.6 Q104.6 26.5 107.7 20.3 Q109.4 28.5 115.9 39.4 Q126.7 32.6 130.6 29.0 Q130.7 35.9 131.0 44.8 Q141.6 37.0 147.4 32.2 Q145.1 41.0 144.7 53.4 Q156.5 50.4 162.0 48.4 Q158.9 55.1 156.1 64.8 Q170.3 59.6 179.9 56.2 Q172.0 64.9 164.8 78.6 Q176.0 80.1 181.6 80.7 Q176.3 85.3 170.4 94.0 Q181.7 98.4 187.6 100.2 Q180.8 103.6 172.5 110.3 Q185.5 115.0 193.7 118.2 Q183.6 120.1 171.1 126.6 Q179.9 134.6 184.7 138.7 Q177.0 138.9 166.3 142.3 Q177.1 152.3 184.1 159.3 Q173.3 156.2 158.2 156.4 Q165.8 169.2 170.8 177.4 Q161.2 172.1 147.3 168.4 Q148.5 180.0 149.3 185.7 Q143.6 181.6 134.1 177.7 Z" fill="url(#pk-st)"/>
+    <path class="pk-stacheln2" d="M63.8 167.2 Q51.9 173.4 43.3 176.1 Q47.7 167.6 51.9 156.6 Q38.9 158.9 30.3 159.1 Q36.3 152.3 42.9 143.5 Q31.9 141.3 25.8 138.7 Q31.0 134.5 37.2 128.4 Q28.8 126.3 24.6 122.4 Q29.2 119.5 35.2 112.4 Q26.3 102.9 22.0 97.4 Q28.8 96.4 37.0 96.4 Q27.5 89.0 22.6 82.1 Q31.1 82.9 42.5 81.3 Q35.6 69.5 32.2 61.1 Q40.7 64.6 51.3 68.0 Q46.7 57.4 45.9 49.6 Q52.6 53.9 63.1 57.3 Q64.8 44.9 66.6 38.1 Q71.4 43.2 76.9 49.8 Q78.7 39.7 82.0 34.1 Q85.4 39.4 92.2 45.9 Q96.1 34.4 100.7 27.7 Q102.9 35.9 107.8 45.9 Q118.2 36.0 124.7 30.3 Q124.3 39.4 123.1 49.8 Q133.6 41.1 141.4 36.4 Q138.9 45.7 136.9 57.3 Q150.1 51.8 159.1 49.1 Q154.1 57.7 148.7 68.0 Q159.4 69.2 164.7 71.2 Q161.6 75.6 157.5 81.3 Q171.3 82.7 180.1 84.6 Q172.2 89.8 163.0 96.4 Q175.4 102.0 182.8 106.2 Q174.6 109.1 164.8 112.4 Q175.7 121.0 182.1 126.9 Q173.2 127.7 162.8 128.4 Q170.3 140.2 174.4 147.2 Q166.3 145.9 157.1 143.5 Q161.1 155.5 162.6 162.5 Q156.0 160.0 148.1 156.6 Q150.5 165.4 149.4 171.0 Q144.7 168.7 136.2 167.2 Z" fill="url(#pk-st2)"/>
+    <g class="pk-koerper">
+      <path d="M56 150 C56 128 76 116 100 116 C124 116 144 128 144 150 C144 176 126 194 100 194 C74 194 56 176 56 150 Z" fill="#E8C597"/>
+      <ellipse cx="100" cy="166" rx="27" ry="24" fill="#F4E0BE"/>
+      <ellipse class="pk-fuss" cx="78" cy="192" rx="14" ry="7" fill="#8A5B38"/>
+      <ellipse class="pk-fuss" cx="122" cy="192" rx="14" ry="7" fill="#8A5B38"/>
+    </g>
+    <g class="pk-kopf">
+      <ellipse cx="56" cy="74" rx="13" ry="12" fill="#E8C597"/><ellipse cx="56" cy="75" rx="6.5" ry="6" fill="#EFA59B"/>
+      <ellipse cx="144" cy="74" rx="13" ry="12" fill="#E8C597"/><ellipse cx="144" cy="75" rx="6.5" ry="6" fill="#EFA59B"/>
+      <path d="M100 58 C130 58 160 78 162 106 C164 134 128 156 100 166 C72 156 36 134 38 106 C40 78 70 58 100 58 Z" fill="#F1D4A8"/>
+      <path d="M86 56 Q84 40 76 30 Q90 36 96 46 Q99 30 105 20 Q108 34 106 47 Q114 37 126 33 Q116 44 114 57 Q100 52 86 56 Z" fill="#7E5230"/>
+      <path d="M97 46 Q99 32 105 20 Q103 34 101 47 Z" fill="#B48455" opacity=".7"/>
+      <ellipse cx="100" cy="144" rx="24" ry="16" fill="#FAE8CB"/>
+      
+      <g class="pk-augen">
+        <ellipse cx="77" cy="104" rx="8.4" ry="10.4" fill="#2B1A10"/>
+        <ellipse cx="123" cy="104" rx="8.4" ry="10.4" fill="#2B1A10"/>
+        <circle cx="80.2" cy="99.8" r="3.2" fill="#fff"/><circle cx="126.2" cy="99.8" r="3.2" fill="#fff"/>
+        <circle cx="74.8" cy="108.5" r="1.4" fill="#fff" opacity=".8"/><circle cx="120.8" cy="108.5" r="1.4" fill="#fff" opacity=".8"/>
+      </g>
+      
+      
+      <ellipse cx="100" cy="140" rx="10.5" ry="8" fill="#2B1A10"/>
+      <ellipse cx="96.5" cy="137" rx="3.4" ry="2.2" fill="#fff" opacity=".55"/>
+      
+      <g class="pk-mund-auf">
+        <path d="M89 151 Q100 151 111 151 Q110 166 100 167 Q90 166 89 151 Z" fill="#6E2A22"/>
+        <ellipse cx="100" cy="162" rx="6" ry="3.2" fill="#EE7B7F"/>
+      </g>
+      
+      <ellipse cx="61" cy="125" rx="10" ry="6.5" fill="#F59E95" opacity=".6"/>
+      <ellipse cx="139" cy="125" rx="10" ry="6.5" fill="#F59E95" opacity=".6"/>
+    </g>
+    <g class="slot-augen"/>
+    <g class="slot-hals"/>
+    <g class="pk-haende">
+      <ellipse cx="72" cy="168" rx="9" ry="10" fill="#8A5B38"/>
+      <ellipse cx="128" cy="168" rx="9" ry="10" fill="#8A5B38"/>
+    </g>
+    <g class="slot-pfote"/>
+    <g class="slot-kopf"/>
+  </g>
+</svg>
+    <g transform="translate(338 330) scale(3.6)">
+  <path d="M20 12 C14 8 5 10 5 21 C5 31 12 38 17 38 C19 38 19 37 20 37 C21 37 21 38 23 38 C28 38 35 31 35 21 C35 10 26 8 20 12 Z" fill="#E2483D"/>
+  <ellipse cx="12" cy="19" rx="3.4" ry="5" fill="#fff" opacity=".45" transform="rotate(-20 12 19)"/>
+  <path d="M20 12 C20 8 21 5 23 3" stroke="#6B4423" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M22 7 C26 2 33 2 36 5 C32 9 26 10 22 7 Z" fill="#5DAA45"/></g>
+  </g>
+</svg>

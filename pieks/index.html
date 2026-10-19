@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mathe-Igel</title>
+<meta name="description" content="Brüche, Volumen und Dreisätze üben mit Pieks, dem Mathe-Igel.">
+<meta name="theme-color" content="#F6C27A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mathe-Igel">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://42.ai/pieks/">
+<meta property="og:title" content="Mathe-Igel">
+<meta property="og:description" content="Brüche, Volumen und Dreisätze üben mit Pieks, dem Mathe-Igel.">
+<meta property="og:image" content="https://42.ai/pieks/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="stil.css">
+</head>
+<body class="tag herbst">
+
+<!-- Bausteine, die mehrfach vorkommen (Pieks' Farbverläufe kommen aus grafik.js dazu) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs id="sprite">
+    <symbol id="apfel" viewBox="0 0 40 40">
+      <path d="M20 12 C14 8 5 10 5 21 C5 31 12 38 17 38 C19 38 19 37 20 37 C21 37 21 38 23 38 C28 38 35 31 35 21 C35 10 26 8 20 12 Z" fill="#E2483D"/>
+      <path d="M20 37 C21 37 21 38 23 38 C28 38 35 31 35 21 C35 16 33 13 30 11.5 C33 16 33 26 26 33 C24 35 22 36 20 37 Z" fill="#C2342B" opacity=".55"/>
+      <ellipse cx="12" cy="19" rx="3.4" ry="5" fill="#fff" opacity=".45" transform="rotate(-20 12 19)"/>
+      <path d="M20 12 C20 8 21 5 23 3" stroke="#6B4423" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M22 7 C26 2 33 2 36 5 C32 9 26 10 22 7 Z" fill="#5DAA45"/>
+    </symbol>
+    <symbol id="blatt-ahorn" viewBox="0 0 40 40">
+      <path d="M20 3 L23 11 L30 8 L28 16 L37 17 L30 22 L33 30 L24 27 L22 36 L20 31 L18 36 L16 27 L7 30 L10 22 L3 17 L12 16 L10 8 L17 11 Z" fill="currentColor"/>
+      <path d="M20 10 L20 38" stroke="rgba(0,0,0,.18)" stroke-width="1.6"/>
+    </symbol>
+    <symbol id="blatt-eiche" viewBox="0 0 40 40">
+      <path d="M20 2 C24 4 25 8 23 10 C27 9 30 12 27 15 C31 15 33 19 29 21 C33 22 33 27 28 27 C30 31 26 34 22 31 L21 38 L19 38 L18 31 C14 34 10 31 12 27 C7 27 7 22 11 21 C7 19 9 15 13 15 C10 12 13 9 17 10 C15 8 16 4 20 2 Z" fill="currentColor"/>
+      <path d="M20 6 L20 38" stroke="rgba(0,0,0,.18)" stroke-width="1.4"/>
+    </symbol>
+    <symbol id="flamme" viewBox="0 0 40 40">
+      <path d="M20 38 C10 38 5 31 6 23 C7 16 13 13 14 6 C18 9 20 13 19 18 C22 16 23 13 23 10 C30 14 35 20 34 27 C33 34 27 38 20 38 Z" fill="#F28C28"/>
+      <path d="M20 38 C15 38 12 34 13 30 C14 26 18 25 19 21 C22 24 23 26 22 29 C24 28 25 27 25 25 C28 28 29 31 28 33 C27 36 24 38 20 38 Z" fill="#FFD43B"/>
+    </symbol>
+    <symbol id="stern" viewBox="0 0 40 40">
+      <path d="M20 3 L25 14.5 L37.5 15.6 L28 24 L30.8 36.3 L20 29.8 L9.2 36.3 L12 24 L2.5 15.6 L15 14.5 Z" fill="#FFC233" stroke="#F09A10" stroke-width="2" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="pokal" viewBox="0 0 40 40">
+      <path d="M12 6 H28 V16 C28 22 24 26 20 26 C16 26 12 22 12 16 Z" fill="#FFC233"/>
+      <path d="M12 9 C6 9 5 12 6 15 C7 18 10 19 13 19 M28 9 C34 9 35 12 34 15 C33 18 30 19 27 19" stroke="#F09A10" stroke-width="2.6" fill="none"/>
+      <rect x="17" y="25" width="6" height="6" fill="#F09A10"/><rect x="11" y="31" width="18" height="5" rx="2" fill="#C97A08"/>
+      <path d="M16 9 Q16 16 19 20" stroke="#FFF3C4" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-haus" viewBox="0 0 24 24"><path d="M3.5 11 L12 4 L20.5 11 M6 9.5 V19.5 H10 V14.5 H14 V19.5 H18 V9.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-stimme" viewBox="0 0 24 24">
+      <path d="M4.5 4 H15 a2.5 2.5 0 0 1 2.5 2.5 V12.5 a2.5 2.5 0 0 1 -2.5 2.5 H10 L6 18.5 V15 H4.5 A2.5 2.5 0 0 1 2 12.5 V6.5 A2.5 2.5 0 0 1 4.5 4 Z" fill="currentColor"/>
+      <path d="M20 6.5 Q22.2 9.5 20 12.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="6.8" cy="9.5" r="1.1" fill="#fff"/><circle cx="9.8" cy="9.5" r="1.1" fill="#fff"/><circle cx="12.8" cy="9.5" r="1.1" fill="#fff"/>
+    </symbol>
+    <symbol id="i-stimme-aus" viewBox="0 0 24 24">
+      <path d="M4.5 4 H15 a2.5 2.5 0 0 1 2.5 2.5 V12.5 a2.5 2.5 0 0 1 -2.5 2.5 H10 L6 18.5 V15 H4.5 A2.5 2.5 0 0 1 2 12.5 V6.5 A2.5 2.5 0 0 1 4.5 4 Z" fill="currentColor" opacity=".45"/>
+      <path d="M3 3 L21 20" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/><path d="M3 3 L21 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-ton" viewBox="0 0 24 24">
+      <path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M16.5 9 Q18.5 12 16.5 15 M19 6.5 Q22.5 12 19 17.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-stumm" viewBox="0 0 24 24">
+      <path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M16.5 9.5 L21.5 14.5 M21.5 9.5 L16.5 14.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-birne" viewBox="0 0 32 32">
+      <path d="M16 3 C10 3 6 7.5 6 12.8 C6 16.5 8 18.6 9.6 20.4 C10.7 21.6 11 22.8 11 24 H21 C21 22.8 21.3 21.6 22.4 20.4 C24 18.6 26 16.5 26 12.8 C26 7.5 22 3 16 3 Z" fill="#FFD43B" stroke="#E0A800" stroke-width="2" stroke-linejoin="round"/>
+      <rect x="11" y="24.5" width="10" height="4.5" rx="2" fill="#C9B79A"/>
+      <path d="M12 12 Q13 8.5 16 8" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-notiz" viewBox="0 0 32 32">
+      <rect x="5" y="4" width="19" height="24" rx="3" fill="#FFF8EC" stroke="#9C7A5B" stroke-width="2"/>
+      <path d="M9 10 H20 M9 15 H20 M9 20 H15" stroke="#BFD4E8" stroke-width="2" stroke-linecap="round"/>
+      <path d="M27.5 9.5 L16 21 L14 26 L19 24 L30.5 12.5 Z" fill="#FFC233" stroke="#B8860B" stroke-width="1.6" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-loesung" viewBox="0 0 32 32">
+      <path d="M3 16 C7 9 11 6 16 6 C21 6 25 9 29 16 C25 23 21 26 16 26 C11 26 7 23 3 16 Z" fill="#E3F4FB" stroke="#2F7FA8" stroke-width="2.2"/>
+      <circle cx="16" cy="16" r="5.5" fill="#2F7FA8"/><circle cx="14" cy="14" r="1.8" fill="#fff"/>
+    </symbol>
+    <symbol id="i-back" viewBox="0 0 32 32">
+      <path d="M11 7 H26 a3 3 0 0 1 3 3 V22 a3 3 0 0 1 -3 3 H11 L3 16 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M15 12 L22 20 M22 12 L15 20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-ok" viewBox="0 0 32 32"><path d="M6 17 L13 24 L27 9" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-weiter" viewBox="0 0 32 32"><path d="M6 16 H25 M17 8 L25 16 L17 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-nenner" viewBox="0 0 32 32">
+      <rect x="9" y="3" width="14" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/>
+      <path d="M6 16 H26" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
+      <rect x="9" y="19" width="14" height="10" rx="3" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-zaehler" viewBox="0 0 32 32">
+      <rect x="9" y="3" width="14" height="10" rx="3" fill="currentColor"/>
+      <path d="M6 16 H26" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
+      <rect x="9" y="19" width="14" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    </symbol>
+    <symbol id="i-zu" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-album" viewBox="0 0 40 40">
+      <path d="M6 7 C11 5 16 5 20 8 C24 5 29 5 34 7 V33 C29 31 24 31 20 34 C16 31 11 31 6 33 Z" fill="#E2483D"/>
+      <path d="M20 8 V34" stroke="#B8322A" stroke-width="2"/>
+      <path d="M9 10 C12 9 15 9 17.5 10.5 V29 C15 28 12 28 9 29 Z M22.5 10.5 C25 9 28 9 31 10 V29 C28 28 25 28 22.5 29 Z" fill="#FFF8EC"/>
+      <circle cx="13" cy="18" r="2.2" fill="#8C5A2B"/><circle cx="11" cy="14.6" r="1.3" fill="#8C5A2B"/><circle cx="13.6" cy="13.8" r="1.3" fill="#8C5A2B"/><circle cx="15.6" cy="15.6" r="1.3" fill="#8C5A2B"/>
+      <path d="M25 15 H29 M25 19 H29 M25 23 H28" stroke="#BFA27E" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-garderobe" viewBox="0 0 40 40">
+      <path d="M20 9 C20 6 24 6 24 9 C24 11 22 12 20 13.5 L5 25 C3 27 4 30 7 30 H33 C36 30 37 27 35 25 L20 13.5" fill="none" stroke="#6B4A2E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M9 30 C9 24 14 21 20 21 C26 21 31 24 31 30 Z" fill="#E2483D"/><circle cx="20" cy="20" r="4" fill="#F6EFE4"/>
+    </symbol>
+    <symbol id="i-eltern" viewBox="0 0 40 40">
+      <rect x="5" y="5" width="30" height="30" rx="7" fill="#E3F4FB"/>
+      <rect x="10" y="22" width="5" height="8" rx="1.5" fill="#2F7FA8"/><rect x="17.5" y="15" width="5" height="15" rx="1.5" fill="#2EC4B6"/><rect x="25" y="10" width="5" height="20" rx="1.5" fill="#5DAA45"/>
+    </symbol>
+    <symbol id="i-schloss" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 10.5 V8 a4 4 0 0 1 8 0 V10.5" fill="none" stroke="currentColor" stroke-width="2.4"/></symbol>
+    <symbol id="i-pfeil-runter" viewBox="0 0 24 24"><path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+
+    <!-- Themen -->
+    <symbol id="t-brueche" viewBox="0 0 80 80">
+      <circle cx="40" cy="42" r="31" fill="#E8B36A"/>
+      <circle cx="40" cy="42" r="26" fill="#FFD86B"/>
+      <path d="M40 42 L40 16 A26 26 0 0 1 66 42 Z" fill="#F7EBD6"/>
+      <g transform="translate(9 -7)"><path d="M40 42 L40 16 A26 26 0 0 1 66 42 Z" fill="#FFD86B"/><path d="M40 42 L40 11 A31 31 0 0 1 71 42 Z" fill="none" stroke="#E8B36A" stroke-width="5" stroke-linejoin="round"/>
+        <circle cx="52" cy="28" r="4.2" fill="#E2483D"/><circle cx="58" cy="37" r="3" fill="#E2483D"/><path d="M46 34 c2 -3 5 -3 6 0 c-2 2 -4 2 -6 0Z" fill="#5DAA45"/></g>
+      <circle cx="28" cy="34" r="4.6" fill="#E2483D"/><circle cx="24" cy="50" r="4.2" fill="#E2483D"/><circle cx="38" cy="58" r="4.6" fill="#E2483D"/><circle cx="52" cy="54" r="3.6" fill="#E2483D"/>
+      <path d="M32 44 c2 -3 6 -3 7 0 c-2 3 -5 3 -7 0Z M44 47 c2 -3 6 -3 7 0 c-2 3 -5 3 -7 0Z" fill="#5DAA45"/>
+      <path d="M40 42 V16 M40 42 H14 M40 42 V68" stroke="#E8B36A" stroke-width="2"/>
+    </symbol>
+    <symbol id="t-volumen" viewBox="0 0 80 80">
+      <path d="M18 14 H58 L56 70 C56 73 54 75 51 75 H25 C22 75 20 73 20 70 Z" fill="#EAF6FC" stroke="#9FC7DB" stroke-width="3"/>
+      <path d="M58 22 C68 22 70 30 70 38 C70 46 66 50 57 52" fill="none" stroke="#9FC7DB" stroke-width="5" stroke-linecap="round"/>
+      <path d="M21 36 C30 33 40 39 57 35 L56 70 C56 72 54 73 51 73 H25 C22 73 21 72 21 70 Z" fill="#FF9F1C"/>
+      <path d="M21 36 C30 33 40 39 57 35 L57 40 C40 44 30 38 21 41 Z" fill="#FFC56B"/>
+      <path d="M22 24 H30 M22 34 H34 M22 44 H30 M22 54 H34 M22 64 H30" stroke="#5E8FA8" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="44" cy="54" r="3" fill="#FFE2B0" opacity=".9"/><circle cx="38" cy="62" r="2" fill="#FFE2B0" opacity=".9"/><circle cx="48" cy="64" r="2.4" fill="#FFE2B0" opacity=".9"/>
+      <path d="M50 18 V30" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+    </symbol>
+    <symbol id="t-dreisatz" viewBox="0 0 80 80">
+      <rect x="37" y="16" width="6" height="52" rx="3" fill="#8C5A2B"/>
+      <rect x="22" y="66" width="36" height="8" rx="4" fill="#6B4423"/>
+      <path d="M10 26 L70 20" stroke="#8C5A2B" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="40" cy="22" r="5" fill="#FFC233"/>
+      <path d="M12 26 L4 44 M12 26 L20 44 M68 20 L60 38 M68 20 L76 38" stroke="#B48455" stroke-width="1.8"/>
+      <path d="M2 44 H22 C21 50 17 53 12 53 C7 53 3 50 2 44 Z" fill="#C9A06C"/>
+      <path d="M58 38 H78 C77 44 73 47 68 47 C63 47 59 44 58 38 Z" fill="#C9A06C"/>
+      <use href="#apfel" x="3" y="28" width="11" height="11"/><use href="#apfel" x="10" y="27" width="11" height="11"/>
+      <circle cx="63" cy="35" r="4.6" fill="#FFC233" stroke="#E09A10" stroke-width="1.4"/><circle cx="72" cy="35" r="4.6" fill="#FFC233" stroke="#E09A10" stroke-width="1.4"/><circle cx="67.5" cy="30" r="4.6" fill="#FFC233" stroke="#E09A10" stroke-width="1.4"/>
+    </symbol>
+    <symbol id="t-mix" viewBox="0 0 80 80">
+      <path d="M14 30 L40 16 L66 30 L66 58 L40 72 L14 58 Z" fill="#FFF8EC" stroke="#E0C9A6" stroke-width="2"/>
+      <path d="M14 30 L40 44 L66 30 L40 16 Z" fill="#FFE7A8"/><path d="M40 44 L40 72 L66 58 L66 30 Z" fill="#FFD27A"/>
+      <circle cx="40" cy="29" r="4" fill="#E2483D"/><circle cx="28" cy="46" r="3.6" fill="#2F7FA8"/><circle cx="26" cy="57" r="3.6" fill="#2F7FA8"/><circle cx="22" cy="40" r="3.6" fill="#2F7FA8"/>
+      <circle cx="53" cy="44" r="3.6" fill="#5DAA45"/><circle cx="59" cy="54" r="3.6" fill="#5DAA45"/><circle cx="48" cy="61" r="3.6" fill="#5DAA45"/><circle cx="56" cy="38" r="3.6" fill="#5DAA45"/><circle cx="51" cy="51" r="3.6" fill="#5DAA45"/>
+      <path d="M8 16 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 Z" fill="#FFC233"/><path d="M70 8 l1.5 3.5 3.5 1.5 -3.5 1.5 -1.5 3.5 -1.5 -3.5 -3.5 -1.5 3.5 -1.5 Z" fill="#FF8FB8"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- Landschaft: Himmel, Berge, Wald und Wiese. Tageszeit und Jahreszeit über Klassen am <body> -->
+<div class="szene" id="szene" aria-hidden="true">
+  <div class="himmel"></div>
+  <svg class="sterne" id="sterne" viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid slice"></svg>
+  <svg class="sonne" viewBox="0 0 120 120" id="sonne">
+    <path class="strahlen" d="M100 60H112 M94.6 80L105 86 M80 94.6L86 105 M60 100V112 M40 94.6L34 105 M25.4 80L15 86 M20 60H8 M25.4 40L15 34 M40 25.4L34 15 M60 20V8 M80 25.4L86 15 M94.6 40L105 34" stroke="#FFD43B" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="60" cy="60" r="32" fill="#FFD43B"/>
+    <circle cx="60" cy="60" r="32" fill="none" stroke="#FFE680" stroke-width="4" opacity=".7"/>
+    <path d="M46 59 Q50 54.5 54 59 M66 59 Q70 54.5 74 59" stroke="#C98A00" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M53 68 Q60 74 67 68" stroke="#C98A00" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="44" cy="67" rx="5" ry="3" fill="#FF9E6E" opacity=".5"/><ellipse cx="76" cy="67" rx="5" ry="3" fill="#FF9E6E" opacity=".5"/>
+  </svg>
+  <svg class="mond" viewBox="0 0 120 120" id="mond">
+    <circle cx="60" cy="60" r="44" fill="#FFF6D6" opacity=".18"/>
+    <path d="M70 18 C48 20 32 38 32 60 C32 82 48 100 70 102 C52 92 44 76 44 60 C44 44 52 28 70 18 Z" fill="#FFF1B8"/>
+    <circle cx="44" cy="48" r="3" fill="#EADBA0"/><circle cx="40" cy="72" r="4" fill="#EADBA0"/>
+    <path d="M50 58 Q53 61 56 58" stroke="#B8A15A" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  </svg>
+  <svg class="wolke w1" viewBox="0 0 120 56"><path d="M24 50 C10 50 4 42 6 34 C8 26 16 22 24 24 C26 12 38 6 50 10 C56 2 72 0 80 10 C90 6 102 12 102 24 C112 24 118 32 116 40 C114 48 106 50 100 50 Z"/></svg>
+  <svg class="wolke w2" viewBox="0 0 120 56"><path d="M24 50 C10 50 4 42 6 34 C8 26 16 22 24 24 C26 12 38 6 50 10 C56 2 72 0 80 10 C90 6 102 12 102 24 C112 24 118 32 116 40 C114 48 106 50 100 50 Z"/></svg>
+  <svg class="wolke w3" viewBox="0 0 120 56"><path d="M24 50 C10 50 4 42 6 34 C8 26 16 22 24 24 C26 12 38 6 50 10 C56 2 72 0 80 10 C90 6 102 12 102 24 C112 24 118 32 116 40 C114 48 106 50 100 50 Z"/></svg>
+  <svg class="berge" viewBox="0 0 1200 220" preserveAspectRatio="xMidYMax slice">
+    <path class="berg-fern" d="M0 220 V150 L80 118 L150 140 L240 70 L300 104 L360 84 L420 120 L520 40 L600 96 L660 72 L740 118 L820 60 L900 110 L980 86 L1060 128 L1140 96 L1200 120 V220 Z"/>
+    <path class="schnee" d="M240 70 L262 84 L250 86 L240 80 L228 88 L222 82 Z M520 40 L548 62 L534 62 L522 54 L508 64 L498 58 Z M820 60 L846 80 L832 80 L822 72 L810 82 L800 76 Z M660 72 L676 84 L664 84 L656 80 Z"/>
+    <path class="huegel-fern" d="M0 220 V176 C120 150 240 168 340 160 C460 150 560 176 700 166 C820 158 960 176 1080 162 C1140 156 1180 160 1200 162 V220 Z"/>
+  </svg>
+  <svg class="waldrand" viewBox="0 0 1200 160" preserveAspectRatio="xMidYMax slice" id="waldrand"></svg>
+  <div class="wiese"></div>
+  <svg class="baum b-links" viewBox="0 0 160 220">
+    <rect x="70" y="110" width="22" height="110" rx="9" fill="#7A5235"/>
+    <path d="M81 150 L56 124 M80 132 L104 110" stroke="#7A5235" stroke-width="8" stroke-linecap="round"/>
+    <g class="krone">
+      <circle cx="80" cy="74" r="52" fill="var(--laub1)"/>
+      <circle cx="40" cy="102" r="34" fill="var(--laub2)"/>
+      <circle cx="122" cy="98" r="36" fill="var(--laub1)"/>
+      <circle cx="96" cy="40" r="30" fill="var(--laub3)"/>
+      <circle cx="54" cy="56" r="22" fill="var(--laub3)" opacity=".7"/>
+    </g>
+    <g class="aepfel-am-baum">
+      <use href="#apfel" x="44" y="76" width="16" height="16"/><use href="#apfel" x="100" y="58" width="16" height="16"/><use href="#apfel" x="118" y="102" width="16" height="16"/><use href="#apfel" x="70" y="104" width="15" height="15"/>
+    </g>
+  </svg>
+  <svg class="baum b-rechts" viewBox="0 0 120 220">
+    <rect x="52" y="90" width="14" height="130" rx="6" fill="#EDE6DA"/>
+    <path d="M54 120 h8 M58 150 h6 M53 180 h9 M57 104 h6" stroke="#4A4038" stroke-width="3" stroke-linecap="round"/>
+    <g class="krone">
+      <ellipse cx="60" cy="70" rx="40" ry="56" fill="var(--laub4)"/>
+      <ellipse cx="36" cy="96" rx="22" ry="28" fill="var(--laub3)"/>
+      <ellipse cx="84" cy="92" rx="22" ry="30" fill="var(--laub3)"/>
+    </g>
+  </svg>
+  <svg class="tanne t1" viewBox="0 0 80 160"><rect x="35" y="120" width="10" height="40" fill="#6B4A2E"/><path d="M40 4 L64 52 H52 L72 92 H56 L78 132 H2 L24 92 H8 L28 52 H16 Z" fill="var(--tanne)"/><path class="tannenschnee" d="M40 4 L50 24 L40 20 L30 24 Z M28 52 L36 58 L44 54 L52 58 L60 52 Z" fill="#fff"/></svg>
+  <svg class="tanne t2" viewBox="0 0 80 160"><rect x="35" y="120" width="10" height="40" fill="#6B4A2E"/><path d="M40 4 L64 52 H52 L72 92 H56 L78 132 H2 L24 92 H8 L28 52 H16 Z" fill="var(--tanne)"/><path class="tannenschnee" d="M40 4 L50 24 L40 20 L30 24 Z M28 52 L36 58 L44 54 L52 58 L60 52 Z" fill="#fff"/></svg>
+  <svg class="hecke" viewBox="0 0 260 90" preserveAspectRatio="none">
+    <path d="M0 90 V50 C10 30 30 26 44 36 C52 18 78 14 90 30 C102 14 128 14 138 32 C150 18 176 18 184 36 C198 24 222 26 230 42 C244 36 258 44 260 54 V90 Z" fill="var(--hecke)"/>
+    <circle cx="40" cy="52" r="4" fill="#C2342B"/><circle cx="96" cy="44" r="4" fill="#C2342B"/><circle cx="150" cy="50" r="4" fill="#C2342B"/><circle cx="206" cy="48" r="4" fill="#C2342B"/><circle cx="120" cy="62" r="3.4" fill="#C2342B"/>
+  </svg>
+  <svg class="pilz p1" viewBox="0 0 40 40"><rect x="15" y="20" width="10" height="16" rx="4" fill="#F6EFE4"/><path d="M3 22 C3 8 37 8 37 22 Z" fill="#E2483D"/><circle cx="12" cy="16" r="2.6" fill="#fff"/><circle cx="22" cy="12" r="2.2" fill="#fff"/><circle cx="29" cy="18" r="2.4" fill="#fff"/></svg>
+  <svg class="pilz p2" viewBox="0 0 40 40"><rect x="15" y="20" width="10" height="16" rx="4" fill="#F6EFE4"/><path d="M3 22 C3 8 37 8 37 22 Z" fill="#E2483D"/><circle cx="12" cy="16" r="2.6" fill="#fff"/><circle cx="22" cy="12" r="2.2" fill="#fff"/><circle cx="29" cy="18" r="2.4" fill="#fff"/></svg>
+  <svg class="laubhaufen" viewBox="0 0 140 60">
+    <path d="M4 60 C6 38 30 22 70 20 C110 22 134 38 136 60 Z" fill="#B5652B"/>
+    <g class="laub-farbig">
+      <use href="#blatt-ahorn" x="14" y="32" width="22" height="22" color="#E8742B"/><use href="#blatt-eiche" x="40" y="20" width="22" height="22" color="#D9432F"/>
+      <use href="#blatt-ahorn" x="66" y="18" width="24" height="24" color="#F2B33D"/><use href="#blatt-eiche" x="94" y="26" width="22" height="22" color="#C2562A"/>
+      <use href="#blatt-ahorn" x="108" y="38" width="20" height="20" color="#E8742B"/><use href="#blatt-ahorn" x="52" y="36" width="20" height="20" color="#D9432F"/>
+      <use href="#blatt-eiche" x="80" y="40" width="18" height="18" color="#F2B33D"/>
+    </g>
+  </svg>
+  <div class="boden-laub" id="bodenLaub"></div>
+  <div class="regen" id="regen"></div>
+</div>
+
+<!-- Fliegende Besucher ziehen hinter allem durch -->
+<div class="besuch himmel-spur" id="besuchHimmel" aria-hidden="true"></div>
+
+<main class="app" id="app">
+  <header class="kopfzeile">
+    <button class="rund pill" id="homeBtn" type="button" aria-label="Zur Lichtung"><svg viewBox="0 0 24 24"><use href="#i-haus"/></svg></button>
+    <button class="rang pill" id="rang" type="button" aria-label="Rang">
+      <span class="rang-stern"><svg viewBox="0 0 40 40"><use href="#stern"/></svg><b id="rangNr">1</b></span>
+      <span class="rang-text"><small id="rangName">Laub-Neuling</small><span class="balken"><i id="rangBalken"></i></span></span>
+    </button>
+    <button class="thema-chip pill" id="themaChip" type="button" aria-haspopup="true">
+      <svg viewBox="0 0 80 80" id="themaIcon"><use href="#t-brueche"/></svg>
+      <span><b id="themaName">Brüche</b><small id="stufeName">Mittel</small></span>
+      <svg class="pfeil" viewBox="0 0 24 24"><use href="#i-pfeil-runter"/></svg>
+    </button>
+    <div class="luecke"></div>
+    <div class="pill zaehler serie" id="serie" title="Richtig in Folge" hidden><svg viewBox="0 0 40 40"><use href="#flamme"/></svg><b id="serieN">0</b></div>
+    <div class="pill zaehler" id="aepfel" title="Äpfel"><svg viewBox="0 0 40 40" id="apfelZiel"><use href="#apfel"/></svg><b id="aepfelN">0</b></div>
+    <div class="pill zaehler ziel" id="ziel" title="Tagesziel">
+      <svg viewBox="0 0 36 36" class="ring"><circle cx="18" cy="18" r="14" class="ring-hg"/><circle cx="18" cy="18" r="14" class="ring-vg" id="zielRing"/></svg>
+      <b id="zielN">0/10</b>
+    </div>
+    <button class="rund pill" id="stimmeBtn" type="button" aria-label="Vorlesen ausschalten"><svg viewBox="0 0 24 24"><use href="#i-stimme"/></svg></button>
+    <button class="rund pill" id="tonBtn" type="button" aria-label="Geräusche ausschalten"><svg viewBox="0 0 24 24"><use href="#i-ton"/></svg></button>
+  </header>
+
+  <!-- LICHTUNG: hier wählt Nea, was sie üben will -->
+  <section class="lichtung" id="lichtung">
+    <div class="held">
+      <div class="held-pieks" id="heldPieks"></div>
+      <div class="blase gross" id="blaseHome" role="button" tabindex="0" aria-label="Nochmal vorlesen"><span class="say" aria-live="polite"></span></div>
+    </div>
+    <div class="wahl">
+      <h2 class="wahl-titel">Was üben wir heute?</h2>
+      <div class="themen" id="themen"></div>
+      <nav class="menue">
+        <button type="button" class="menue-btn" id="albumBtn"><svg viewBox="0 0 40 40"><use href="#i-album"/></svg><span>Album</span><i class="neu-punkt" id="albumNeu" hidden></i></button>
+        <button type="button" class="menue-btn" id="garderobeBtn"><svg viewBox="0 0 40 40"><use href="#i-garderobe"/></svg><span>Garderobe</span><i class="neu-punkt" id="garderobeNeu" hidden></i></button>
+        <button type="button" class="menue-btn" id="erfolgeBtn"><svg viewBox="0 0 40 40"><use href="#pokal"/></svg><span>Erfolge</span></button>
+        <button type="button" class="menue-btn" id="elternBtn"><svg viewBox="0 0 40 40"><use href="#i-eltern"/></svg><span>Eltern</span></button>
+      </nav>
+    </div>
+    <div class="boden" id="bodenHome" aria-hidden="true"></div>
+  </section>
+
+  <!-- TRAINING -->
+  <section class="training" id="training" hidden>
+    <div class="buehne" id="buehne">
+      <article class="karte" id="karte" aria-live="polite">
+        <div class="karte-kopf">
+          <span class="nr" id="aufgabeNr">Aufgabe 1</span>
+          <span class="belohnung" id="belohnung" title="So viele Äpfel gibt diese Aufgabe"><svg viewBox="0 0 40 40"><use href="#apfel"/></svg><b id="belohnungN">+4</b></span>
+        </div>
+        <div class="frage" id="frage"></div>
+        <div class="rechnung" id="rechnung"></div>
+        <div class="loesungsweg" id="loesungsweg" hidden></div>
+        <!-- Fakt nach ein paar richtigen Aufgaben, liegt über der gelösten Aufgabe -->
+        <div class="faktkarte" id="faktKarte" hidden>
+          <div class="fakt-kopf"><span class="fakt-kat" id="faktKat"></span><span class="fakt-neu" id="faktNeu">Neu im Album</span></div>
+          <p class="fakt-text" id="faktText"></p>
+        </div>
+      </article>
+      <div class="notiz" id="notiz" hidden>
+        <canvas id="notizCanvas"></canvas>
+        <div class="notiz-werkzeug">
+          <button type="button" class="stift aktiv" data-farbe="#3A3A48" aria-label="Bleistift"><i style="background:#3A3A48"></i></button>
+          <button type="button" class="stift" data-farbe="#2F7FA8" aria-label="Blauer Stift"><i style="background:#2F7FA8"></i></button>
+          <button type="button" class="stift" data-farbe="#E2483D" aria-label="Roter Stift"><i style="background:#E2483D"></i></button>
+          <button type="button" class="stift radierer" data-farbe="radierer" aria-label="Radiergummi"><i></i></button>
+          <button type="button" class="notiz-leeren" id="notizLeeren">Leeren</button>
+          <button type="button" class="notiz-zu" id="notizZu" aria-label="Notizblock schliessen"><svg viewBox="0 0 24 24"><use href="#i-zu"/></svg></button>
+        </div>
+      </div>
+      <div class="boden" id="bodenTraining" aria-hidden="true"></div>
+    </div>
+
+    <aside class="dock" id="dock">
+      <div class="buddy">
+        <div class="buddy-pieks" id="dockPieks"></div>
+        <div class="blase" id="blase" role="button" tabindex="0" aria-label="Nochmal vorlesen"><span class="say" aria-live="polite"></span></div>
+      </div>
+      <div class="werkzeuge">
+        <button type="button" class="werkzeug tipp" id="tippBtn"><svg viewBox="0 0 32 32"><use href="#i-birne"/></svg><span>Tipp</span></button>
+        <button type="button" class="werkzeug" id="notizBtn"><svg viewBox="0 0 32 32"><use href="#i-notiz"/></svg><span>Notizblock</span></button>
+        <button type="button" class="werkzeug" id="loesungBtn" hidden><svg viewBox="0 0 32 32"><use href="#i-loesung"/></svg><span>Lösung</span></button>
+      </div>
+      <div class="steuerung">
+        <div class="pad" id="pad">
+          <button class="taste" type="button" data-k="1">1</button>
+          <button class="taste" type="button" data-k="2">2</button>
+          <button class="taste" type="button" data-k="3">3</button>
+          <button class="taste" type="button" data-k="4">4</button>
+          <button class="taste" type="button" data-k="5">5</button>
+          <button class="taste" type="button" data-k="6">6</button>
+          <button class="taste" type="button" data-k="7">7</button>
+          <button class="taste" type="button" data-k="8">8</button>
+          <button class="taste" type="button" data-k="9">9</button>
+          <button class="taste" type="button" data-k="0">0</button>
+          <button class="taste punkt" type="button" data-k="." aria-label="Komma">.</button>
+          <button class="taste zurueck" type="button" data-k="back" aria-label="Löschen"><svg viewBox="0 0 32 32"><use href="#i-back"/></svg></button>
+          <button class="taste bruch" type="button" data-k="bruch" aria-label="Zum Nenner"><svg viewBox="0 0 32 32"><use href="#i-nenner"/></svg><span>Nenner</span></button>
+          <button class="taste pruefen" type="button" data-k="ok" aria-label="Prüfen"><svg viewBox="0 0 32 32"><use href="#i-ok"/></svg></button>
+        </div>
+        <button class="weiter" id="weiterBtn" type="button">Weiter <svg viewBox="0 0 32 32"><use href="#i-weiter"/></svg></button>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<!-- Stufe und Thema wechseln, ohne zurück zur Lichtung -->
+<div class="popover" id="stufenMenue" hidden>
+  <div class="pop-titel">Schwierigkeit</div>
+  <div class="pop-stufen" id="popStufen"></div>
+  <div class="pop-titel">Thema</div>
+  <div class="pop-themen" id="popThemen"></div>
+</div>
+
+<div class="fx" id="fx" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status"><div class="ic" id="toastIc"></div><div><b id="toastT"></b><span id="toastS"></span></div></div>
+
+<!-- Fenster -->
+<div class="overlay" id="fenster" hidden>
+  <div class="fenster-karte" id="fensterKarte" role="dialog" aria-modal="true" aria-labelledby="fensterTitel">
+    <div class="fenster-kopf">
+      <h2 id="fensterTitel"></h2>
+      <button type="button" class="rund" id="fensterZu" aria-label="Schliessen"><svg viewBox="0 0 24 24"><use href="#i-zu"/></svg></button>
+    </div>
+    <div class="fenster-tabs" id="fensterTabs"></div>
+    <div class="fenster-inhalt" id="fensterInhalt"></div>
+  </div>
+</div>
+
+<!-- Start: Pieks schläft, ein Tipp weckt ihn (und gibt den Ton frei) -->
+<div class="start" id="start" hidden>
+  <div class="start-karte">
+    <div class="start-kugel" id="startKugel"></div>
+    <div class="zzz" aria-hidden="true"><span>z</span><span>z</span><span>Z</span></div>
+    <h1>Mathe-Igel</h1>
+    <p class="start-text" id="startText">Pieks hält gerade ein Nickerchen.</p>
+    <button class="los" id="weckenBtn" type="button">Pieks wecken!</button>
+  </div>
+</div>
+
+<!-- Passwort, geteilt mit Yunas App -->
+<div class="start pw" id="pwOvl" hidden>
+  <div class="start-karte">
+    <div class="start-kugel" id="pwKugel"></div>
+    <h1>Mathe-Igel</h1>
+    <p class="start-text">Wie heisst das Zauberwort?</p>
+    <form id="pwForm" autocomplete="on">
+      <input type="password" id="pwInput" autocomplete="current-password" aria-label="Passwort">
+      <button class="los" id="pwBtn" type="submit">OK</button>
+    </form>
+    <div class="pw-err" id="pwErr" aria-live="polite"></div>
+  </div>
+</div>
+
+<script src="aufgaben.js"></script>
+<script src="texte.js"></script>
+<script src="fakten.js"></script>
+<script src="grafik.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
