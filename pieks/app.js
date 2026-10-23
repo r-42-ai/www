@@ -197,6 +197,7 @@ const Ton = (() => {
 const Stimme = (() => {
   const roh = new Map(), fertig = new Map();
   let laeuft = [], nummer = 0, wecker = null, letzte = [], analyser = null, mundFrame = 0;
+  let aktiv = false;     // spricht Pieks gerade (oder wartet die Lesezeit ab)?
   let mundZiel = null;   // das <svg> von Pieks, das gerade spricht
 
   function holen(satz) {
@@ -260,6 +261,7 @@ const Stimme = (() => {
   }
   function stopp() {
     nummer++;
+    aktiv = false;
     laeuft.forEach(q => { try { q.stop(); } catch (e) { /* schon zu Ende */ } });
     laeuft = [];
     mundZu();
@@ -273,38 +275,46 @@ const Stimme = (() => {
   async function sprechen(saetze, opt = {}) {
     stopp();
     const meine = nummer;
-    if (!opt.einwurf) letzte = { saetze, svg: opt.svg };
-    const c = stand.stimme ? audio() : null;
-    const bufs = c ? await Promise.all(saetze.map(s => dekodieren(c, s))) : [];
-    if (meine !== nummer) return false;
-    if (!c || c.state !== 'running' || !bufs.some(Boolean)) {
-      await schlafen((opt.warte || 0) * 1000 + lesezeit(saetze));
+    aktiv = true;
+    try {
+      if (!opt.einwurf) letzte = { saetze, svg: opt.svg };
+      const c = stand.stimme ? audio() : null;
+      const bufs = c ? await Promise.all(saetze.map(s => dekodieren(c, s))) : [];
+      if (meine !== nummer) return false;
+      if (!c || c.state !== 'running' || !bufs.some(Boolean)) {
+        await schlafen((opt.warte || 0) * 1000 + lesezeit(saetze));
+        return meine === nummer;
+      }
+      if (!analyser) {
+        analyser = c.createAnalyser();
+        analyser.fftSize = 512;
+        analyser.connect(c.destination);
+      }
+      let t = c.currentTime + 0.04 + (opt.warte || 0);
+      const start = t;
+      bufs.forEach((b, i) => {
+        if (!b) return;
+        const q = c.createBufferSource();
+        q.buffer = b;
+        q.connect(analyser);
+        q.start(t);
+        laeuft.push(q);
+        t += b.duration + (i < bufs.length - 1 ? 0.12 : 0);
+      });
+      setTimeout(() => { if (meine === nummer) mundLos(opt.svg); }, Math.max(0, (start - c.currentTime) * 1000));
+      await schlafen((t - c.currentTime) * 1000 + 120);
+      if (meine === nummer) mundZu();
       return meine === nummer;
+    } finally {
+      if (meine === nummer) aktiv = false;
     }
-    if (!analyser) {
-      analyser = c.createAnalyser();
-      analyser.fftSize = 512;
-      analyser.connect(c.destination);
-    }
-    let t = c.currentTime + 0.04 + (opt.warte || 0);
-    const start = t;
-    bufs.forEach((b, i) => {
-      if (!b) return;
-      const q = c.createBufferSource();
-      q.buffer = b;
-      q.connect(analyser);
-      q.start(t);
-      laeuft.push(q);
-      t += b.duration + (i < bufs.length - 1 ? 0.12 : 0);
-    });
-    setTimeout(() => { if (meine === nummer) mundLos(opt.svg); }, Math.max(0, (start - c.currentTime) * 1000));
-    await schlafen((t - c.currentTime) * 1000 + 120);
-    if (meine === nummer) mundZu();
-    return meine === nummer;
   }
   return {
     sprechen,
     stopp,
+    // Automatische Ansagen fragen vorher: nie jemandem ins Wort fallen.
+    // Nur was Nea selbst antippt, darf unterbrechen.
+    istStill: () => !aktiv,
     vorladen: saetze => saetze.forEach(holen),
     nochmal: () => (letzte.saetze && letzte.saetze.length ? sprechen(letzte.saetze, { svg: letzte.svg }) : null),
     // Zwischenruf (z.B. zu einem Tier): ein Tipp auf die Blase wiederholt danach trotzdem den Blasentext
@@ -843,11 +853,13 @@ function loesungZeigen() {
   $('antwort').classList.remove('falsch');
   tastenZeigen();
   felderZeigen();
-  sag(zieh('loesung'));
-  // Nach zwei Lösungen hintereinander eine leichtere Stufe anbieten
+  const gesagt = sag(zieh('loesung'));
+  // Nach zwei Lösungen hintereinander eine leichtere Stufe anbieten, aber erst
+  // wenn Pieks den Lösungsweg fertig angesagt hat
   if (runterZaehler >= 2 && sitzung.stufe !== 'easy' && !vorschlagGemacht.runter) {
     vorschlagGemacht.runter = true;
-    setTimeout(() => { if (A && !A.geloest) stufeVorschlagen(-1); }, 4500);
+    const diese = A;
+    gesagt.then(ganz => { if (ganz && A === diese && !A.geloest) stufeVorschlagen(-1); });
   }
 }
 
@@ -855,8 +867,10 @@ function loesungZeigen() {
 function wachHalten() {
   clearTimeout(warteTimer);
   if (!A || A.geloest || A.gewartet || bildschirm !== 'training') return;
-  warteTimer = setTimeout(() => {
+  warteTimer = setTimeout(function nachfragen() {
     if (!A || A.geloest || bildschirm !== 'training' || !$('fenster').hidden) return;
+    // Erzählt Pieks gerade etwas, später nochmal schauen
+    if (!Stimme.istStill()) { warteTimer = setTimeout(nachfragen, 5000); return; }
     A.gewartet = true;
     sag(zieh('warten'));
   }, 75000);
@@ -1287,10 +1301,15 @@ const Besuch = (() => {
     else if (BESUCHER[id].spur === 'himmel') ziehen(id, bildschirm === 'training' && bodenOk ? b : himmel, true);
     else ziehen(id, b, false);
     planen();
+    // Beim ersten Tier erklärt Pieks, dass man es antippen kann. Spricht er gerade,
+    // wartet der Hinweis aufs nächste Tier, statt ihm ins Wort zu fallen.
     if (!stand.ersterBesuch && !A?.geloest) {
-      stand.ersterBesuch = true;
-      speichern();
-      setTimeout(() => Stimme.einwurf([sprechtext(TEXTE.erster_besuch[0])], ziel.svg), 1200);
+      setTimeout(() => {
+        if (stand.ersterBesuch || !Stimme.istStill() || !$('fenster').hidden) return;
+        stand.ersterBesuch = true;
+        speichern();
+        sag(TEXTE.erster_besuch[0]);
+      }, 1200);
     }
   }
   function element(id, w, h) {
@@ -1817,9 +1836,12 @@ async function wecken() {
   }
   stand.zuletzt = Date.now();
   speichern();
+  const gesagt = sagMehr(teile);
   // Erfolge von früher (z.B. eine Tages-Serie) nach der Begrüssung nachtragen
-  erfolgeNebenbei({}, sagMehr(teile));
-  Besuch.start();
+  erfolgeNebenbei({}, gesagt);
+  // Tiere erst, wenn die Begrüssung fertig ist (oder Nea schon weitergetippt hat):
+  // sonst kommt beim ersten Start mitten in Pieks' Vorstellung Besuch
+  gesagt.then(() => Besuch.start());
 }
 function gruss() {
   const tz = tageszeit(), weg = stand.zuletzt ? (Date.now() - stand.zuletzt) / 86400000 : 0;
