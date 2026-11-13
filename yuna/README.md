@@ -12,8 +12,9 @@ URL: https://42.ai/yuna/
 - Statistik über die Zeit (heute / 7T / 30T / Total + 14-Tage-Chart)
 
 ## Passwort
-Gleicher Hash wie Neas Mathe-Igel (seit Nov 2026 auf https://y7.ai/pieks/, Repo r-42-ai/y7.ai,
-siehe dort `pieks/README.md`). Session nicht mehr geteilt, weil andere Domain.
+- SHA-256-Hash als Konstante `PW_HASH` in `yuna/index.html`, nach Eingabe 30 Tage gemerkt
+  (pro Gerät & Browser)
+- Ändern: `echo -n "neuespasswort" | sha256sum`, Hash in `PW_HASH` ersetzen, pushen
 
 ## Statistik
 - localStorage pro Gerät & Browser
