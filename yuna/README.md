@@ -12,7 +12,8 @@ URL: https://42.ai/yuna/
 - Statistik über die Zeit (heute / 7T / 30T / Total + 14-Tage-Chart)
 
 ## Passwort
-Siehe `/pieks/README.md` — gleicher Hash, geteilte Session.
+Gleicher Hash wie Neas Mathe-Igel (seit Nov 2026 auf https://y7.ai/pieks/, Repo r-42-ai/y7.ai,
+siehe dort `pieks/README.md`). Session nicht mehr geteilt, weil andere Domain.
 
 ## Statistik
 - localStorage pro Gerät & Browser
@@ -20,4 +21,4 @@ Siehe `/pieks/README.md` — gleicher Hash, geteilte Session.
 - Eigener Storage-Key (`yuna_mathe_stats_v1`) — vermischt sich nicht mit Neas Stats
 
 ## Updates via Claude
-Wie bei /pieks/ (Neas Mathe-Igel) — Ordner auswählen, editieren, pushen.
+Ordner auswählen, editieren, pushen.
